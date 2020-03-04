@@ -11,8 +11,8 @@ public abstract class AbstractNode<T extends Transition> extends Node<T> {
 
 	public AbstractNode(Node<T> parent, boolean terminal) {
 		super(parent, terminal);
-		childs = new HashMap();
-		wins = new HashMap();
+		childs = new HashMap<T, Node<T>>();
+		wins = new HashMap<Integer, Integer>();
 	}
 
 	@Override
