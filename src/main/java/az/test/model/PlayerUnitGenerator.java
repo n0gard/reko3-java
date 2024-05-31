@@ -26,7 +26,7 @@ public class PlayerUnitGenerator {
 			lb.addItem(new FireSpells("Coke", 200));
 			lb.addItem(new FireSpells("Coke", 200));
 		} catch (MaxItemsLimitedException e) {
-			e.printStackTrace();
+			System.err.println("Items full.");
 		}
 		lb.currentArmyHP = lb.initMaxArmyHP();
 		lb.currentMorale = 100;

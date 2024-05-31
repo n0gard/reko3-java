@@ -4,10 +4,10 @@ public enum Weather {
 
 	SUN, CLOUD, RAIN, IMPOSSIBLE;
 
-	public static int generateNextWeather(int last) {
+	public static int generateNextWeather(int last, int rand) {
 		int current = 0;
 		// step 1
-		int a = (int) (Math.random() * 6.0);
+		int a = rand;
 		int b = last;
 		// step 2
 		int c = 0;

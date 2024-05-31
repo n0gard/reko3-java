@@ -7,7 +7,6 @@ import az.test.battle.BattleInfo;
 import az.test.exception.CounterattackHappenedException;
 import az.test.exception.MaxItemsLimitedException;
 import az.test.exception.OutOfAttackRangeException;
-import az.test.exception.OutOfMoveRangeException;
 import az.test.model.army.bow.Bow;
 import az.test.model.army.bow.BowSoilder;
 import az.test.model.army.bow.Liannu;
@@ -82,7 +81,7 @@ public class BaseUnit {
         if (null == items) {
             items = new ArrayList<Item>();
         }
-        if (8 <= items.size()) {
+        if (items.size() == MAX_ITEM_LIMIT) {
             throw new MaxItemsLimitedException();
         }
         items.add(item);
@@ -115,12 +114,12 @@ public class BaseUnit {
         return (level + 10) * intelligence * 5 / 200;
     }
 
-    public int caculateAP() {
+    public int calculateAP() {
         return (int) (((4000 / (140 - force) + apBase * 2 + currentMorale) * (level + 10) / 10)
                 * (100 + queryItemAPInc()) / 100);
     }
 
-    public int caculateDP() {
+    public int calculateDP() {
         return (int) (((4000 / (140 - defense) + dpBase * 2 + currentMorale) * (level + 10) / 10)
                 * (100 + queryItemDPInc()) / 100);
     }
@@ -164,7 +163,7 @@ public class BaseUnit {
     public void moveTo(BattleInfo battle, int targetY, int targetX, boolean isSim) {
         // canMoveToCoordinateRange = new ArrayList<MapItem>();
         LogUtil.printLog(battle.map.getCurrentRoundNo(), "move", this.name, " move to " + targetY + "," + targetX,
-                " from coordinate: " + this.y + "," + this.x + " to " + targetY + "," + targetX + " moveAb: "
+                " from coordinate: [" + this.y + "," + this.x + "] to [" + targetY + "," + targetX + "] moveAbility: "
                         + this.moveAbility);
         // calculateMoveRange(battle, this.moveAbility, this.y, this.x);
         // System.out.println(canMoveToCoordinateRange);
@@ -773,7 +772,7 @@ public class BaseUnit {
         // step 1
         int dc = generateDefensiveCorrection(target);
         // step 2
-        int hpDamage = (caculateAP() - dc / 2) * (100 - queryMapItemCorrection(target.currentPositionMap)) / 100;
+        int hpDamage = (calculateAP() - dc / 2) * (100 - queryMapItemCorrection(target.currentPositionMap)) / 100;
         // step 3
         if (isCounterAttack) {
             hpDamage = hpDamage / 2;
@@ -866,24 +865,24 @@ public class BaseUnit {
     public int generateDefensiveCorrection(BaseUnit target) {
         if (this instanceof Footman) {
             if (target instanceof Bow) {
-                return target.caculateDP() - target.caculateDP() / 4;
+                return target.calculateDP() - target.calculateDP() / 4;
             } else if (target instanceof Rider) {
-                return target.caculateDP() + target.caculateDP() / 4;
+                return target.calculateDP() + target.calculateDP() / 4;
             }
         } else if (this instanceof Bow) {
             if (target instanceof Rider) {
-                return target.caculateDP() - target.caculateDP() / 4;
+                return target.calculateDP() - target.calculateDP() / 4;
             } else if (target instanceof Footman) {
-                return target.caculateDP() + target.caculateDP() / 4;
+                return target.calculateDP() + target.calculateDP() / 4;
             }
         } else if (this instanceof Rider) {
             if (target instanceof Footman) {
-                return target.caculateDP() - target.caculateDP() / 4;
+                return target.calculateDP() - target.calculateDP() / 4;
             } else if (target instanceof Rider) {
-                return target.caculateDP() + target.caculateDP() / 4;
+                return target.calculateDP() + target.calculateDP() / 4;
             }
         }
-        return target.caculateDP();
+        return target.calculateDP();
     }
 
     public int queryMapItemCorrection(MapItem map) {
@@ -943,7 +942,7 @@ public class BaseUnit {
             if (target.isEvacuated) {
                 continue;
             }
-            int attackBaseValue = (caculateAP() - generateDefensiveCorrection(target) / 2)
+            int attackBaseValue = (calculateAP() - generateDefensiveCorrection(target) / 2)
                     * (100 - queryMapItemCorrection(target.currentPositionMap)) / 100 + this.currentArmyHP / 6;
             if (null != this.specialEnemy) {
                 if (target.name.equals(this.specialEnemy.name)) {
@@ -1144,8 +1143,8 @@ public class BaseUnit {
 
     @Override
     public String toString() {
-        return name + "[" + y + "," + x + "][" + force + "," + intelligence + "," + defense + "] HP:" + currentArmyHP
-                + " Mo:" + currentMorale + " Exp: " + exp;
+        return name + ",Lv: " + this.level + ",[" + y + "," + x + "][" + force + "," + intelligence + "," + defense + "],HP:" + currentArmyHP
+                + ",Mo:" + currentMorale + ",Exp: " + exp;
     }
 
 }

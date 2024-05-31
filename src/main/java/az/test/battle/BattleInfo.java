@@ -12,7 +12,9 @@ import az.test.model.army.ride.Rider;
 import az.test.model.map.MapItem;
 import az.test.util.LogUtil;
 import az.test.util.RandomHelper;
+import lombok.Data;
 
+@Data
 public class BattleInfo {
     public Weather weather;
     public int lastRoundWeatherCode = 2;
@@ -25,6 +27,7 @@ public class BattleInfo {
     public List<BaseUnit> outOfBattleEnemyUnits = new ArrayList<BaseUnit>();
     public BattleMap map;
     private long timestamp = 0L;
+    public static final int WEATHER_RAND = (int) (Math.random() * 6.0);
 
     public BattleInfo() {
         super();
@@ -34,14 +37,6 @@ public class BattleInfo {
     @Override
     public int hashCode() {
         return weather.hashCode() >> 3 | map.hashCode();
-    }
-
-    public long getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(long timestamp) {
-        this.timestamp = timestamp;
     }
 
     public void addPlayerUnit(BaseUnit bu) throws MaxPlayerUnitsLimitedException {
@@ -88,16 +83,16 @@ public class BattleInfo {
     }
 
     public void initRound() {
-        System.out.println("[BattleInfo]initRound");
+        LogUtil.printInfo(map.getCurrentRoundNo(),"[BattleInfo]initRound");
         // round counting
         // map.setCurrentRoundNo(map.getCurrentRoundNo() + 1);
         // init weather
-        int currentWeatherCode = Weather.generateNextWeather(lastRoundWeatherCode);
+        int currentWeatherCode = Weather.generateNextWeather(lastRoundWeatherCode, WEATHER_RAND);
         weather = Weather.parseInt2Weather(currentWeatherCode);
         lastRoundWeatherCode = currentWeatherCode;
         LogUtil.printInfo(map.getCurrentRoundNo(), "Weather: " + weather + "(last:" + lastRoundWeatherCode + ")");
         //
-        // caculate restores & chaos restore
+        // calculate restores & chaos restore
         for (BaseUnit player : playerUnits) {
             int hpRestore = 0;
             int moraleRestore = 0;
@@ -236,8 +231,10 @@ public class BattleInfo {
 
     public void initRound(boolean isPlayer) {
     	if (isPlayer) {
-    		
+    		// TODO friendly army ...
+            LogUtil.printInfo(map.getCurrentRoundNo(), "Restore","[BattleInfo]initRound: friendly armies...");
     	} else {
+            LogUtil.printInfo(map.getCurrentRoundNo(), "Restore","[BattleInfo]initRound: enemy armies...");
     		for (BaseUnit enemy : enemyUnits) {
                 int hpRestore = 0;
                 int moraleRestore = 0;
@@ -442,7 +439,11 @@ public class BattleInfo {
     }
 
     public static void main(String[] args) {
-        // int last = (int) (Math.random() * 6.0);
+        // int last =
+        List<Integer> weatherRand50Rounds = new ArrayList<>(64);
+        for (int i=0;i<64;i++) {
+            weatherRand50Rounds.add((int) (Math.random() * 6.0));
+        }
         int last = 2;
         System.out.println("INIT LAST: " + last);
         int current = last;
@@ -457,7 +458,7 @@ public class BattleInfo {
         int c4 = 0;
         int c5 = 0;
         for (int i = 0; i < 2560; i++) {
-            current = Weather.generateNextWeather(last);
+            current = Weather.generateNextWeather(last, weatherRand50Rounds.get(current));
             switch (current) {
             case 0:
                 c0++;

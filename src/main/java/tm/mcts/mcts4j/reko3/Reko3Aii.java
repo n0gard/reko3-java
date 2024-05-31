@@ -3,6 +3,7 @@ package tm.mcts.mcts4j.reko3;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+import az.test.util.LogUtil;
 import net.sf.cglib.beans.BeanCopier;
 import tm.mcts.mcts4j.DefaultNode;
 import tm.mcts.mcts4j.Node;
@@ -63,7 +64,7 @@ public class Reko3Aii extends UCT<Reko3Transition, DefaultNode<Reko3Transition>>
             battle.addPlayerUnit(royalUncleLiu);
             battle.map.loadSomeone(royalUncleLiu);
         } catch (MaxPlayerUnitsLimitedException e) {
-            e.printStackTrace();
+            System.err.println("Max Players Limited.");
         }
         System.out.println("PLAYERS: -> " + battle.playerUnits);
         System.out.println("ENEMIES: -> " + battle.enemyUnits);
@@ -77,12 +78,12 @@ public class Reko3Aii extends UCT<Reko3Transition, DefaultNode<Reko3Transition>>
     @Override
     public boolean isOver() {
         if (IS_SIM) {
-            System.out.println("[Reko3A-Simulation]isOver    player win ? " + battle.map.isPlayerSuccess() + " | Rounds limited ? "
-                    + battle.map.isRunningOutOfRounds() + " | someone died ? "
+            System.out.println("[Reko3A-Simulation]isOver    player win ? " + battle.map.isPlayerSuccess() + " | Rounds exceed limited ? "
+                    + battle.map.isRunningOutOfRounds() + " limit-> " + battle.map.getRoundLimit() + ",currentRound:" + battle.map.getCurrentRoundNo() + "| someone died ? "
                     + battle.areAllPlayersEvacuatedOrSomeoneEvacuated());
         } else {
             System.out.println("[Reko3A]isOver    player win ? " + battle.map.isPlayerSuccess() + " | Rounds limited ? "
-                    + battle.map.isRunningOutOfRounds() + " | someone died ? "
+                    + battle.map.isRunningOutOfRounds() + " limit-> " + battle.map.getRoundLimit() + ",currentRound:" + battle.map.getCurrentRoundNo() + "| someone died ? "
                     + battle.areAllPlayersEvacuatedOrSomeoneEvacuated());
         }
 
@@ -111,6 +112,7 @@ public class Reko3Aii extends UCT<Reko3Transition, DefaultNode<Reko3Transition>>
         BattleInfo biSnapshot = new BattleInfo();
         copier.copy(battle, biSnapshot, null);
         battleRecordMap.put(transition.getTransitionId(), biSnapshot);
+        LogUtil.printInfo(battle.map.getCurrentRoundNo(), "[Reko3Aii][SNAPSHOT]" + biSnapshot);
 
         // try {
         player.moveTo(battle, transition.getY(), transition.getX(), IS_SIM);
@@ -142,7 +144,6 @@ public class Reko3Aii extends UCT<Reko3Transition, DefaultNode<Reko3Transition>>
 
         Exe.enemyArmyActions(battle, IS_SIM);
         battle.initRound();
-        battle.map.setCurrentRoundNo(battle.map.getCurrentRoundNo() + 1);
         next();
     }
 
@@ -150,6 +151,7 @@ public class Reko3Aii extends UCT<Reko3Transition, DefaultNode<Reko3Transition>>
     public void unmakeTransition(Reko3Transition transition) {
         if (!IS_SIM)
             System.out.println("[Reko3A]unmakeTransition " + transition);
+        else LogUtil.printInfo(transition.getRound(), "[Simulation][Reko3Aii]unmakeTransition");
         // System.out.println(transition.getBattle().enemyUnits.get(0).currentArmyHP
         // + " <<===");
         // System.out.println(transition.getBattle().map.map[0][0].army.currentArmyHP
@@ -163,7 +165,7 @@ public class Reko3Aii extends UCT<Reko3Transition, DefaultNode<Reko3Transition>>
         // System.out.println("[Reko3A]unmakeTransition after restore: " +
         // battle.playerUnits.get(0).name + " pos: "
         // + battle.playerUnits.get(0).y + "," + battle.playerUnits.get(0).x);
-        previous();
+
 //        transition.getPlayerUnit().restoreLastState(battle);
 //        if (null != transition.getTarget()) {
 //            transition.getTarget().restoreLastState(battle);
@@ -171,16 +173,22 @@ public class Reko3Aii extends UCT<Reko3Transition, DefaultNode<Reko3Transition>>
 
 //        if (battle.map.getCurrentRoundNo() > 1 && battle.map.getCurrentRoundNo() < transition.getRound()) {
 //            battle.map.setCurrentRoundNo(battle.map.getCurrentRoundNo() - 1);
-        System.out.print("[Reko3A]unmakeTransition restore round from " + battle.map.getCurrentRoundNo() + " to ");
+        System.out.print("[Reko3A]unmakeTransition previous round from " + battle.map.getCurrentRoundNo() + " to ");
         BattleInfo snapshot = battleRecordMap.get(transition.getTransitionId());
-
+        previous();
+        System.out.println(battle.map.getCurrentRoundNo());
         if (null != snapshot) {
-            System.out.print("[Reko3A]unmakeTransition snapshot round from " + snapshot.map.getCurrentRoundNo() + " to ");
+            System.out.println(snapshot);
+            System.out.print("[Reko3A]unmakeTransition snapshot round from " + battle.map.getCurrentRoundNo() + " to ");
             copier.copy(snapshot, battle, null);
         } else {
             System.out.print("[Reko3A]unmakeTransition snapshot is NULL ");
         }
-        System.out.println(battle.map.getCurrentRoundNo());
+        if (null != snapshot) {
+            System.out.println(snapshot.map.getCurrentRoundNo());
+        } else {
+            System.out.println();
+        }
 //        }
 
     }
@@ -242,9 +250,9 @@ public class Reko3Aii extends UCT<Reko3Transition, DefaultNode<Reko3Transition>>
     @Override
     public void previous() {
         if (IS_SIM) {
-            System.out.println("[Reko3A-Simulation]previous");
+            System.out.print("[Reko3A-Simulation]previous");
         } else {
-            System.out.println("[Reko3A]previous");
+            System.out.print("[Reko3A]previous");
         }
         battle.map.setCurrentRoundNo(battle.map.getCurrentRoundNo() - 1);
     }
@@ -272,7 +280,9 @@ public class Reko3Aii extends UCT<Reko3Transition, DefaultNode<Reko3Transition>>
         int choosePossibleTransitionIdx = (int) Math.floor(Math.random() * possibleTransitions.size());
         System.out.println("[Reko3A]expansionTransition possibleTransitions.size()->" + possibleTransitions.size());
         System.out.println("[Reko3A]expansionTransition choosePossibleTransitionIdx->" + choosePossibleTransitionIdx);
-        return transitions.get(choosePossibleTransitionIdx);
+        Reko3Transition transition = transitions.get(choosePossibleTransitionIdx);
+        System.out.println("[Reko3A]expansionTransition choosePossibleTransitionUUID->" + transition.getTransitionId());
+        return transition;
     }
 
     @Override

@@ -17,7 +17,7 @@ public class BattleMap000TEST001 extends BattleMap {
 		// fill map
 		fillingMap(mapIds);
 		// name
-		battleName = "Battle at TEST2x2";
+		battleName = "Battle at TEST_3x3";
 		// round
 		setRoundLimit(30);
 
@@ -27,7 +27,7 @@ public class BattleMap000TEST001 extends BattleMap {
 		// load enemies
 		// BaseUnit huaxiong = PlayerUnitGenerator.loadHuaxiong(9, 3, new
 		// AI02Standby(true));
-		BaseUnit bbd = PlayerUnitGenerator.loadFootmanArmy(0, 0, 5, new AI02Standby(true));
+		BaseUnit bbd = PlayerUnitGenerator.loadFootmanArmy(0, 0, 3, new AI02Standby(true));
 		bbd.isLord = true;
 		bi.map.lord = bbd;
 		bi.loadEnemyUnit(bi.map.lord);
@@ -46,10 +46,10 @@ public class BattleMap000TEST001 extends BattleMap {
 	}
 
 	public static int[][] mapIds = {
-			// 0, 1, 2
-			{ 0, 0 }, // 0
-			{ 0, 7 }, // 1
-//			{ 0, 0, 0 }, // 2
+			//0, 1, 2
+			{ 0, 0, 0 }, // 0
+			{ 0, 0, 0 }, // 1
+			{ 0, 0, 7 }, // 2
 	};// end
 
 	public static void main(String[] args) {
@@ -62,6 +62,6 @@ public class BattleMap000TEST001 extends BattleMap {
 
 		System.out.println(JSON.toJSONString(mapItemsTable, true));
 
-		System.out.println(String.format("%02d", 1));
+		System.out.printf("%02d%n", 1);
 	}
 }
