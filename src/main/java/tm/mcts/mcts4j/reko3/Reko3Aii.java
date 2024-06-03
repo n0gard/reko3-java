@@ -3,6 +3,7 @@ package tm.mcts.mcts4j.reko3;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+import az.test.battle.BattleInfoSnapshot;
 import az.test.util.LogUtil;
 import net.sf.cglib.beans.BeanCopier;
 import tm.mcts.mcts4j.DefaultNode;
@@ -51,7 +52,7 @@ import com.alibaba.fastjson.JSON;
 public class Reko3Aii extends UCT<Reko3Transition, DefaultNode<Reko3Transition>> {
     static BeanCopier copier = BeanCopier.create(BattleInfo.class, BattleInfo.class, false);
     private BattleInfo battle;
-    private static Map<String, BattleInfo> battleRecordMap = new ConcurrentHashMap<>();
+    private static Map<String, BattleInfoSnapshot> battleRecordMap = new ConcurrentHashMap<>();
 
     public Reko3Aii() {
         super();
@@ -109,10 +110,11 @@ public class Reko3Aii extends UCT<Reko3Transition, DefaultNode<Reko3Transition>>
         }
 
         // snapshot
-        BattleInfo biSnapshot = new BattleInfo();
-        copier.copy(battle, biSnapshot, null);
-        battleRecordMap.put(transition.getTransitionId(), biSnapshot);
-        LogUtil.printInfo(battle.map.getCurrentRoundNo(), "[Reko3Aii][SNAPSHOT]" + biSnapshot);
+//        BattleInfo biSnapshot = new BattleInfo();
+//        copier.copy(battle, biSnapshot, null);
+//        battleRecordMap.put(transition.getTransitionId(), biSnapshot);
+//        LogUtil.printInfo(battle.map.getCurrentRoundNo(), "[Reko3Aii][SNAPSHOT]" + biSnapshot);
+        // record last state
 
         // try {
         player.moveTo(battle, transition.getY(), transition.getX(), IS_SIM);
@@ -174,7 +176,7 @@ public class Reko3Aii extends UCT<Reko3Transition, DefaultNode<Reko3Transition>>
 //        if (battle.map.getCurrentRoundNo() > 1 && battle.map.getCurrentRoundNo() < transition.getRound()) {
 //            battle.map.setCurrentRoundNo(battle.map.getCurrentRoundNo() - 1);
         System.out.print("[Reko3A]unmakeTransition previous round from " + battle.map.getCurrentRoundNo() + " to ");
-        BattleInfo snapshot = battleRecordMap.get(transition.getTransitionId());
+        BattleInfoSnapshot snapshot = battleRecordMap.get(transition.getTransitionId());
         previous();
         System.out.println(battle.map.getCurrentRoundNo());
         if (null != snapshot) {

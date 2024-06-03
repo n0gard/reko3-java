@@ -1,5 +1,8 @@
 package az.test.battle.enums;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public enum Weather {
 
 	SUN, CLOUD, RAIN, IMPOSSIBLE;
@@ -52,5 +55,16 @@ public enum Weather {
 		default:
 			return IMPOSSIBLE;
 		}
+	}
+
+	public static List<Weather> generateWeatherList(int rand, int maxRound) {
+		List<Weather> weatherList = new ArrayList<>();
+		int last = 2;
+		for(int i = 0; i < maxRound; i++) {
+			int weather = generateNextWeather(last, rand);
+			weatherList.add(parseInt2Weather(weather));
+			last = weather;
+		}
+		return weatherList;
 	}
 }

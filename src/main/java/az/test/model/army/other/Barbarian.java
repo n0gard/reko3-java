@@ -1,7 +1,7 @@
 package az.test.model.army.other;
 
 import az.test.model.army.BaseUnit;
-
+// 异民族
 public class Barbarian extends BaseUnit {
 
 	public Barbarian() {
