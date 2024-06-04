@@ -6,6 +6,7 @@ public class Gate extends MapItem {
 		super();
 		id = 15;
 		canStay = false;
+		name = "城门";
 	}
 
 }

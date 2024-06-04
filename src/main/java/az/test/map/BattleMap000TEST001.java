@@ -4,11 +4,11 @@ import az.test.battle.BattleInfo;
 import az.test.model.PlayerUnitGenerator;
 import az.test.model.army.BaseUnit;
 import az.test.model.map.MapItem;
-import az.test.reko3ibm.AI01Active;
 import az.test.reko3ibm.AI02Standby;
-import az.test.reko3ibm.AI03Passive;
 
 import com.alibaba.fastjson.JSON;
+
+import java.util.List;
 
 public class BattleMap000TEST001 extends BattleMap {
 
@@ -25,24 +25,11 @@ public class BattleMap000TEST001 extends BattleMap {
 
 	public void loadEnemies(BattleInfo bi) {
 		// load enemies
-		// BaseUnit huaxiong = PlayerUnitGenerator.loadHuaxiong(9, 3, new
-		// AI02Standby(true));
 		BaseUnit bbd = PlayerUnitGenerator.loadFootmanArmy(0, 0, 3, new AI02Standby(true));
 		bbd.isLord = true;
 		bi.map.lord = bbd;
-		bi.loadEnemyUnit(bi.map.lord);
-		// bi.loadEnemyUnit(PlayerUnitGenerator.loadLisu(10, 5, new
-		// AI03Passive(true)));
-		// bi.loadEnemyUnit(PlayerUnitGenerator.loadHuzhen(9, 4, new
-		// AI03Passive(true)));
-		// bi.loadEnemyUnit(PlayerUnitGenerator.loadZhaocen(9, 6, new
-		// AI03Passive(true)));
-		// bi.loadEnemyUnit(PlayerUnitGenerator.loadFootmanArmy(8, 11, new
-		// AI03Passive(true)));
-		// bi.loadEnemyUnit(PlayerUnitGenerator.loadFootmanArmy(10, 11, new
-		// AI03Passive(true)));
-		// bi.loadEnemyUnit(PlayerUnitGenerator.loadFootmanArmy(12, 11, new
-		// AI03Passive(true)));
+		List<BaseUnit> loaded = bi.loadEnemyUnit(bi.map.lord);
+		System.out.println("loaded enemy " + loaded);
 	}
 
 	public static int[][] mapIds = {

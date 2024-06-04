@@ -16,7 +16,7 @@ public class BattleMap01 extends BattleMap {
 		// fill map
 		fillingMap(mapIds);
 		// name
-		battleName = "Battle at SiShuiGuan";
+		battleName = "汜水关";
 		// round
 		setRoundLimit(30);
 
@@ -67,6 +67,6 @@ public class BattleMap01 extends BattleMap {
 
 		System.out.println(JSON.toJSONString(mapItemsTable, true));
 
-		System.out.println(String.format("%02d", 1));
+		System.out.printf("%02d%n", 1);
 	}
 }

@@ -1,5 +1,5 @@
 package az.test.model.item;
 
-public class Item {
+public abstract class Item {
 	public String name;
 }

@@ -11,14 +11,14 @@ import az.test.model.army.theif.Theif;
 
 public class MapItem {
 	public int id;
-	public int cost = 1;
 	public boolean canStay = true;
 	public BaseUnit army = null;
 	public int y;
 	public int x;
+	public String name;
 
 	public static MapItem generateById(int id, int y, int x) {
-		MapItem mi = null;
+		MapItem mi;
 		switch (id) {
 		case 0:
 			mi = new Plain();// all
@@ -33,13 +33,13 @@ public class MapItem {
 			mi = new Bridge();// all
 			break;
 		case 4:
-			mi = new Forest();// non-ride
+			mi = new Forest();// all but Ride
 			break;
 		case 5:
 			mi = new Wasteland();// all
 			break;
 		case 6:
-			mi = new Mountain();// MA,Theif only
+			mi = new Mountain();// MA(武术家),Thief only
 			break;
 		case 7:
 			mi = new Village();// all
@@ -84,18 +84,12 @@ public class MapItem {
 	}
 
 	public boolean isRestoreHPPlace() {
-		if (this instanceof Village || this instanceof Abatis || this instanceof Barrack) {
-			return true;
-		}
-		return false;
-	}
+        return this instanceof Village || this instanceof Abatis || this instanceof Barrack;
+    }
 
 	public boolean isRestoreMoralePlace() {
-		if (this instanceof Village || this instanceof Abatis) {
-			return true;
-		}
-		return false;
-	}
+        return this instanceof Village || this instanceof Abatis;
+    }
 
 	public int queryCost(BaseUnit army) {
 		if (id < 4) {

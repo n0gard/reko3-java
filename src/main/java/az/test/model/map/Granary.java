@@ -5,6 +5,7 @@ public class Granary extends MapItem {
 	public Granary() {
 		super();
 		id = 11;
+		name = "粮仓";
 	}
 
 }

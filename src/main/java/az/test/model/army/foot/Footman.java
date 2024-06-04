@@ -2,7 +2,7 @@ package az.test.model.army.foot;
 
 import az.test.model.army.BaseUnit;
 
-public class Footman extends BaseUnit {
+public abstract class Footman extends BaseUnit {
 
 	public Footman() {
 		super();

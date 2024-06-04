@@ -1,6 +1,6 @@
 package az.test.exception;
 
-public class BaseException extends Exception {
+public abstract class BaseException extends Exception {
 
 	/**
 	 * 

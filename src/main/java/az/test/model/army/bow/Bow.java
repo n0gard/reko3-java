@@ -2,7 +2,7 @@ package az.test.model.army.bow;
 
 import az.test.model.army.BaseUnit;
 
-public class Bow extends BaseUnit {
+public abstract class Bow extends BaseUnit {
 
 	public Bow() {
 		super();

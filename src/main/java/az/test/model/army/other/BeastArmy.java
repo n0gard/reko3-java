@@ -1,7 +1,7 @@
 package az.test.model.army.other;
 
 import az.test.model.army.BaseUnit;
-
+// 猛兽兵团
 public class BeastArmy extends BaseUnit {
 
 	public BeastArmy() {

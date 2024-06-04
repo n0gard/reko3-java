@@ -6,6 +6,7 @@ public class House extends MapItem {
 		super();
 		id = 17;
 		canStay = false;
+		name = "房舍";
 	}
 
 }

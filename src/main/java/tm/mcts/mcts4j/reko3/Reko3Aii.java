@@ -110,10 +110,9 @@ public class Reko3Aii extends UCT<Reko3Transition, DefaultNode<Reko3Transition>>
         }
 
         // snapshot
-//        BattleInfo biSnapshot = new BattleInfo();
-//        copier.copy(battle, biSnapshot, null);
-//        battleRecordMap.put(transition.getTransitionId(), biSnapshot);
-//        LogUtil.printInfo(battle.map.getCurrentRoundNo(), "[Reko3Aii][SNAPSHOT]" + biSnapshot);
+        BattleInfoSnapshot biSnapshot = new BattleInfoSnapshot(battle);
+        battleRecordMap.put(transition.getTransitionId(), biSnapshot);
+        LogUtil.printInfo(battle.map.getCurrentRoundNo(), "[Reko3Aii][SNAPSHOT]" + biSnapshot);
         // record last state
 
         // try {
@@ -187,7 +186,7 @@ public class Reko3Aii extends UCT<Reko3Transition, DefaultNode<Reko3Transition>>
             System.out.print("[Reko3A]unmakeTransition snapshot is NULL ");
         }
         if (null != snapshot) {
-            System.out.println(snapshot.map.getCurrentRoundNo());
+            System.out.println(snapshot.getMap().getCurrentRoundNo());
         } else {
             System.out.println();
         }

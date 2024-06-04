@@ -5,6 +5,7 @@ public class Village extends MapItem {
 	public Village() {
 		super();
 		id = 7;
+		name = "村庄";
 	}
 
 }

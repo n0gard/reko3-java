@@ -5,6 +5,7 @@ public class City extends MapItem {
 	public City() {
 		super();
 		id = 1;
+		name = "城内";
 	}
 
 }

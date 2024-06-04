@@ -35,7 +35,7 @@ public enum Weather {
 			current = c;
 			break;
 		case 5:
-			current = 0;
+//			current = 0;
 			break;
 		}
 		return current;
@@ -57,11 +57,11 @@ public enum Weather {
 		}
 	}
 
-	public static List<Weather> generateWeatherList(int rand, int maxRound) {
+	public static List<Weather> generateWeatherList(List<Integer> rands, int maxRound) {
 		List<Weather> weatherList = new ArrayList<>();
 		int last = 2;
 		for(int i = 0; i < maxRound; i++) {
-			int weather = generateNextWeather(last, rand);
+			int weather = generateNextWeather(last, rands.get(i));
 			weatherList.add(parseInt2Weather(weather));
 			last = weather;
 		}

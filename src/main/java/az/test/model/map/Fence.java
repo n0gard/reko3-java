@@ -6,6 +6,7 @@ public class Fence extends MapItem {
 		super();
 		id = 16;
 		canStay = false;
+		name = "栅栏";
 	}
 
 }

@@ -1,5 +1,5 @@
 package az.test.model.item;
 
-public class Horse extends Item {
-
+public abstract class Horse extends Item {
+    public int extraMoveAbility;
 }

@@ -4,6 +4,8 @@ import az.test.exception.MaxItemsLimitedException;
 import az.test.model.army.bow.BowSoilder;
 import az.test.model.army.foot.ShortArmed;
 import az.test.model.army.ride.LightRide;
+import az.test.model.item.GreenDragonCrescentBlade;
+import az.test.model.item.SnakeSpear;
 import az.test.model.item.Weapon;
 import az.test.model.item.consumption.FireSpells;
 import az.test.reko3ibm.ActionAIType;
@@ -20,7 +22,7 @@ public class PlayerUnitGenerator {
 		lb.defense = 91;
 
 		try {
-			lb.addItem(new Weapon(12));
+			lb.addItem(new GreenDragonCrescentBlade(12));
 			lb.addItem(new FireSpells("Coke", 200));
 			lb.addItem(new FireSpells("Coke", 200));
 			lb.addItem(new FireSpells("Coke", 200));
@@ -77,7 +79,7 @@ public class PlayerUnitGenerator {
 		zf.defense = 83;
 
 		try {
-			zf.addItem(new Weapon(10));
+			zf.addItem(new SnakeSpear(10));
 		} catch (MaxItemsLimitedException e) {
 			e.printStackTrace();
 		}

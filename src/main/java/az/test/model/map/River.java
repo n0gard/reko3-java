@@ -6,6 +6,7 @@ public class River extends MapItem {
 		super();
 		id = 12;
 		canStay = false;
+		name = "河流";
 	}
 
 }

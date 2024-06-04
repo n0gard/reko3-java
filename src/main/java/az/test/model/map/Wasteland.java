@@ -5,6 +5,7 @@ public class Wasteland extends MapItem {
 	public Wasteland() {
 		super();
 		id = 5;
+		name = "荒地";
 	}
 
 }

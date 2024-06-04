@@ -16,32 +16,27 @@ import lombok.Data;
 
 @Data
 public class BattleInfo {
-    public Weather weather;
+    public List<Weather> weatherList;
     public int lastRoundWeatherCode = 2;
-    public List<BaseUnit> playerUnits = new ArrayList<BaseUnit>();
-    public List<BaseUnit> outOfBattlePlayerUnits = new ArrayList<BaseUnit>();
+    public List<Integer> weatherRands = new ArrayList<>();
+    public List<BaseUnit> playerUnits = new ArrayList<>();
+    public List<BaseUnit> outOfBattlePlayerUnits = new ArrayList<>();
     public static final int MAX_PLAYER_UNITS = 20;
-    public List<BaseUnit> friendUnits = new ArrayList<BaseUnit>();
-    public List<BaseUnit> outOfBattleFriendUnits = new ArrayList<BaseUnit>();
-    public List<BaseUnit> enemyUnits = new ArrayList<BaseUnit>();
-    public List<BaseUnit> outOfBattleEnemyUnits = new ArrayList<BaseUnit>();
+    public List<BaseUnit> friendUnits = new ArrayList<>();
+    public List<BaseUnit> outOfBattleFriendUnits = new ArrayList<>();
+    public List<BaseUnit> enemyUnits = new ArrayList<>();
+    public List<BaseUnit> outOfBattleEnemyUnits = new ArrayList<>();
     public BattleMap map;
-    private long timestamp = 0L;
-    public static final int WEATHER_RAND = (int) (Math.random() * 6.0);
+    public long timestamp = 0L;
 
     public BattleInfo() {
         super();
-        setTimestamp(System.currentTimeMillis());
-    }
-
-    @Override
-    public int hashCode() {
-        return weather.hashCode() >> 3 | map.hashCode();
+        setTimestamp(System.nanoTime());
     }
 
     public void addPlayerUnit(BaseUnit bu) throws MaxPlayerUnitsLimitedException {
         if (null == playerUnits) {
-            playerUnits = new ArrayList<BaseUnit>();
+            playerUnits = new ArrayList<>();
         }
         if (playerUnits.size() >= MAX_PLAYER_UNITS) {
             throw new MaxPlayerUnitsLimitedException();
@@ -56,7 +51,7 @@ public class BattleInfo {
 
     public List<BaseUnit> loadEnemyUnit(BaseUnit bu) {
         if (null == enemyUnits) {
-            enemyUnits = new ArrayList<BaseUnit>();
+            enemyUnits = new ArrayList<>();
         }
         if (enemyUnits.contains(bu)) {
             return enemyUnits;
@@ -69,7 +64,7 @@ public class BattleInfo {
 
     public List<BaseUnit> loadFriendUnit(BaseUnit bu) {
         if (null == friendUnits) {
-            friendUnits = new ArrayList<BaseUnit>();
+            friendUnits = new ArrayList<>();
         }
         friendUnits.add(bu);
         map.map[bu.y][bu.x].army = bu;
@@ -80,17 +75,19 @@ public class BattleInfo {
     public void loadMap(BattleMap map) {
         this.map = map;
         this.map.loadEnemies(this);
+        weatherRands = new ArrayList<>();
+        for (int i = 0; i < map.getRoundLimit(); i++) {
+            weatherRands.add((int) (Math.random() * 6.0));
+        }
+        weatherList = Weather.generateWeatherList(weatherRands, this.map.getRoundLimit());
     }
 
     public void initRound() {
-        LogUtil.printInfo(map.getCurrentRoundNo(),"[BattleInfo]initRound");
-        // round counting
-        // map.setCurrentRoundNo(map.getCurrentRoundNo() + 1);
+        LogUtil.printInfo(map.getCurrentRoundNo(), "[BattleInfo]initRound");
         // init weather
-        int currentWeatherCode = Weather.generateNextWeather(lastRoundWeatherCode, WEATHER_RAND);
-        weather = Weather.parseInt2Weather(currentWeatherCode);
+        int currentWeatherCode = Weather.generateNextWeather(lastRoundWeatherCode, weatherRands.get(map.getCurrentRoundNo()));
+        LogUtil.printInfo(map.getCurrentRoundNo(), "Weather: " + weatherList.get(map.getCurrentRoundNo()) + "(" + currentWeatherCode + ") last:" + lastRoundWeatherCode);
         lastRoundWeatherCode = currentWeatherCode;
-        LogUtil.printInfo(map.getCurrentRoundNo(), "Weather: " + weather + "(last:" + lastRoundWeatherCode + ")");
         //
         // calculate restores & chaos restore
         for (BaseUnit player : playerUnits) {
@@ -230,12 +227,12 @@ public class BattleInfo {
     }
 
     public void initRound(boolean isPlayer) {
-    	if (isPlayer) {
-    		// TODO friendly army ...
-            LogUtil.printInfo(map.getCurrentRoundNo(), "Restore","[BattleInfo]initRound: friendly armies...");
-    	} else {
-            LogUtil.printInfo(map.getCurrentRoundNo(), "Restore","[BattleInfo]initRound: enemy armies...");
-    		for (BaseUnit enemy : enemyUnits) {
+        if (isPlayer) {
+            // TODO friendly army ...
+            LogUtil.printInfo(map.getCurrentRoundNo(), "Restore", "[BattleInfo]initRound: friendly armies...");
+        } else {
+            LogUtil.printInfo(map.getCurrentRoundNo(), "Restore", "[BattleInfo]initRound: enemy armies...");
+            for (BaseUnit enemy : enemyUnits) {
                 int hpRestore = 0;
                 int moraleRestore = 0;
                 if (enemy.isEvacuated) {
@@ -280,7 +277,7 @@ public class BattleInfo {
             for (BaseUnit enemyUnit : enemyUnits) {
                 enemyUnit.roundFinished = false;
             }
-    	}
+        }
     }
 
     public int triggerHPRestore(BaseUnit army) {
@@ -363,35 +360,35 @@ public class BattleInfo {
             return false;
         }
         MapItem mapItem = map.map[y][x];
-        if (army.moveAbility - mapItem.cost < 0) {
+        if (army.moveAbility - mapItem.queryCost(army) < 0) {
             return false;
         }
         switch (mapItem.id) {
-        case 0:
-        case 1:
-        case 2:
-        case 3:
-        case 5:
-        case 7:
-        case 8:
-        case 9:
-        case 10:
-        case 11:
-            return true;
-        case 4:
-            if (army instanceof Rider) {
+            case 0:
+            case 1:
+            case 2:
+            case 3:
+            case 5:
+            case 7:
+            case 8:
+            case 9:
+            case 10:
+            case 11:
+                return true;
+            case 4:
+                if (army instanceof Rider) {
+                    return false;
+                }
+                return true;
+            case 12:
+            case 13:
+            case 14:
+            case 15:
+            case 16:
+            case 17:
                 return false;
-            }
-            return true;
-        case 12:
-        case 13:
-        case 14:
-        case 15:
-        case 16:
-        case 17:
-            return false;
-        default:
-            return false;
+            default:
+                return false;
         }
     }
 
@@ -441,7 +438,7 @@ public class BattleInfo {
     public static void main(String[] args) {
         // int last =
         List<Integer> weatherRand50Rounds = new ArrayList<>(64);
-        for (int i=0;i<64;i++) {
+        for (int i = 0; i < 64; i++) {
             weatherRand50Rounds.add((int) (Math.random() * 6.0));
         }
         int last = 2;
@@ -460,40 +457,40 @@ public class BattleInfo {
         for (int i = 0; i < 2560; i++) {
             current = Weather.generateNextWeather(last, weatherRand50Rounds.get(current));
             switch (current) {
-            case 0:
-                c0++;
-                break;
-            case 1:
-                c1++;
-                break;
-            case 2:
-                c2++;
-                break;
-            case 3:
-                c3++;
-                break;
-            case 4:
-                c4++;
-                break;
-            case 5:
-                c5++;
-                break;
+                case 0:
+                    c0++;
+                    break;
+                case 1:
+                    c1++;
+                    break;
+                case 2:
+                    c2++;
+                    break;
+                case 3:
+                    c3++;
+                    break;
+                case 4:
+                    c4++;
+                    break;
+                case 5:
+                    c5++;
+                    break;
             }
             Weather w = Weather.parseInt2Weather(current);
             switch (w) {
-            case SUN:
-                sun++;
-                break;
-            case CLOUD:
-                cloud++;
-                break;
-            case RAIN:
-                rain++;
-                break;
-            default:
-                System.out.println("IMPOSSIBLE");
-                imp++;
-                break;
+                case SUN:
+                    sun++;
+                    break;
+                case CLOUD:
+                    cloud++;
+                    break;
+                case RAIN:
+                    rain++;
+                    break;
+                default:
+                    System.out.println("IMPOSSIBLE");
+                    imp++;
+                    break;
             }
             last = current;
         }

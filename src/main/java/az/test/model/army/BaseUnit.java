@@ -44,8 +44,11 @@ public class BaseUnit {
     public String name;
     public int level;
     public int exp;
+    /** 智力 */
     public int intelligence;
+    /** 武力 */
     public int force;
+    /** 统御 */
     public int defense;
     // bag
     public List<Item> items = new ArrayList<Item>();
@@ -53,8 +56,11 @@ public class BaseUnit {
     // army attributes
     public int armyHPBase;
     public int armyHPInc;
+    /** 兵力 */
     public int currentArmyHP;
+    /** 士气 */
     public int currentMorale;
+    /** 策略值 */
     public int currentMana;
     public int apBase;
     public int dpBase;

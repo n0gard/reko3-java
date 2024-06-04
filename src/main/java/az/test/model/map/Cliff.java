@@ -6,6 +6,7 @@ public class Cliff extends MapItem {
 		super();
 		id = 13;
 		canStay = false;
+		name = "悬崖";
 	}
 
 }

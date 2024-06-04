@@ -20,10 +20,10 @@ public class FireSpells extends Spells implements Consume {
 	public void consume(BaseUnit player, BaseUnit... target) {
 		if (target.length <= 1) {
 			BaseUnit enemy = target[0];
-			caculateDamage(enemy);
+			calculateDamage(enemy);
 		} else {
 			for (BaseUnit enemy : target) {
-				caculateDamage(enemy);
+				calculateDamage(enemy);
 			}
 		}
 		if (costMana > 0) {
@@ -33,7 +33,7 @@ public class FireSpells extends Spells implements Consume {
 		}
 	}
 
-	private void caculateDamage(BaseUnit enemy) {
+	private void calculateDamage(BaseUnit enemy) {
 		double enemyStrategyAbility = enemy.intelligence * enemy.level / 50.0 + enemy.intelligence;
 		double itemFinalDamage = super.baseDamage - enemyStrategyAbility;
 		itemFinalDamage = reduceDamage(enemy, itemFinalDamage);
@@ -41,7 +41,7 @@ public class FireSpells extends Spells implements Consume {
 		itemFinalDamage = itemFinalDamage + RandomHelper.generateInt(0, (int) (itemFinalDamage / 50.0));
 		// TODO judge hit rate
 		// TODO judge dodge rate
-		enemy.currentArmyHP -= itemFinalDamage;
+		enemy.currentArmyHP -= (int) itemFinalDamage;
 		enemy.currentMorale -= caculateMoralDamage(itemFinalDamage);
 	}
 
@@ -54,7 +54,7 @@ public class FireSpells extends Spells implements Consume {
 
 	@Override
 	public boolean consumptionCouldBeHappened(BattleInfo info) {
-		return info.weather != Weather.RAIN;
+		return info.weatherList.get(info.map.getCurrentRoundNo() - 1) != Weather.RAIN;
 	}
 
 	@Override
