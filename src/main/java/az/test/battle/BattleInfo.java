@@ -34,6 +34,18 @@ public class BattleInfo {
         setTimestamp(System.nanoTime());
     }
 
+    public BattleInfo(BattleInfoSnapshot snapshot) {
+        setTimestamp(snapshot.getTimestamp());
+        setLastRoundWeatherCode(snapshot.getLastRoundWeatherCode());
+        setWeatherRands(new ArrayList<>(snapshot.getWeatherRands()));
+        setPlayerUnits(new ArrayList<>(snapshot.getPlayerUnits()));
+        setOutOfBattlePlayerUnits(new ArrayList<>(snapshot.getOutOfBattlePlayerUnits()));
+        setFriendUnits(new ArrayList<>(snapshot.getFriendUnits()));
+        setOutOfBattleFriendUnits(new ArrayList<>(snapshot.getOutOfBattleFriendUnits()));
+        setEnemyUnits(new ArrayList<>(snapshot.getEnemyUnits()));
+        setOutOfBattleEnemyUnits(new ArrayList<>(snapshot.getOutOfBattleEnemyUnits()));
+    }
+
     public void addPlayerUnit(BaseUnit bu) throws MaxPlayerUnitsLimitedException {
         if (null == playerUnits) {
             playerUnits = new ArrayList<>();

@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import az.test.battle.BattleInfoSnapshot;
 import az.test.util.LogUtil;
 import net.sf.cglib.beans.BeanCopier;
+import org.lwjgl.system.CallbackI;
 import tm.mcts.mcts4j.DefaultNode;
 import tm.mcts.mcts4j.Node;
 import tm.mcts.mcts4j.Transition;
@@ -174,6 +175,11 @@ public class Reko3Aii extends UCT<Reko3Transition, DefaultNode<Reko3Transition>>
 
 //        if (battle.map.getCurrentRoundNo() > 1 && battle.map.getCurrentRoundNo() < transition.getRound()) {
 //            battle.map.setCurrentRoundNo(battle.map.getCurrentRoundNo() - 1);
+        if (IS_SIM) {
+            System.out.print("[Reko3A-Simulation]previous");
+        } else {
+            System.out.print("[Reko3A]previous");
+        }
         System.out.print("[Reko3A]unmakeTransition previous round from " + battle.map.getCurrentRoundNo() + " to ");
         BattleInfoSnapshot snapshot = battleRecordMap.get(transition.getTransitionId());
         previous();
@@ -181,7 +187,7 @@ public class Reko3Aii extends UCT<Reko3Transition, DefaultNode<Reko3Transition>>
         if (null != snapshot) {
             System.out.println(snapshot);
             System.out.print("[Reko3A]unmakeTransition snapshot round from " + battle.map.getCurrentRoundNo() + " to ");
-            copier.copy(snapshot, battle, null);
+            battle = new BattleInfo(snapshot);
         } else {
             System.out.print("[Reko3A]unmakeTransition snapshot is NULL ");
         }
@@ -191,7 +197,7 @@ public class Reko3Aii extends UCT<Reko3Transition, DefaultNode<Reko3Transition>>
             System.out.println();
         }
 //        }
-
+        battleRecordMap.remove(transition.getTransitionId());
     }
 
     private BaseUnit pickPlayerUnit() {
@@ -250,11 +256,6 @@ public class Reko3Aii extends UCT<Reko3Transition, DefaultNode<Reko3Transition>>
 
     @Override
     public void previous() {
-        if (IS_SIM) {
-            System.out.print("[Reko3A-Simulation]previous");
-        } else {
-            System.out.print("[Reko3A]previous");
-        }
         battle.map.setCurrentRoundNo(battle.map.getCurrentRoundNo() - 1);
     }
 

@@ -27,6 +27,7 @@ public class BattleInfoSnapshot {
     public BattleInfoSnapshot(BattleInfo battleInfo) {
         super();
         setTimestamp(battleInfo.getTimestamp());
+        setMap(battleInfo.getMap());
         setWeatherList(new ArrayList<>(battleInfo.weatherList));
         setLastRoundWeatherCode(battleInfo.getLastRoundWeatherCode());
         setWeatherRands(new ArrayList<>(battleInfo.getWeatherRands()));
