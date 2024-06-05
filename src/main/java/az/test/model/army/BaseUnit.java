@@ -1,5 +1,6 @@
 package az.test.model.army;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +40,7 @@ import az.test.reko3ibm.ActionAIType;
 import az.test.util.LogUtil;
 import az.test.util.RandomHelper;
 
-public class BaseUnit {
+public class BaseUnit implements Serializable {
     // personal attributes
     public String name;
     public int level;

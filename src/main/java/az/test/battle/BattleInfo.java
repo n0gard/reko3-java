@@ -11,6 +11,7 @@ import az.test.model.army.other.MilitaryBand;
 import az.test.model.army.ride.Rider;
 import az.test.model.map.MapItem;
 import az.test.util.LogUtil;
+import az.test.util.ObjectCopyUtil;
 import az.test.util.RandomHelper;
 import lombok.Data;
 
@@ -36,14 +37,16 @@ public class BattleInfo {
 
     public BattleInfo(BattleInfoSnapshot snapshot) {
         setTimestamp(snapshot.getTimestamp());
+        setMap(snapshot.getMap());
+        setWeatherList(ObjectCopyUtil.deepCopy(snapshot.getWeatherList()));
         setLastRoundWeatherCode(snapshot.getLastRoundWeatherCode());
-        setWeatherRands(new ArrayList<>(snapshot.getWeatherRands()));
-        setPlayerUnits(new ArrayList<>(snapshot.getPlayerUnits()));
-        setOutOfBattlePlayerUnits(new ArrayList<>(snapshot.getOutOfBattlePlayerUnits()));
-        setFriendUnits(new ArrayList<>(snapshot.getFriendUnits()));
-        setOutOfBattleFriendUnits(new ArrayList<>(snapshot.getOutOfBattleFriendUnits()));
-        setEnemyUnits(new ArrayList<>(snapshot.getEnemyUnits()));
-        setOutOfBattleEnemyUnits(new ArrayList<>(snapshot.getOutOfBattleEnemyUnits()));
+        setWeatherRands(ObjectCopyUtil.deepCopy(snapshot.getWeatherRands()));
+        setPlayerUnits(ObjectCopyUtil.deepCopy(snapshot.getPlayerUnits()));
+        setOutOfBattlePlayerUnits(ObjectCopyUtil.deepCopy(snapshot.getOutOfBattlePlayerUnits()));
+        setFriendUnits(ObjectCopyUtil.deepCopy(snapshot.getFriendUnits()));
+        setOutOfBattleFriendUnits(ObjectCopyUtil.deepCopy(snapshot.getOutOfBattleFriendUnits()));
+        setEnemyUnits(ObjectCopyUtil.deepCopy(snapshot.getEnemyUnits()));
+        setOutOfBattleEnemyUnits(ObjectCopyUtil.deepCopy(snapshot.getOutOfBattleEnemyUnits()));
     }
 
     public void addPlayerUnit(BaseUnit bu) throws MaxPlayerUnitsLimitedException {

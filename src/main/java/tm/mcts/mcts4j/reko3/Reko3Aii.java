@@ -113,7 +113,7 @@ public class Reko3Aii extends UCT<Reko3Transition, DefaultNode<Reko3Transition>>
         // snapshot
         BattleInfoSnapshot biSnapshot = new BattleInfoSnapshot(battle);
         battleRecordMap.put(transition.getTransitionId(), biSnapshot);
-        LogUtil.printInfo(battle.map.getCurrentRoundNo(), "[Reko3Aii][SNAPSHOT]" + biSnapshot);
+        System.out.println("[Reko3Aii]makeTransition[SNAPSHOT]" + biSnapshot);
         // record last state
 
         // try {

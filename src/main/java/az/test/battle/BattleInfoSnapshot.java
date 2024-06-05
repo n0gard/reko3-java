@@ -3,6 +3,7 @@ package az.test.battle;
 import az.test.battle.enums.Weather;
 import az.test.map.BattleMap;
 import az.test.model.army.BaseUnit;
+import az.test.util.ObjectCopyUtil;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -28,15 +29,16 @@ public class BattleInfoSnapshot {
         super();
         setTimestamp(battleInfo.getTimestamp());
         setMap(battleInfo.getMap());
-        setWeatherList(new ArrayList<>(battleInfo.weatherList));
+        setWeatherList(ObjectCopyUtil.deepCopy(battleInfo.weatherList));
         setLastRoundWeatherCode(battleInfo.getLastRoundWeatherCode());
-        setWeatherRands(new ArrayList<>(battleInfo.getWeatherRands()));
-        setPlayerUnits(new ArrayList<>(battleInfo.getPlayerUnits()));
-        setOutOfBattlePlayerUnits(new ArrayList<>(battleInfo.getOutOfBattlePlayerUnits()));
-        setFriendUnits(new ArrayList<>(battleInfo.getFriendUnits()));
-        setOutOfBattleFriendUnits(new ArrayList<>(battleInfo.getOutOfBattleFriendUnits()));
-        setEnemyUnits(new ArrayList<>(battleInfo.getEnemyUnits()));
-        setOutOfBattleEnemyUnits(new ArrayList<>(battleInfo.getOutOfBattleEnemyUnits()));
+        setWeatherRands(ObjectCopyUtil.deepCopy(battleInfo.getWeatherRands()));
+        setPlayerUnits(ObjectCopyUtil.deepCopy(battleInfo.getPlayerUnits()));
+        setOutOfBattlePlayerUnits(ObjectCopyUtil.deepCopy(battleInfo.getOutOfBattlePlayerUnits()));
+        setFriendUnits(ObjectCopyUtil.deepCopy(battleInfo.getFriendUnits()));
+        setOutOfBattleFriendUnits(ObjectCopyUtil.deepCopy(battleInfo.getOutOfBattleFriendUnits()));
+        setEnemyUnits(ObjectCopyUtil.deepCopy(battleInfo.getEnemyUnits()));
+        setOutOfBattleEnemyUnits(ObjectCopyUtil.deepCopy(battleInfo.getOutOfBattleEnemyUnits()));
     }
+
 
 }

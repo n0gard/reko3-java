@@ -3,7 +3,9 @@ package az.test.reko3ibm;
 import az.test.battle.BattleInfo;
 import az.test.model.army.BaseUnit;
 
-public abstract class ActionAIType {
+import java.io.Serializable;
+
+public abstract class ActionAIType implements Serializable {
 	public boolean isEnemy;
 
 	public void action(BattleInfo bi, BaseUnit army, boolean isSim) {

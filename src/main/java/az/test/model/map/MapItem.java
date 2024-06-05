@@ -9,7 +9,9 @@ import az.test.model.army.other.TransportTeam;
 import az.test.model.army.ride.Rider;
 import az.test.model.army.theif.Theif;
 
-public class MapItem {
+import java.io.Serializable;
+
+public class MapItem implements Serializable {
 	public int id;
 	public boolean canStay = true;
 	public BaseUnit army = null;
