@@ -40,5 +40,19 @@ public class BattleInfoSnapshot {
         setOutOfBattleEnemyUnits(ObjectCopyUtil.deepCopy(battleInfo.getOutOfBattleEnemyUnits()));
     }
 
-
+    @Override
+    public String toString() {
+        return "BattleInfoSnapshot{" +
+                "weatherList=" + weatherList +
+                ", lastRoundWeatherCode=" + lastRoundWeatherCode +
+                ", weatherRands=" + weatherRands +
+                ", playerUnits=" + playerUnits +
+                ", outOfBattlePlayerUnits=" + outOfBattlePlayerUnits +
+                ", friendUnits=" + friendUnits +
+                ", outOfBattleFriendUnits=" + outOfBattleFriendUnits +
+                ", enemyUnits=" + enemyUnits +
+                ", outOfBattleEnemyUnits=" + outOfBattleEnemyUnits +
+                ", timestamp=" + timestamp +
+                '}';
+    }
 }

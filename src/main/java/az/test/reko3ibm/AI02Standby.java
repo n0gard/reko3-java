@@ -14,8 +14,8 @@ public class AI02Standby extends ActionAIType {
 
 	@Override
 	public void action(BattleInfo battle, BaseUnit army, boolean isSim) {
-		LogUtil.printLog(battle.map.getCurrentRoundNo(), "action", army.name, "AI02", "action start");
-		// caculate attack target
+		LogUtil.printLog(battle.map.getCurrentRoundNo(), "action", army.toString(), "AI02", "action start");
+		// calculate attack target
 		BaseUnit target = army.calculateCurrentPositionAttackTarget(battle);
 		if (null != target) {
 			try {

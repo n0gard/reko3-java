@@ -22,6 +22,7 @@ import az.test.model.army.other.MartialArtist;
 import az.test.model.army.ride.LightRide;
 import az.test.model.army.ride.Rider;
 import az.test.model.army.theif.Theif;
+import az.test.model.enums.ArmyType;
 import az.test.model.item.Book;
 import az.test.model.item.Commandment;
 import az.test.model.item.ImperialJadeSeal;
@@ -45,23 +46,35 @@ public class BaseUnit implements Serializable {
     public String name;
     public int level;
     public int exp;
-    /** 智力 */
+    /**
+     * 智力
+     */
     public int intelligence;
-    /** 武力 */
+    /**
+     * 武力
+     */
     public int force;
-    /** 统御 */
+    /**
+     * 统御
+     */
     public int defense;
     // bag
-    public List<Item> items = new ArrayList<Item>();
+    public List<Item> items = new ArrayList<>();
     public static final int MAX_ITEM_LIMIT = 8;
     // army attributes
     public int armyHPBase;
     public int armyHPInc;
-    /** 兵力 */
+    /**
+     * 兵力
+     */
     public int currentArmyHP;
-    /** 士气 */
+    /**
+     * 士气
+     */
     public int currentMorale;
-    /** 策略值 */
+    /**
+     * 策略值
+     */
     public int currentMana;
     public int apBase;
     public int dpBase;
@@ -83,6 +96,7 @@ public class BaseUnit implements Serializable {
     public ActionAIType aiType;
     // special target
     public BaseUnit specialEnemy;
+    public ArmyType armyType;
 
     public List<Item> addItem(Item item) throws MaxItemsLimitedException {
         if (null == items) {
@@ -165,7 +179,9 @@ public class BaseUnit implements Serializable {
         this.exp -= 100;
     }
 
-    /** ===============================ACTIONS================================ */
+    /**
+     * ===============================ACTIONS================================
+     */
 
     public void moveTo(BattleInfo battle, int targetY, int targetX, boolean isSim) {
         // canMoveToCoordinateRange = new ArrayList<MapItem>();
@@ -175,7 +191,7 @@ public class BaseUnit implements Serializable {
         // calculateMoveRange(battle, this.moveAbility, this.y, this.x);
         // System.out.println(canMoveToCoordinateRange);
         if (!isSim)
-        drawMap(battle, targetY, targetX);
+            drawMap(battle, targetY, targetX);
         // if (!containsCoordinate(canMoveToCoordinateRange, targetY, targetX))
         // {
         // throw new OutOfMoveRangeException(this,
@@ -210,6 +226,70 @@ public class BaseUnit implements Serializable {
                 if (containsMapItem(canMoveToCoordinateRange, mi) && -1 != targetY) {
                     if (null != army) {
                         switch (mapItemId) {
+                            case 0:
+                                System.out.print(".");
+                                break;
+                            case 2:
+                                System.out.print(",");
+                                break;
+                            case 3:
+                                System.out.print("=");
+                                break;
+                            case 4:
+                                System.out.print("F");
+                                break;
+                            case 5:
+                                System.out.print("*");
+                                break;
+                            case 7:
+                                System.out.print("v");
+                                break;
+                            case 8:
+                                System.out.print("a");
+                                break;
+                            case 12:
+                                System.out.print("~~ ");
+                                break;
+                            case 13:
+                                System.out.print("## ");
+                                break;
+                            case 14:
+                                System.out.print("WW ");
+                                break;
+                            default:
+                                if (mapItemId > 9) {
+                                    System.out.print(mapItemId + " ");
+                                } else {
+                                    System.out.print(mapItemId);
+                                }
+                                break;
+                        }
+
+                        if (mi.y == this.y && mi.x == this.x) {
+                            System.out.print("@ ");
+                        } else {
+                            if (ArmyType.ENEMY == army.armyType) {
+                                System.out.print("e ");
+                            } else if (ArmyType.FRIEND == army.armyType) {
+                                System.out.print("f ");
+                            } else if (ArmyType.PLAYER == army.armyType) {
+                                System.out.print("p ");
+                            } else {
+                                System.out.print("? ");
+                            }
+                        }
+                    } else {
+                        System.out.print("m");
+                        if (mi.y == targetY && mi.x == targetX) {
+                            System.out.print("T ");
+                        } else {
+                            System.out.print("  ");
+                        }
+                    }
+                }
+                // out of range
+                else {
+                    switch (mapItemId) {
                         case 0:
                             System.out.print(".");
                             break;
@@ -247,31 +327,75 @@ public class BaseUnit implements Serializable {
                                 System.out.print(mapItemId);
                             }
                             break;
-                        }
+                    }
 
-                        if (mi.y == this.y && mi.x == this.x) {
-                            System.out.print("@ ");
-                        } else if (battle.enemyUnits.contains(army)) {
+                    if (null != army) {
+                        if (ArmyType.ENEMY == army.armyType) {
                             System.out.print("e ");
-                        } else if (battle.friendUnits.contains(army)) {
+                        } else if (ArmyType.FRIEND == army.armyType) {
                             System.out.print("f ");
-                        } else if (battle.playerUnits.contains(army)) {
+                        } else if (ArmyType.PLAYER == army.armyType) {
                             System.out.print("p ");
                         } else {
                             System.out.print("? ");
                         }
                     } else {
-                        System.out.print("m");
-                        if (mi.y == targetY && mi.x == targetX) {
-                            System.out.print("T ");
-                        } else {
-                            System.out.print("  ");
+                        switch (mapItemId) {
+                            case 0:
+                                System.out.print(". ");
+                                continue;
+                            case 2:
+                                System.out.print(", ");
+                                continue;
+                            case 3:
+                                System.out.print("= ");
+                                continue;
+                            case 4:
+                                System.out.print("F ");
+                                continue;
+                            case 5:
+                                System.out.print("* ");
+                                continue;
+                            case 7:
+                                System.out.print("v ");
+                                continue;
+                            case 8:
+                                System.out.print("a ");
+                                break;
                         }
                     }
                 }
-                // out of range
-                else {
-                    switch (mapItemId) {
+            }
+            System.out.println();
+        }
+        System.out.print("[Round " + battle.map.getCurrentRoundNo() + "][move]   ");
+        for (int len = 0; len < battle.map.map[0].length; len++) {
+            System.out.print("---");
+        }
+        System.out.println();
+    }
+
+    public void drawMap(BattleInfo battle, String action, int targetY, int targetX) {
+        System.out.print("[Round " + battle.map.getCurrentRoundNo() + "][" + action + "]   ");
+        for (int len = 0; len < battle.map.map[0].length; len++) {
+            System.out.print(String.format("%02d", len) + " ");
+        }
+        System.out.println();
+        System.out.print("[Round " + battle.map.getCurrentRoundNo() + "][" + action + "]   ");
+        for (int len = 0; len < battle.map.map[0].length; len++) {
+            System.out.print("___");
+        }
+        System.out.println();
+
+        for (int yyy = 0; yyy < battle.map.map.length; yyy++) {
+            LogUtil.printInfoWithNoReturn(battle.map.getCurrentRoundNo(), action, String.format("%02d", yyy) + "|");
+            for (int xxx = 0; xxx < battle.map.map[yyy].length; xxx++) {
+                MapItem mi = battle.map.map[yyy][xxx];
+                BaseUnit army = mi.army;
+                // draw whole map
+                //
+                int mapItemId = mi.id;
+                switch (mapItemId) {
                     case 0:
                         System.out.print(".");
                         break;
@@ -309,20 +433,28 @@ public class BaseUnit implements Serializable {
                             System.out.print(mapItemId);
                         }
                         break;
+                }
+
+                if (null != army) {
+                    if (ArmyType.ENEMY == army.armyType) {
+                        System.out.print("e");
+                    } else if (ArmyType.FRIEND == army.armyType) {
+                        System.out.print("f");
+                    } else if (ArmyType.PLAYER == army.armyType) {
+                        System.out.print("p");
+                    } else {
+                        System.out.print("?");
                     }
 
-                    if (null != army) {
-                        if (battle.enemyUnits.contains(army)) {
-                            System.out.print("e ");
-                        } else if (battle.map.friends.contains(army)) {
-                            System.out.print("f ");
-                        } else if (battle.playerUnits.contains(army)) {
-                            System.out.print("p ");
-                        } else {
-                            System.out.print("? ");
-                        }
+                    if (targetY == yyy && targetX == xxx) {
+                        System.out.print("<");
+                    } else if (this.y == yyy && this.x == xxx) {
+                        System.out.print(">");
                     } else {
-                        switch (mapItemId) {
+                        System.out.print(" ");
+                    }
+                } else {
+                    switch (mapItemId) {
                         case 0:
                             System.out.print(". ");
                             continue;
@@ -344,122 +476,6 @@ public class BaseUnit implements Serializable {
                         case 8:
                             System.out.print("a ");
                             break;
-                        }
-                    }
-                }
-            }
-            System.out.println();
-        }
-        System.out.print("[Round " + battle.map.getCurrentRoundNo() + "][move]   ");
-        for (
-
-        int len = 0; len < battle.map.map[0].length; len++) {
-            System.out.print("---");
-        }
-        System.out.println();
-    }
-
-    public void drawMap(BattleInfo battle, String action, int targetY, int targetX) {
-        System.out.print("[Round " + battle.map.getCurrentRoundNo() + "][" + action + "]   ");
-        for (int len = 0; len < battle.map.map[0].length; len++) {
-            System.out.print(String.format("%02d", len) + " ");
-        }
-        System.out.println();
-        System.out.print("[Round " + battle.map.getCurrentRoundNo() + "][" + action + "]   ");
-        for (int len = 0; len < battle.map.map[0].length; len++) {
-            System.out.print("___");
-        }
-        System.out.println();
-
-        for (int yyy = 0; yyy < battle.map.map.length; yyy++) {
-            LogUtil.printInfoWithNoReturn(battle.map.getCurrentRoundNo(), action, String.format("%02d", yyy) + "|");
-            for (int xxx = 0; xxx < battle.map.map[yyy].length; xxx++) {
-                MapItem mi = battle.map.map[yyy][xxx];
-                BaseUnit army = mi.army;
-                // draw whole map
-                //
-                int mapItemId = mi.id;
-                switch (mapItemId) {
-                case 0:
-                    System.out.print(".");
-                    break;
-                case 2:
-                    System.out.print(",");
-                    break;
-                case 3:
-                    System.out.print("=");
-                    break;
-                case 4:
-                    System.out.print("F");
-                    break;
-                case 5:
-                    System.out.print("*");
-                    break;
-                case 7:
-                    System.out.print("v");
-                    break;
-                case 8:
-                    System.out.print("a");
-                    break;
-                case 12:
-                    System.out.print("~~ ");
-                    break;
-                case 13:
-                    System.out.print("## ");
-                    break;
-                case 14:
-                    System.out.print("WW ");
-                    break;
-                default:
-                    if (mapItemId > 9) {
-                        System.out.print(mapItemId + " ");
-                    } else {
-                        System.out.print(mapItemId);
-                    }
-                    break;
-                }
-
-                if (null != army) {
-                    if (battle.enemyUnits.contains(army)) {
-                        System.out.print("e");
-                    } else if (battle.map.friends.contains(army)) {
-                        System.out.print("f");
-                    } else if (battle.playerUnits.contains(army)) {
-                        System.out.print("p");
-                    } else {
-                        System.out.print("?");
-                    }
-
-                    if (targetY == yyy && targetX == xxx) {
-                        System.out.print("<");
-                    } else if (this.y == yyy && this.x == xxx) {
-                        System.out.print(">");
-                    } else {
-                        System.out.print(" ");
-                    }
-                } else {
-                    switch (mapItemId) {
-                    case 0:
-                        System.out.print(". ");
-                        continue;
-                    case 2:
-                        System.out.print(", ");
-                        continue;
-                    case 3:
-                        System.out.print("= ");
-                        continue;
-                    case 4:
-                        System.out.print("F ");
-                        continue;
-                    case 5:
-                        System.out.print("* ");
-                        continue;
-                    case 7:
-                        System.out.print("v ");
-                        continue;
-                    case 8:
-                        System.out.print("a ");
-                        break;
                     }
                 }
             }
@@ -468,7 +484,7 @@ public class BaseUnit implements Serializable {
         System.out.print("[Round " + battle.map.getCurrentRoundNo() + "][" + action + "]   ");
         for (
 
-        int len = 0; len < battle.map.map[0].length; len++) {
+                int len = 0; len < battle.map.map[0].length; len++) {
             System.out.print("---");
         }
         System.out.println();
@@ -656,10 +672,7 @@ public class BaseUnit implements Serializable {
     public BaseUnit calculateAssignedPositionAttackTarget(BattleInfo battle, int y, int x, int currentY, int currentX) {
         // System.out.println("[BaseUnit] calculateAssignedPositionAttackTarget
         // y: " + y + ", x: " + x);
-        boolean isPlayer = false;
-        if (battle.playerUnits.contains(this)) {
-            isPlayer = true;
-        }
+        boolean isPlayer = battle.playerUnits.contains(this);
         BaseUnit target = null;
         if (this instanceof LightRide || this instanceof ShortArmed) {
             // north
@@ -759,7 +772,6 @@ public class BaseUnit implements Serializable {
     }
 
     /**
-     * 
      * @param target
      * @param isCounterAttack
      * @param enemyAttack
@@ -773,9 +785,9 @@ public class BaseUnit implements Serializable {
             return;
         }
         if (!isSim)
-        drawMap(battle, "attack", target.y, target.x);
+            drawMap(battle, "attack", target.y, target.x);
 
-        // caculate hp damage
+        // calculate hp damage
         // step 1
         int dc = generateDefensiveCorrection(target);
         // step 2
@@ -792,7 +804,7 @@ public class BaseUnit implements Serializable {
         if (hpDamage > target.currentArmyHP) {
             hpDamage = target.currentArmyHP;
         }
-        // caculate moral damage
+        // calculate moral damage
         int moraleDamage = hpDamage / (target.level + 5) / 3;
         if (0 == moraleDamage && hpDamage > 0) {
             moraleDamage = 1;
@@ -817,7 +829,7 @@ public class BaseUnit implements Serializable {
                 battle.outOfBattleEnemyUnits.add(target);
             }
             if (!isSim)
-            LogUtil.printInfo(battle.map.getCurrentRoundNo(), "INFO", target + " has been kicked out.");
+                LogUtil.printInfo(battle.map.getCurrentRoundNo(), "INFO", target + " has been kicked out.");
             target.evacuate();
         }
 
@@ -848,7 +860,7 @@ public class BaseUnit implements Serializable {
         LogUtil.printLog(battle.map.getCurrentRoundNo(), isCounterAttack ? "Counter-ATTACK" : "ATTACK", this.name,
                 target.name, "hpDamage: " + hpDamage + " moraleDamage: " + moraleDamage + " unit: " + this.name
                         + " gain exp: " + baseGainedExp + " " + extraGainedExp + " target: " + target.name + " HP: "
-                        + target.currentArmyHP + " Morale: " + target.currentMorale);
+                        + target.currentArmyHP + " Morale: " + target.currentMorale + ", kick-out?" + (target.isEvacuated));
 
         // Counter attack determination
         if (target instanceof Theif || target instanceof MartialArtist) {
@@ -1079,35 +1091,6 @@ public class BaseUnit implements Serializable {
         }
     }
 
-    int lastY;
-    int lastX;
-    int lastExp;
-    int lastHP;
-    int lastMP;
-    int lastSP;
-    boolean lastEvacuated = false;
-    public void recordLastState() {
-        lastY = this.y;
-        lastX = this.x;
-        lastExp = this.exp;
-        lastHP = this.currentArmyHP;
-        lastMP = this.currentMorale;
-        lastSP = this.currentMana;
-        lastEvacuated = this.isEvacuated;
-    }
-
-    public void restoreLastState(BattleInfo battle) {
-        battle.map.map[this.y][this.x].army = null;
-        this.y = lastY;
-        this.x = lastX;
-        this.exp = lastExp;
-        this.currentArmyHP = lastHP;
-        this.currentMorale = lastMP;
-        this.currentMana = lastSP;
-        battle.map.map[this.y][this.x].army = this;
-        this.isEvacuated = lastEvacuated;
-    }
-
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -1150,7 +1133,7 @@ public class BaseUnit implements Serializable {
 
     @Override
     public String toString() {
-        return name + ",Lv: " + this.level + ",[" + y + "," + x + "][" + force + "," + intelligence + "," + defense + "],HP:" + currentArmyHP
+        return name + ",Lv:" + this.level + "[" + y + "," + x + "][" + force + "," + intelligence + "," + defense + "],HP:" + currentArmyHP
                 + ",Mo:" + currentMorale + ",Exp: " + exp;
     }
 

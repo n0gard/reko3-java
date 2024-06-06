@@ -9,6 +9,7 @@ import az.test.map.BattleMap;
 import az.test.model.army.BaseUnit;
 import az.test.model.army.other.MilitaryBand;
 import az.test.model.army.ride.Rider;
+import az.test.model.enums.ArmyType;
 import az.test.model.map.MapItem;
 import az.test.util.LogUtil;
 import az.test.util.ObjectCopyUtil;
@@ -50,6 +51,7 @@ public class BattleInfo {
     }
 
     public void addPlayerUnit(BaseUnit bu) throws MaxPlayerUnitsLimitedException {
+        bu.armyType = ArmyType.PLAYER;
         if (null == playerUnits) {
             playerUnits = new ArrayList<>();
         }
@@ -65,6 +67,7 @@ public class BattleInfo {
     }
 
     public List<BaseUnit> loadEnemyUnit(BaseUnit bu) {
+        bu.armyType = ArmyType.ENEMY;
         if (null == enemyUnits) {
             enemyUnits = new ArrayList<>();
         }
@@ -73,6 +76,7 @@ public class BattleInfo {
         }
         enemyUnits.add(bu);
         map.map[bu.y][bu.x].army = bu;
+        map.enemies.add(bu);
         bu.currentPositionMap = map.map[bu.y][bu.x];
         return enemyUnits;
     }
@@ -89,7 +93,6 @@ public class BattleInfo {
 
     public void loadMap(BattleMap map) {
         this.map = map;
-        this.map.loadEnemies(this);
         weatherRands = new ArrayList<>();
         for (int i = 0; i < map.getRoundLimit(); i++) {
             weatherRands.add((int) (Math.random() * 6.0));
@@ -100,8 +103,8 @@ public class BattleInfo {
     public void initRound() {
         LogUtil.printInfo(map.getCurrentRoundNo(), "[BattleInfo]initRound");
         // init weather
-        int currentWeatherCode = Weather.generateNextWeather(lastRoundWeatherCode, weatherRands.get(map.getCurrentRoundNo()));
-        LogUtil.printInfo(map.getCurrentRoundNo(), "Weather: " + weatherList.get(map.getCurrentRoundNo()) + "(" + currentWeatherCode + ") last:" + lastRoundWeatherCode);
+        int currentWeatherCode = Weather.generateNextWeather(lastRoundWeatherCode, weatherRands.get(map.getCurrentRoundNo() - 1));
+        LogUtil.printInfo(map.getCurrentRoundNo(), "Weather: " + weatherList.get(map.getCurrentRoundNo() - 1) + "(" + currentWeatherCode + ") last:" + lastRoundWeatherCode);
         lastRoundWeatherCode = currentWeatherCode;
         //
         // calculate restores & chaos restore
@@ -436,18 +439,38 @@ public class BattleInfo {
     }
 
     public boolean areAllPlayersEvacuatedOrSomeoneEvacuated() {
-        if (null != map.someone) {
-            return map.someone.isEvacuated;
+        for (BaseUnit anyone : getMap().anyones) {
+            if (anyone.isEvacuated) {
+                return true;
+            }
+        }
+
+        boolean allEvacuated = true;
+
+        if (getMap().someones.isEmpty()) {
+            System.out.println("[BattleMap]areAllPlayersEvacuatedOrSomeoneEvacuated  someone or anyone not set yet.");
+            return false;
+        }
+
+        boolean someonesAllEvacuated = true;
+        for (BaseUnit someone : getMap().someones) {
+            if (!someone.isEvacuated) {
+                someonesAllEvacuated = false;
+                break;
+            }
+        }
+
+        if (someonesAllEvacuated) {
+            return true;
         } else {
-            boolean allEvacuated = true;
             for (BaseUnit playerUnit : playerUnits) {
                 if (!playerUnit.isEvacuated) {
                     allEvacuated = false;
+                    break;
                 }
             }
-            System.out.println("[BattleMap]areAllPlayersEvacuatedOrSomeoneEvacuated   someone not set yet.");
-            return allEvacuated;
         }
+        return allEvacuated;
     }
 
     public static void main(String[] args) {

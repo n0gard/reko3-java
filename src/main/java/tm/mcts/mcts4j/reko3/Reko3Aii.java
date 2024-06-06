@@ -5,8 +5,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import az.test.battle.BattleInfoSnapshot;
 import az.test.util.LogUtil;
-import net.sf.cglib.beans.BeanCopier;
-import org.lwjgl.system.CallbackI;
 import tm.mcts.mcts4j.DefaultNode;
 import tm.mcts.mcts4j.Node;
 import tm.mcts.mcts4j.Transition;
@@ -17,7 +15,6 @@ import az.test.exception.CounterattackHappenedException;
 import az.test.exception.MaxPlayerUnitsLimitedException;
 import az.test.exception.OutOfAttackRangeException;
 import az.test.map.BattleMap000TEST001;
-import az.test.map.BattleMap01;
 import az.test.model.PlayerUnitGenerator;
 import az.test.model.army.BaseUnit;
 import az.test.model.map.MapItem;
@@ -51,9 +48,8 @@ import com.alibaba.fastjson.JSON;
  * @author Tommy
  */
 public class Reko3Aii extends UCT<Reko3Transition, DefaultNode<Reko3Transition>> {
-    static BeanCopier copier = BeanCopier.create(BattleInfo.class, BattleInfo.class, false);
     private BattleInfo battle;
-    private static Map<String, BattleInfoSnapshot> battleRecordMap = new ConcurrentHashMap<>();
+    private final static Map<String, BattleInfoSnapshot> battleRecordMap = new ConcurrentHashMap<>();
 
     public Reko3Aii() {
         super();
@@ -61,6 +57,7 @@ public class Reko3Aii extends UCT<Reko3Transition, DefaultNode<Reko3Transition>>
         try {
             // load map first !!!
             battle.loadMap(new BattleMap000TEST001());
+            battle.map.loadEnemies(battle);
             // load player
             BaseUnit royalUncleLiu = PlayerUnitGenerator.loadLiuBei(1, 1, null);
             battle.addPlayerUnit(royalUncleLiu);
@@ -101,14 +98,22 @@ public class Reko3Aii extends UCT<Reko3Transition, DefaultNode<Reko3Transition>>
             System.out.println("[Reko3A]makeTransition " + transition);
         }
         // TODO action (item, strategy)
-        BaseUnit player = transition.getPlayerUnit();
-        System.out.println("[Reko3A]makeTransition player " + player);
-        BaseUnit target = transition.getTarget();
-        System.out.println("[Reko3A]makeTransition target " + target);
-        player.recordLastState();
-        if (null != target) {
-            target.recordLastState();
+        BaseUnit player = null;
+        for (BaseUnit pbu : battle.playerUnits) {
+            if (pbu.x == transition.getPlayerX() && pbu.y == transition.getPlayerY()) {
+                player = pbu;
+                break;
+            }
         }
+        System.out.println("[Reko3A]makeTransition player " + player);
+        BaseUnit target = null;
+        for (BaseUnit ebu : battle.enemyUnits) {
+            if (ebu.x == transition.getTargetX() && ebu.y == transition.getTargetY()) {
+                target = ebu;
+                break;
+            }
+        }
+        System.out.println("[Reko3A]makeTransition target " + target);
 
         // snapshot
         BattleInfoSnapshot biSnapshot = new BattleInfoSnapshot(battle);
@@ -117,7 +122,7 @@ public class Reko3Aii extends UCT<Reko3Transition, DefaultNode<Reko3Transition>>
         // record last state
 
         // try {
-        player.moveTo(battle, transition.getY(), transition.getX(), IS_SIM);
+        player.moveTo(battle, transition.getMoveTargetY(), transition.getMoveTargetX(), IS_SIM);
         // } catch (OutOfMoveRangeException oomre) {
         // oomre.printStackTrace();
         // }
@@ -153,7 +158,7 @@ public class Reko3Aii extends UCT<Reko3Transition, DefaultNode<Reko3Transition>>
     public void unmakeTransition(Reko3Transition transition) {
         if (!IS_SIM)
             System.out.println("[Reko3A]unmakeTransition " + transition);
-        else LogUtil.printInfo(transition.getRound(), "[Simulation][Reko3Aii]unmakeTransition");
+        else LogUtil.printInfo(battle.map.getCurrentRoundNo(), "[Simulation][Reko3Aii]unmakeTransition");
         // System.out.println(transition.getBattle().enemyUnits.get(0).currentArmyHP
         // + " <<===");
         // System.out.println(transition.getBattle().map.map[0][0].army.currentArmyHP
@@ -229,11 +234,13 @@ public class Reko3Aii extends UCT<Reko3Transition, DefaultNode<Reko3Transition>>
             BaseUnit target = currentPlayer.calculateAssignedPositionAttackTarget(battle, mi.y, mi.x, currentPlayer.y,
                     currentPlayer.x);
             if (null != target) {
-                r3t = new Reko3Transition(UUID.randomUUID().toString(), mi.y, mi.x, currentPlayer, PlayerAction.ATTACK, target, battle.map.getCurrentRoundNo());
+                r3t = new Reko3Transition(UUID.randomUUID().toString(), currentPlayer, mi.y, mi.x, PlayerAction.ATTACK, target.x, target.y);
                 // TODO strategy
                 // TODO item
             } else {
-                r3t = new Reko3Transition(UUID.randomUUID().toString(), mi.y, mi.x, currentPlayer, PlayerAction.REST, null, battle.map.getCurrentRoundNo());
+                r3t = new Reko3Transition(UUID.randomUUID().toString(), currentPlayer,mi.y, mi.x,  PlayerAction.REST, -1,-1);
+                // TODO strategy
+                // TODO item
             }
             if (!moves.contains(r3t)) {
                 moves.add(r3t);

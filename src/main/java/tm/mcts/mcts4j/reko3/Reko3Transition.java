@@ -2,6 +2,7 @@ package tm.mcts.mcts4j.reko3;
 
 import az.test.battle.enums.PlayerAction;
 import az.test.model.army.BaseUnit;
+import lombok.Data;
 import tm.mcts.mcts4j.Transition;
 
 import java.util.Objects;
@@ -11,33 +12,31 @@ import java.util.Objects;
  *
  * @author Tommy
  */
+@Data
 public class Reko3Transition implements Transition {
     private String transitionId;
     /**
-     * player unit
+     * player unit coordinates
      */
-    private BaseUnit playerUnit;
+    private int playerX;
+    private int playerY;
 
-    /**
-     * y coordinate of the move
-     */
-    private int y;
-    /**
-     * x coordinate of the move
-     */
-    private int x;
+    private int moveTargetX;
+    private int moveTargetY;
+
     private PlayerAction action;
-    private BaseUnit target;
-    private int round;
+    private int targetX;
+    private int targetY;
 
-    public Reko3Transition(String transitionId, int y, int x, BaseUnit playerUnit, PlayerAction action, BaseUnit target, int round) {
+    public Reko3Transition(String transitionId, BaseUnit player, int y, int x, PlayerAction action, int targetX, int targetY) {
         this.transitionId = transitionId;
-        this.y = y;
-        this.x = x;
-        this.playerUnit = playerUnit;
+        this.playerY = player.y;
+        this.playerX = player.x;
+        this.moveTargetY = y;
+        this.moveTargetX = x;
         this.action = action;
-        this.target = target;
-        this.round = round;
+        this.targetX = targetX;
+        this.targetY = targetY;
     }
 
 //    @Override
@@ -101,63 +100,8 @@ public class Reko3Transition implements Transition {
 
     @Override
     public String toString() {
-        return "Reko3Transition " + transitionId + "[playerUnit=" + playerUnit + ", y=" + y + ", x=" + x + ", action=" + action
-                + ", target=" + target + ", round=" + round + "]";
+        return "Reko3Transition " + transitionId + "[playerX=" + playerX + ",playerY=" + playerY + ", moveTargetY=" + moveTargetY + ", moveTargetX=" + moveTargetX + ", action=" + action
+                + ", targetX=" + targetX + ", targetY=" + targetY + "]";
     }
 
-    public int getX() {
-        return x;
-    }
-
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public void setY(int y) {
-        this.y = y;
-    }
-
-    public BaseUnit getPlayerUnit() {
-        return playerUnit;
-    }
-
-    public void setPlayerUnit(BaseUnit playerUnit) {
-        this.playerUnit = playerUnit;
-    }
-
-    public PlayerAction getAction() {
-        return action;
-    }
-
-    public void setAction(PlayerAction action) {
-        this.action = action;
-    }
-
-    public BaseUnit getTarget() {
-        return target;
-    }
-
-    public void setTarget(BaseUnit target) {
-        this.target = target;
-    }
-
-    public int getRound() {
-        return round;
-    }
-
-    public void setRound(int round) {
-        this.round = round;
-    }
-
-    public String getTransitionId() {
-        return transitionId;
-    }
-
-    public void setTransitionId(String transitionId) {
-        this.transitionId = transitionId;
-    }
 }

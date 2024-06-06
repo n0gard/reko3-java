@@ -20,7 +20,6 @@ public class BattleMap000TEST001 extends BattleMap {
 		battleName = "Battle at TEST_3x3";
 		// round
 		setRoundLimit(30);
-
 	}
 
 	public void loadEnemies(BattleInfo bi) {
