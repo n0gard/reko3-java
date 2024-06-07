@@ -9,7 +9,9 @@ import az.test.model.map.Abatis;
 import az.test.model.map.Barrack;
 import az.test.model.map.MapItem;
 import az.test.model.map.Village;
+import az.test.util.ObjectCopyUtil;
 import lombok.Data;
+import org.lwjgl.system.CallbackI;
 
 @Data
 public abstract class BattleMap {
@@ -25,6 +27,29 @@ public abstract class BattleMap {
     public List<BaseUnit> someones = new ArrayList<>();
     public List<MapItem> escapePlaces = new ArrayList<>();
     public boolean isAllSurvivedUnitGainExtraExp = false;
+
+    public BattleMap() {
+    }
+
+    public BattleMap(BattleMap bm) {
+        battleName = bm.getBattleName();
+        map = new MapItem[map.length][map[0].length];
+        for (int i = 0; i < map.length; i++) {
+            for (int j = 0; j < map[i].length; j++) {
+                map[i][j] = new MapItem(bm.map[i][j], bm.map[i][j].army);
+            }
+        }
+        restores = ObjectCopyUtil.deepCopy(bm.restores);
+        enemies = ObjectCopyUtil.deepCopy(bm.enemies);
+        friends = ObjectCopyUtil.deepCopy(bm.friends);
+        roundLimit = bm.roundLimit;
+        currentRoundNo = bm.getCurrentRoundNo();
+        lord = new BaseUnit(bm.lord);
+        anyones = ObjectCopyUtil.deepCopy(bm.anyones);
+        someones = ObjectCopyUtil.deepCopy(bm.someones);
+        escapePlaces = ObjectCopyUtil.deepCopy(bm.escapePlaces);
+        isAllSurvivedUnitGainExtraExp = bm.isAllSurvivedUnitGainExtraExp;
+    }
 
     @Override
     public int hashCode() {

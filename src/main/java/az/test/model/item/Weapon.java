@@ -1,11 +1,11 @@
 package az.test.model.item;
 
 public abstract class Weapon extends Item {
-	public int apIncreasementPercentage;
+	public int apIncrementPercentage;
 
-	public Weapon(int apip) {
+	public Weapon(int apIP) {
 		super();
-		this.apIncreasementPercentage = apip;
+		this.apIncrementPercentage = apIP;
 	}
 
 }

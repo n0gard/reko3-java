@@ -8,6 +8,7 @@ import az.test.model.army.other.MilitaryBand;
 import az.test.model.army.other.TransportTeam;
 import az.test.model.army.ride.Rider;
 import az.test.model.army.theif.Theif;
+import org.lwjgl.system.CallbackI;
 
 import java.io.Serializable;
 
@@ -18,6 +19,35 @@ public class MapItem implements Serializable {
 	public int y;
 	public int x;
 	public String name;
+
+	public MapItem() {
+	}
+
+	public MapItem(MapItem mi) {
+		if (null == mi) {
+			return;
+		}
+		id = mi.id;
+		canStay = mi.canStay;
+		army = new BaseUnit(mi.army);
+		y = mi.y;
+		x = mi.x;
+		name = mi.name;
+	}
+
+	public MapItem(MapItem mi, BaseUnit bu) {
+		if (null == mi) {
+			return;
+		}
+		id = mi.id;
+		canStay = mi.canStay;
+		army = bu;
+		y = mi.y;
+		x = mi.x;
+		name = mi.name;
+	}
+
+
 
 	public static MapItem generateById(int id, int y, int x) {
 		MapItem mi;

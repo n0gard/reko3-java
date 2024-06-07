@@ -39,6 +39,7 @@ import az.test.model.map.Village;
 import az.test.reko3ibm.Action;
 import az.test.reko3ibm.ActionAIType;
 import az.test.util.LogUtil;
+import az.test.util.ObjectCopyUtil;
 import az.test.util.RandomHelper;
 
 public class BaseUnit implements Serializable {
@@ -98,6 +99,37 @@ public class BaseUnit implements Serializable {
     public BaseUnit specialEnemy;
     public ArmyType armyType;
 
+    public BaseUnit(BaseUnit bu) {
+        if (null == bu) {
+            return;
+        }
+        name = bu.name;
+        level = bu.level;
+        exp = bu.exp;
+        intelligence = bu.intelligence;
+        force = bu.force;
+        defense = bu.defense;
+        items = ObjectCopyUtil.deepCopy(bu.items);
+        armyHPBase = bu.armyHPBase;
+        armyHPInc = bu.armyHPInc;
+        currentArmyHP = bu.currentArmyHP;
+        currentMorale = bu.currentMorale;
+        currentMana = bu.currentMana;
+        apBase = bu.apBase;
+        dpBase = bu.dpBase;
+        moveAbility = bu.moveAbility;
+        x = bu.x;
+        y = bu.y;
+        currentPositionMap = new MapItem(bu.currentPositionMap, this);
+        isInChaos = bu.isInChaos;
+        roundFinished = bu.roundFinished;
+        isEvacuated = bu.isEvacuated;
+        isLord = bu.isLord;
+        aiType = bu.aiType;
+        specialEnemy = new BaseUnit(bu.specialEnemy);
+        armyType = bu.armyType;
+    }
+
     public List<Item> addItem(Item item) throws MaxItemsLimitedException {
         if (null == items) {
             items = new ArrayList<Item>();
@@ -136,13 +168,13 @@ public class BaseUnit implements Serializable {
     }
 
     public int calculateAP() {
-        return (int) (((4000 / (140 - force) + apBase * 2 + currentMorale) * (level + 10) / 10)
-                * (100 + queryItemAPInc()) / 100);
+        return (int) (((4000.0 / (140.0 - (double) force) + apBase * 2 + currentMorale) * (double) (level + 10) / 10.0)
+                * (double) (100 + queryItemAPInc()) / 100.0);
     }
 
     public int calculateDP() {
-        return (int) (((4000 / (140 - defense) + dpBase * 2 + currentMorale) * (level + 10) / 10)
-                * (100 + queryItemDPInc()) / 100);
+        return (int) (((4000.0 / (140.0 - (double) defense) + dpBase * 2 + currentMorale) * (double) (level + 10) / 10.0)
+                * (double) (100 + queryItemDPInc()) / 100.0);
     }
 
     public int queryItemAPInc() {
@@ -150,7 +182,7 @@ public class BaseUnit implements Serializable {
         for (Item i : items) {
             if (i instanceof Weapon) {
                 Weapon w = (Weapon) i;
-                inc = w.apIncreasementPercentage;
+                inc = w.apIncrementPercentage;
             }
         }
         return inc;
@@ -1133,7 +1165,7 @@ public class BaseUnit implements Serializable {
 
     @Override
     public String toString() {
-        return name + ",Lv:" + this.level + "[" + y + "," + x + "][" + force + "," + intelligence + "," + defense + "],HP:" + currentArmyHP
+        return name + ",Lv:" + this.level + "[" + y + "," + x + "][" + force + "," + intelligence + "," + defense + "],[AP:" + calculateAP() + "][DP:" + calculateDP() + "]HP:" + currentArmyHP
                 + ",Mo:" + currentMorale + ",Exp: " + exp;
     }
 

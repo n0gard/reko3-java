@@ -22,7 +22,7 @@ public class PlayerUnitGenerator {
 		lb.defense = 91;
 
 		try {
-			lb.addItem(new GreenDragonCrescentBlade(12));
+//			lb.addItem(new GreenDragonCrescentBlade(12));
 			lb.addItem(new FireSpells("Coke", 200));
 			lb.addItem(new FireSpells("Coke", 200));
 			lb.addItem(new FireSpells("Coke", 200));
