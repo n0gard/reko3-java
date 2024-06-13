@@ -1,14 +1,15 @@
-package az.test.model.army.foot;
+package az.test.model.army.theif;
 
 import az.test.battle.BattleInfo;
 import az.test.model.army.CornerAttack;
+import az.test.model.army.CrossAttack;
 
-public class LongArmed extends Infantry {
+public class EvilThief extends Thief {
 
-	public LongArmed(BattleInfo battleInfo) {
+	public EvilThief(BattleInfo battleInfo) {
 		super(battleInfo);
 		apBase = 60;
-		dpBase = 60;
+		dpBase = 50;
 		attackRangeList.add(CornerAttack.getInstance());
 	}
 

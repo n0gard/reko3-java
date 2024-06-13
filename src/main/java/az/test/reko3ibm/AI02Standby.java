@@ -4,6 +4,7 @@ import az.test.battle.BattleInfo;
 import az.test.exception.CounterattackHappenedException;
 import az.test.exception.OutOfAttackRangeException;
 import az.test.model.army.BaseUnit;
+import az.test.model.army.BotUnit;
 import az.test.util.LogUtil;
 
 public class AI02Standby extends ActionAIType {
@@ -13,7 +14,7 @@ public class AI02Standby extends ActionAIType {
 	}
 
 	@Override
-	public void action(BattleInfo battle, BaseUnit army, boolean isSim) {
+	public void action(BattleInfo battle, BotUnit army, boolean isSim) {
 		LogUtil.printLog(battle.map.getCurrentRoundNo(), "action", army.toString(), "AI02", "action start");
 		// calculate attack target
 		BaseUnit target = army.calculateCurrentPositionAttackTarget(battle);

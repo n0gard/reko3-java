@@ -3,9 +3,11 @@ package az.test.map;
 import az.test.battle.BattleInfo;
 import az.test.model.PlayerUnitGenerator;
 import az.test.model.army.BaseUnit;
+import az.test.model.army.BotUnit;
 import az.test.model.map.MapItem;
 import az.test.reko3ibm.AI02Standby;
 
+import az.test.util.ObjectCopyUtil;
 import com.alibaba.fastjson.JSON;
 
 import java.util.List;
@@ -24,10 +26,10 @@ public class BattleMap000TEST001 extends BattleMap {
 
 	public void loadEnemies(BattleInfo bi) {
 		// load enemies
-		BaseUnit bbd = PlayerUnitGenerator.loadFootmanArmy(0, 0, 3, new AI02Standby(true));
+		BotUnit bbd = PlayerUnitGenerator.getInstance(bi).loadFootmanArmy(0, 0, 3, new AI02Standby(true));
 		bbd.isLord = true;
 		bi.map.lord = bbd;
-		List<BaseUnit> loaded = bi.loadEnemyUnit(bi.map.lord);
+		List<BotUnit> loaded = bi.loadEnemyUnit(bi.map.lord);
 		System.out.println("loaded enemy " + loaded);
 	}
 

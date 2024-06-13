@@ -1,22 +1,18 @@
 package az.test.reko3ibm;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-
-import com.alibaba.fastjson.JSON;
-
 import az.test.battle.BattleInfo;
 import az.test.battle.enums.BattleState;
 import az.test.exception.CounterattackHappenedException;
-import az.test.exception.MaxPlayerUnitsLimitedException;
 import az.test.exception.OutOfAttackRangeException;
-import az.test.exception.OutOfMoveRangeException;
 import az.test.map.BattleMap000TEST001;
-import az.test.map.BattleMap01;
-import az.test.model.PlayerUnitGenerator;
+import az.test.model.army.BotUnit;
 import az.test.model.army.BaseUnit;
 import az.test.util.LogUtil;
+import com.alibaba.fastjson.JSON;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
 public class Exe {
     public static void readPlayerInput() {
@@ -225,68 +221,68 @@ public class Exe {
     }
 
     private static void friendArmyActions(BattleInfo battle, boolean isSim) {
-        List<BaseUnit> friends = battle.friendUnits;
-        List<BaseUnit> atRestorePlaceFriends = new ArrayList<BaseUnit>();
-        for (BaseUnit friend : friends) {
+        List<BotUnit> friends = battle.friendUnits;
+        List<BotUnit> atRestorePlaceFriends = new ArrayList<>();
+        for (BotUnit friend : friends) {
             if (battle.map.isRestorePlace(friend.currentPositionMap)) {
                 atRestorePlaceFriends.add(friend);
             }
         }
-        for (BaseUnit friend : atRestorePlaceFriends) {
+        for (BotUnit friend : atRestorePlaceFriends) {
             action(battle, friend, isSim);
         }
-        List<BaseUnit> weakFriends = new ArrayList<BaseUnit>();
-        for (BaseUnit friend : friends) {
-            if (friend.isWeak(battle)) {
+        List<BotUnit> weakFriends = new ArrayList<>();
+        for (BotUnit friend : friends) {
+            if (friend.isWeak()) {
                 weakFriends.add(friend);
             }
         }
-        for (BaseUnit friend : weakFriends) {
+        for (BotUnit friend : weakFriends) {
             action(battle, friend, isSim);
         }
-        for (BaseUnit friend : friends) {
+        for (BotUnit friend : friends) {
             action(battle, friend, isSim);
         }
     }
 
     public static void enemyArmyActions(BattleInfo battle, boolean isSim) {
-        List<BaseUnit> enemies = battle.enemyUnits;
-        if (0 == enemies.size()) {
+        List<BotUnit> enemies = battle.enemyUnits;
+        if (enemies.isEmpty()) {
             LogUtil.printInfo(battle.map.getCurrentRoundNo(), "Action][Enemy", " no enemies to action. ");
         }
-        List<BaseUnit> atRestorePlaceEnemies = new ArrayList<BaseUnit>();
-        for (BaseUnit enemy : enemies) {
+        List<BotUnit> atRestorePlaceEnemies = new ArrayList<>();
+        for (BotUnit enemy : enemies) {
             if (battle.map.isRestorePlace(enemy.currentPositionMap)) {
                 atRestorePlaceEnemies.add(enemy);
             }
         }
         LogUtil.printInfo(battle.map.getCurrentRoundNo(), "Action][Enemy", atRestorePlaceEnemies.size()
                 + " armies at restore place(s).");
-        for (BaseUnit enemy : atRestorePlaceEnemies) {
+        for (BotUnit enemy : atRestorePlaceEnemies) {
             if (!enemy.isEvacuated) {
                 action(battle, enemy, isSim);
             }
         }
-        List<BaseUnit> weakEnemies = new ArrayList<BaseUnit>();
-        for (BaseUnit enemy : enemies) {
-            if (enemy.isWeak(battle) && !enemy.isEvacuated) {
+        List<BotUnit> weakEnemies = new ArrayList<>();
+        for (BotUnit enemy : enemies) {
+            if (enemy.isWeak() && !enemy.isEvacuated) {
                 weakEnemies.add(enemy);
             }
         }
         LogUtil.printInfo(battle.map.getCurrentRoundNo(), "Action][Enemy", weakEnemies.size() + " armies is(are) weak.");
-        for (BaseUnit enemy : weakEnemies) {
+        for (BotUnit enemy : weakEnemies) {
             if (!enemy.roundFinished && !enemy.isEvacuated) {
                 action(battle, enemy, isSim);
             }
         }
-        for (BaseUnit enemy : enemies) {
+        for (BotUnit enemy : enemies) {
             if (!enemy.roundFinished && !enemy.isEvacuated) {
                 action(battle, enemy, isSim);
             }
         }
     }
 
-    private static void action(BattleInfo bi, BaseUnit bu, boolean isSim) {
+    private static void action(BattleInfo bi, BotUnit bu, boolean isSim) {
         if (bu.isEvacuated) {
             LogUtil.printInfo(bi.map.getCurrentRoundNo(), "action", bu + " is already out.");
             return;

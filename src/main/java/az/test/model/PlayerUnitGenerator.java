@@ -1,18 +1,28 @@
 package az.test.model;
 
+import az.test.battle.BattleInfo;
 import az.test.exception.MaxItemsLimitedException;
-import az.test.model.army.bow.BowSoilder;
+import az.test.model.army.bow.BowSoldier;
 import az.test.model.army.foot.ShortArmed;
 import az.test.model.army.ride.LightRide;
-import az.test.model.item.GreenDragonCrescentBlade;
 import az.test.model.item.SnakeSpear;
-import az.test.model.item.Weapon;
 import az.test.model.item.consumption.FireSpells;
 import az.test.reko3ibm.ActionAIType;
 
 public class PlayerUnitGenerator {
-	public static ShortArmed loadLiuBei(int y, int x, ActionAIType aiType) {
-		ShortArmed lb = new ShortArmed();
+	static BattleInfo battleInfo;
+
+	private static class SingletonInner {
+		private static final PlayerUnitGenerator baseUnitGenerator = new PlayerUnitGenerator();
+	}
+
+	public static PlayerUnitGenerator getInstance(BattleInfo battleInfo) {
+		PlayerUnitGenerator.battleInfo = battleInfo;
+		return SingletonInner.baseUnitGenerator;
+	}
+
+	public ShortArmed loadLiuBei(int y, int x, ActionAIType aiType) {
+		ShortArmed lb = new ShortArmed(battleInfo);
 		lb.name = "LiuBei";
 		lb.level = 1;
 		lb.exp = 0;
@@ -41,8 +51,8 @@ public class PlayerUnitGenerator {
 		return lb;
 	}
 
-	public static LightRide loadGuanyu(int y, int x, ActionAIType aiType) {
-		LightRide gy = new LightRide();
+	public LightRide loadGuanyu(int y, int x, ActionAIType aiType) {
+		LightRide gy = new LightRide(battleInfo);
 		gy.name = "Guanyu";
 		gy.level = 1;
 		gy.exp = 0;
@@ -68,8 +78,8 @@ public class PlayerUnitGenerator {
 		return gy;
 	}
 
-	public static LightRide loadZhangfei(int y, int x, ActionAIType aiType) {
-		LightRide zf = new LightRide();
+	public LightRide loadZhangfei(int y, int x, ActionAIType aiType) {
+		LightRide zf = new LightRide(battleInfo);
 		zf.name = "Zhangfei";
 		zf.level = 1;
 		zf.exp = 0;
@@ -94,8 +104,8 @@ public class PlayerUnitGenerator {
 		return zf;
 	}
 
-	public static LightRide loadHuaxiong(int y, int x, ActionAIType aiType) {
-		LightRide hx = new LightRide();
+	public LightRide loadHuaxiong(int y, int x, ActionAIType aiType) {
+		LightRide hx = new LightRide(battleInfo);
 		hx.name = "Huaxiong";
 		hx.level = 5;
 		hx.exp = 0;
@@ -115,8 +125,8 @@ public class PlayerUnitGenerator {
 		return hx;
 	}
 
-	public static BowSoilder loadLisu(int y, int x, ActionAIType aiType) {
-		BowSoilder ls = new BowSoilder();
+	public BowSoldier loadLisu(int y, int x, ActionAIType aiType) {
+		BowSoldier ls = new BowSoldier(battleInfo);
 		ls.name = "Lisu";
 		ls.level = 2;
 		ls.exp = 0;
@@ -136,8 +146,8 @@ public class PlayerUnitGenerator {
 		return ls;
 	}
 
-	public static ShortArmed loadHuzhen(int y, int x, ActionAIType aiType) {
-		ShortArmed hz = new ShortArmed();
+	public ShortArmed loadHuzhen(int y, int x, ActionAIType aiType) {
+		ShortArmed hz = new ShortArmed(battleInfo);
 		hz.name = "Huzhen";
 		hz.level = 2;
 		hz.exp = 0;
@@ -157,8 +167,8 @@ public class PlayerUnitGenerator {
 		return hz;
 	}
 
-	public static ShortArmed loadZhaocen(int y, int x, ActionAIType aiType) {
-		ShortArmed zc = new ShortArmed();
+	public ShortArmed loadZhaocen(int y, int x, ActionAIType aiType) {
+		ShortArmed zc = new ShortArmed(battleInfo);
 		zc.name = "Zhaocen";
 		zc.level = 2;
 		zc.exp = 0;
@@ -178,8 +188,8 @@ public class PlayerUnitGenerator {
 		return zc;
 	}
 
-	public static ShortArmed loadFootmanArmy(int y, int x, int level, ActionAIType aiType) {
-		ShortArmed bbd = new ShortArmed();
+	public ShortArmed loadFootmanArmy(int y, int x, int level, ActionAIType aiType) {
+		ShortArmed bbd = new ShortArmed(battleInfo);
 		bbd.name = "BuBingDui";
 		bbd.level = level;
 		bbd.exp = 0;

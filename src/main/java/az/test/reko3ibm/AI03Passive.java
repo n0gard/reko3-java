@@ -6,9 +6,10 @@ import java.util.List;
 import az.test.battle.BattleInfo;
 import az.test.exception.CounterattackHappenedException;
 import az.test.exception.OutOfAttackRangeException;
+import az.test.model.army.BotUnit;
 import az.test.model.army.BaseUnit;
 import az.test.model.army.bow.Bow;
-import az.test.model.army.bow.BowSoilder;
+import az.test.model.army.bow.BowSoldier;
 import az.test.model.map.MapItem;
 import az.test.util.LogUtil;
 
@@ -20,7 +21,7 @@ public class AI03Passive extends ActionAIType {
     }
 
     @Override
-    public void action(BattleInfo battle, BaseUnit army, boolean isSim) {
+    public void action(BattleInfo battle, BotUnit army, boolean isSim) {
         LogUtil.printLog(battle.map.getCurrentRoundNo(), "action", army.name + "[" + army.y + "," + army.x + "]",
                 "AI03", "action start");
         // caculate action value
@@ -106,7 +107,7 @@ public class AI03Passive extends ActionAIType {
                         }
                     }
                 } else {
-                    if (army instanceof BowSoilder) {
+                    if (army instanceof BowSoldier) {
                         if (mi.y - 1 >= 0 && mi.x + 1 < battle.map.map[0].length) {
                             MapItem northWest = battle.map.map[mi.y - 1][mi.x + 1];
                             if (null != northWest.army && battle.playerUnits.contains(northWest.army)) {

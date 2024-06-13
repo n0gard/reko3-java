@@ -1,11 +1,13 @@
 package az.test.battle;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import az.test.battle.enums.Weather;
 import az.test.exception.MaxPlayerUnitsLimitedException;
 import az.test.map.BattleMap;
+import az.test.model.army.BotUnit;
 import az.test.model.army.BaseUnit;
 import az.test.model.army.other.MilitaryBand;
 import az.test.model.army.ride.Rider;
@@ -17,17 +19,17 @@ import az.test.util.RandomHelper;
 import lombok.Data;
 
 @Data
-public class BattleInfo {
+public class BattleInfo implements Serializable {
     public List<Weather> weatherList;
     public int lastRoundWeatherCode = 2;
     public List<Integer> weatherRands = new ArrayList<>();
     public List<BaseUnit> playerUnits = new ArrayList<>();
     public List<BaseUnit> outOfBattlePlayerUnits = new ArrayList<>();
     public static final int MAX_PLAYER_UNITS = 20;
-    public List<BaseUnit> friendUnits = new ArrayList<>();
-    public List<BaseUnit> outOfBattleFriendUnits = new ArrayList<>();
-    public List<BaseUnit> enemyUnits = new ArrayList<>();
-    public List<BaseUnit> outOfBattleEnemyUnits = new ArrayList<>();
+    public List<BotUnit> friendUnits = new ArrayList<>();
+    public List<BotUnit> outOfBattleFriendUnits = new ArrayList<>();
+    public List<BotUnit> enemyUnits = new ArrayList<>();
+    public List<BotUnit> outOfBattleEnemyUnits = new ArrayList<>();
     public BattleMap map;
     public long timestamp = 0L;
 
@@ -66,7 +68,7 @@ public class BattleInfo {
         bu.currentPositionMap = map.map[bu.y][bu.x];
     }
 
-    public List<BaseUnit> loadEnemyUnit(BaseUnit bu) {
+    public List<BotUnit> loadEnemyUnit(BotUnit bu) {
         bu.armyType = ArmyType.ENEMY;
         if (null == enemyUnits) {
             enemyUnits = new ArrayList<>();
@@ -81,7 +83,7 @@ public class BattleInfo {
         return enemyUnits;
     }
 
-    public List<BaseUnit> loadFriendUnit(BaseUnit bu) {
+    public List<BotUnit> loadFriendUnit(BotUnit bu) {
         if (null == friendUnits) {
             friendUnits = new ArrayList<>();
         }

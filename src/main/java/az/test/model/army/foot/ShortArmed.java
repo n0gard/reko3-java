@@ -1,9 +1,12 @@
 package az.test.model.army.foot;
 
-public class ShortArmed extends Footman {
+import az.test.battle.BattleInfo;
+import az.test.model.army.CrossAttack;
 
-	public ShortArmed() {
-		super();
+public class ShortArmed extends Infantry {
+
+	public ShortArmed(BattleInfo battleInfo) {
+		super(battleInfo);
 		apBase = 40;
 		dpBase = 40;
 	}

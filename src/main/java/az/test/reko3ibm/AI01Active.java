@@ -3,6 +3,7 @@ package az.test.reko3ibm;
 import az.test.battle.BattleInfo;
 import az.test.exception.CounterattackHappenedException;
 import az.test.exception.OutOfAttackRangeException;
+import az.test.model.army.BotUnit;
 import az.test.model.army.BaseUnit;
 import az.test.model.map.MapItem;
 import az.test.util.LogUtil;
@@ -17,7 +18,7 @@ public class AI01Active extends ActionAIType {
     }
 
     @Override
-    public void action(BattleInfo battle, BaseUnit army, boolean isSim) {
+    public void action(BattleInfo battle, BotUnit army, boolean isSim) {
         LogUtil.printLog(battle.map.getCurrentRoundNo(), "action", army.name, "AI01", "action start");
         // caculate action value
         Action[][] actionValuesArray = army.generateMyActionValues(battle);

@@ -1,48 +1,31 @@
 package az.test.model.army;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-
 import az.test.battle.BattleInfo;
 import az.test.exception.CounterattackHappenedException;
 import az.test.exception.MaxItemsLimitedException;
 import az.test.exception.OutOfAttackRangeException;
 import az.test.model.army.bow.Bow;
-import az.test.model.army.bow.BowSoilder;
-import az.test.model.army.bow.Liannu;
-import az.test.model.army.bow.StoneCar;
-import az.test.model.army.foot.Chariot;
-import az.test.model.army.foot.Footman;
-import az.test.model.army.foot.LongArmed;
+import az.test.model.army.foot.Infantry;
 import az.test.model.army.foot.ShortArmed;
 import az.test.model.army.other.Barbarian;
 import az.test.model.army.other.BeastArmy;
 import az.test.model.army.other.MartialArtist;
 import az.test.model.army.ride.LightRide;
 import az.test.model.army.ride.Rider;
-import az.test.model.army.theif.Theif;
+import az.test.model.army.theif.Thief;
 import az.test.model.enums.ArmyType;
-import az.test.model.item.Book;
-import az.test.model.item.Commandment;
-import az.test.model.item.ImperialJadeSeal;
-import az.test.model.item.Item;
-import az.test.model.item.SupportReport;
-import az.test.model.item.Weapon;
-import az.test.model.map.Abatis;
-import az.test.model.map.Barrack;
-import az.test.model.map.Forest;
-import az.test.model.map.Grassland;
-import az.test.model.map.MapItem;
-import az.test.model.map.Mountain;
-import az.test.model.map.Village;
+import az.test.model.item.*;
+import az.test.model.map.*;
 import az.test.reko3ibm.Action;
 import az.test.reko3ibm.ActionAIType;
 import az.test.util.LogUtil;
-import az.test.util.ObjectCopyUtil;
 import az.test.util.RandomHelper;
 
-public class BaseUnit implements Serializable {
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+public abstract class BaseUnit implements Serializable {
     // personal attributes
     public String name;
     public int level;
@@ -81,7 +64,7 @@ public class BaseUnit implements Serializable {
     public int dpBase;
 
     public int moveAbility;
-    public List<MapItem> canMoveToCoordinateRange = new ArrayList<MapItem>();
+    public List<MapItem> canMoveToCoordinateRange = new ArrayList<>();
 
     // current position related to battle map
     public int x;
@@ -99,35 +82,11 @@ public class BaseUnit implements Serializable {
     public BaseUnit specialEnemy;
     public ArmyType armyType;
 
-    public BaseUnit(BaseUnit bu) {
-        if (null == bu) {
-            return;
-        }
-        name = bu.name;
-        level = bu.level;
-        exp = bu.exp;
-        intelligence = bu.intelligence;
-        force = bu.force;
-        defense = bu.defense;
-        items = ObjectCopyUtil.deepCopy(bu.items);
-        armyHPBase = bu.armyHPBase;
-        armyHPInc = bu.armyHPInc;
-        currentArmyHP = bu.currentArmyHP;
-        currentMorale = bu.currentMorale;
-        currentMana = bu.currentMana;
-        apBase = bu.apBase;
-        dpBase = bu.dpBase;
-        moveAbility = bu.moveAbility;
-        x = bu.x;
-        y = bu.y;
-        currentPositionMap = new MapItem(bu.currentPositionMap, this);
-        isInChaos = bu.isInChaos;
-        roundFinished = bu.roundFinished;
-        isEvacuated = bu.isEvacuated;
-        isLord = bu.isLord;
-        aiType = bu.aiType;
-        specialEnemy = new BaseUnit(bu.specialEnemy);
-        armyType = bu.armyType;
+    public BattleInfo battle;
+
+
+    public BaseUnit(BattleInfo battle) {
+        this.battle = battle;
     }
 
     public List<Item> addItem(Item item) throws MaxItemsLimitedException {
@@ -535,38 +494,22 @@ public class BaseUnit implements Serializable {
         if (null == mi.army) {
             return false;
         } else {
-            if (mi.army.y == y && mi.army.x == x) {
-                return false;
-            } else {
-                return true;
-            }
+            return mi.army.y != y || mi.army.x != x;
         }
     }
 
     private boolean isSurroundByOppositeArmy(BattleInfo battle, int y, int x) {
         if (y - 1 >= 0) {
-            MapItem northItem = battle.map.map[y - 1][x];
-            if (existOtherArmy(battle, northItem)) {
-                return true;
-            }
+            return existOtherArmy(battle, battle.map.map[y - 1][x]);
         }
         if (x + 1 < battle.map.map[0].length) {
-            MapItem eastItem = battle.map.map[y][x + 1];
-            if (existOtherArmy(battle, eastItem)) {
-                return true;
-            }
+            return existOtherArmy(battle, battle.map.map[y][x + 1]);
         }
         if (y + 1 < battle.map.map.length) {
-            MapItem southItem = battle.map.map[y + 1][x];
-            if (existOtherArmy(battle, southItem)) {
-                return true;
-            }
+            return existOtherArmy(battle, battle.map.map[y + 1][x]);
         }
         if (x - 1 >= 0) {
-            MapItem westItem = battle.map.map[y][x - 1];
-            if (existOtherArmy(battle, westItem)) {
-                return true;
-            }
+            return existOtherArmy(battle, battle.map.map[y][x - 1]);
         }
         return false;
     }
@@ -858,7 +801,7 @@ public class BaseUnit implements Serializable {
             if (enemyAttack) {
                 battle.outOfBattlePlayerUnits.add(target);
             } else {
-                battle.outOfBattleEnemyUnits.add(target);
+                battle.outOfBattleEnemyUnits.add((BotUnit) target);
             }
             if (!isSim)
                 LogUtil.printInfo(battle.map.getCurrentRoundNo(), "INFO", target + " has been kicked out.");
@@ -895,8 +838,8 @@ public class BaseUnit implements Serializable {
                         + target.currentArmyHP + " Morale: " + target.currentMorale + ", kick-out?" + (target.isEvacuated));
 
         // Counter attack determination
-        if (target instanceof Theif || target instanceof MartialArtist) {
-            if (this instanceof Theif || this instanceof MartialArtist || this instanceof Rider
+        if (target instanceof Thief || target instanceof MartialArtist) {
+            if (this instanceof Thief || this instanceof MartialArtist || this instanceof Rider
                     || this instanceof Barbarian || this instanceof BeastArmy) {
                 if (!target.isEvacuated) {
                     if (!target.isInChaos) {
@@ -914,7 +857,7 @@ public class BaseUnit implements Serializable {
     }
 
     public int generateDefensiveCorrection(BaseUnit target) {
-        if (this instanceof Footman) {
+        if (this instanceof Infantry) {
             if (target instanceof Bow) {
                 return target.calculateDP() - target.calculateDP() / 4;
             } else if (target instanceof Rider) {
@@ -923,11 +866,11 @@ public class BaseUnit implements Serializable {
         } else if (this instanceof Bow) {
             if (target instanceof Rider) {
                 return target.calculateDP() - target.calculateDP() / 4;
-            } else if (target instanceof Footman) {
+            } else if (target instanceof Infantry) {
                 return target.calculateDP() + target.calculateDP() / 4;
             }
         } else if (this instanceof Rider) {
-            if (target instanceof Footman) {
+            if (target instanceof Infantry) {
                 return target.calculateDP() - target.calculateDP() / 4;
             } else if (target instanceof Rider) {
                 return target.calculateDP() + target.calculateDP() / 4;
@@ -971,150 +914,27 @@ public class BaseUnit implements Serializable {
         // this.x = -99;
     }
 
-    public boolean isWeak(BattleInfo battle) {
+    public boolean isWeak() {
         if (this.currentArmyHP < initMaxArmyHP() * 0.4 || this.currentMorale < 40) {
-            LogUtil.printInfo(battle.map.getCurrentRoundNo(), this.name + "[" + this.y + "," + this.x + "]"
+            System.out.println(this.name + "[" + this.y + "," + this.x + "]"
                     + " is weak.");
             return true;
         }
         return false;
     }
 
-    public Action[][] generateMyActionValues(BattleInfo battle) {
-        // step 0 init values
-        Action[][] actionValuesArray = new Action[battle.map.map.length][battle.map.map[0].length];
-        fillValuesArray(actionValuesArray, 1);
-        // step 1 deal with weak army
-        if (this.isWeak(battle)) {
-            increaseRestorePlacesValue(battle.map.map, actionValuesArray, 50);
-        }
-        // step 2 attack
-        for (BaseUnit target : battle.playerUnits) {
-            if (target.isEvacuated) {
-                continue;
-            }
-            int attackBaseValue = (calculateAP() - generateDefensiveCorrection(target) / 2)
-                    * (100 - queryMapItemCorrection(target.currentPositionMap)) / 100 + this.currentArmyHP / 6;
-            if (null != this.specialEnemy) {
-                if (target.name.equals(this.specialEnemy.name)) {
-                    attackBaseValue += 30;
-                }
-            }
-            int attackActionValue = attackBaseValue / 16;
-            if (attackActionValue < 1) {
-                attackActionValue = 1;
-            }
-            // calculate attack place
-            /**
-             * O T O<br>
-             * T @ T<br>
-             *   O T O<br>
-             */
-            if (!(this instanceof Bow)) {
-                fillTargetAndActionValue(actionValuesArray, target.y - 1, target.x, attackActionValue, target);
-                fillTargetAndActionValue(actionValuesArray, target.y, target.x + 1, attackActionValue, target);
-                fillTargetAndActionValue(actionValuesArray, target.y + 1, target.x, attackActionValue, target);
-                fillTargetAndActionValue(actionValuesArray, target.y, target.x - 1, attackActionValue, target);
-            }
-            /**
-             * T O T<br>
-             * O @ O<br>
-             *   T O T<br>
-             */
-            if (this instanceof LongArmed || this instanceof Chariot || this instanceof MartialArtist) {
-                fillTargetAndActionValue(actionValuesArray, target.y - 1, target.x + 1, attackActionValue, target);
-                fillTargetAndActionValue(actionValuesArray, target.y + 1, target.x + 1, attackActionValue, target);
-                fillTargetAndActionValue(actionValuesArray, target.y - 1, target.x - 1, attackActionValue, target);
-                fillTargetAndActionValue(actionValuesArray, target.y + 1, target.x - 1, attackActionValue, target);
-            }
-            /**
-             * T O T<br>
-             * O @ O<br>
-             *   T O T<br>
-             */
-            if (this instanceof Bow) {
-                fillTargetAndActionValue(actionValuesArray, target.y - 1, target.x + 1, attackActionValue, target);
-                fillTargetAndActionValue(actionValuesArray, target.y + 1, target.x + 1, attackActionValue, target);
-                fillTargetAndActionValue(actionValuesArray, target.y - 1, target.x - 1, attackActionValue, target);
-                fillTargetAndActionValue(actionValuesArray, target.y + 1, target.x - 1, attackActionValue, target);
-            }
-            /**
-             * O O T O O<br>
-             * O O O O O<br>
-             * T O @ O T<br>
-             * O O O O T<br>
-             * O O T O O<br>
-             */
-            if (this instanceof BowSoilder) {
-                fillTargetAndActionValue(actionValuesArray, target.y, target.x + 2, attackActionValue, target);
-                fillTargetAndActionValue(actionValuesArray, target.y, target.x - 2, attackActionValue, target);
-                fillTargetAndActionValue(actionValuesArray, target.y + 2, target.x, attackActionValue, target);
-                fillTargetAndActionValue(actionValuesArray, target.y - 2, target.x, attackActionValue, target);
-            }
-            /**
-             * O T T T O<br>
-             * T O O O T<br>
-             * T O @ O T<br>
-             * T O O O T<br>
-             * O T T T O<br>
-             */
-            if (this instanceof Liannu || this instanceof StoneCar) {
-                fillTargetAndActionValue(actionValuesArray, target.y - 2, target.x - 1, attackActionValue, target);
-                fillTargetAndActionValue(actionValuesArray, target.y + 2, target.x - 1, attackActionValue, target);
-                fillTargetAndActionValue(actionValuesArray, target.y - 2, target.x, attackActionValue, target);
-                fillTargetAndActionValue(actionValuesArray, target.y + 2, target.x, attackActionValue, target);
-                fillTargetAndActionValue(actionValuesArray, target.y - 2, target.x + 1, attackActionValue, target);
-                fillTargetAndActionValue(actionValuesArray, target.y + 2, target.x + 1, attackActionValue, target);
-                fillTargetAndActionValue(actionValuesArray, target.y - 1, target.x + 2, attackActionValue, target);
-                fillTargetAndActionValue(actionValuesArray, target.y - 1, target.x - 2, attackActionValue, target);
-                fillTargetAndActionValue(actionValuesArray, target.y, target.x + 2, attackActionValue, target);
-                fillTargetAndActionValue(actionValuesArray, target.y, target.x - 2, attackActionValue, target);
-                fillTargetAndActionValue(actionValuesArray, target.y + 1, target.x + 2, attackActionValue, target);
-                fillTargetAndActionValue(actionValuesArray, target.y + 1, target.x - 2, attackActionValue, target);
-            }
-            /**
-             * O O O T O O O<br>
-             * O T O O O T O<br>
-             * O O O O O O O<br>
-             * T O O @ O O T<br>
-             * O O O O O O O<br>
-             * O T O O O T O<br>
-             * O O O T O O O<br>
-             */
-            if (this instanceof StoneCar) {
-                fillTargetAndActionValue(actionValuesArray, target.y, target.x + 3, attackActionValue, target);
-                fillTargetAndActionValue(actionValuesArray, target.y, target.x - 3, attackActionValue, target);
-                fillTargetAndActionValue(actionValuesArray, target.y + 3, target.x, attackActionValue, target);
-                fillTargetAndActionValue(actionValuesArray, target.y - 3, target.x, attackActionValue, target);
-                fillTargetAndActionValue(actionValuesArray, target.y - 2, target.x + 2, attackActionValue, target);
-                fillTargetAndActionValue(actionValuesArray, target.y + 2, target.x + 2, attackActionValue, target);
-                fillTargetAndActionValue(actionValuesArray, target.y + 2, target.x - 2, attackActionValue, target);
-                fillTargetAndActionValue(actionValuesArray, target.y - 2, target.x - 2, attackActionValue, target);
-            }
-        }
-        return actionValuesArray;
-    }
 
-    private void fillTargetAndActionValue(Action[][] actionArray, int y, int x, int value, BaseUnit target) {
-        if (y >= actionArray.length || x >= actionArray[0].length || y < 0 || x < 0) {
-            return;
-        }
-        if (value > actionArray[y][x].actionValue) {
-            actionArray[y][x].actionType = "Attack";
-            actionArray[y][x].actionValue = value;
-            actionArray[y][x].target = target;
-        }
-    }
-
-    private void fillValuesArray(Action[][] values, int value) {
+    protected void fillValuesArray(Action[][] values, int value) {
         for (int j = 0; j < values.length; j++) {
             for (int i = 0; i < values[j].length; i++) {
-                values[j][i] = new Action();
+                values[j][i] = new Action(value);
             }
         }
     }
 
-    private void increaseRestorePlacesValue(MapItem[][] map, Action[][] values, int value) {
+
+
+    protected void increaseRestorePlacesValue(MapItem[][] map, Action[][] values, int value) {
         for (int j = 0; j < values.length; j++) {
             for (int i = 0; i < values[j].length; i++) {
                 if (map[j][i] instanceof Village || map[j][i] instanceof Abatis || map[j][i] instanceof Barrack)
@@ -1122,6 +942,10 @@ public class BaseUnit implements Serializable {
             }
         }
     }
+
+
+
+
 
     @Override
     public int hashCode() {
@@ -1165,7 +989,7 @@ public class BaseUnit implements Serializable {
 
     @Override
     public String toString() {
-        return name + ",Lv:" + this.level + "[" + y + "," + x + "][" + force + "," + intelligence + "," + defense + "],[AP:" + calculateAP() + "][DP:" + calculateDP() + "]HP:" + currentArmyHP
+        return name + ",isLord?" + isLord + ",Lv:" + this.level + "[" + y + "," + x + "][" + force + "," + intelligence + "," + defense + "],[AP:" + calculateAP() + "][DP:" + calculateDP() + "]HP:" + currentArmyHP
                 + ",Mo:" + currentMorale + ",Exp: " + exp;
     }
 

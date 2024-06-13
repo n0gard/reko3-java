@@ -1,10 +1,12 @@
 package az.test.map;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import az.test.battle.BattleInfo;
 import az.test.model.army.BaseUnit;
+import az.test.model.army.BotUnit;
 import az.test.model.map.Abatis;
 import az.test.model.map.Barrack;
 import az.test.model.map.MapItem;
@@ -14,47 +16,19 @@ import lombok.Data;
 import org.lwjgl.system.CallbackI;
 
 @Data
-public abstract class BattleMap {
+public abstract class BattleMap implements Serializable {
     public String battleName;
     public MapItem[][] map;
     public List<MapItem> restores = new ArrayList<>();
-    public List<BaseUnit> enemies = new ArrayList<>();
-    public List<BaseUnit> friends = new ArrayList<>();
+    public List<BotUnit> enemies = new ArrayList<>();
+    public List<BotUnit> friends = new ArrayList<>();
     public int roundLimit;
     public int currentRoundNo = 1;
-    public BaseUnit lord;
+    public BotUnit lord;
     public List<BaseUnit> anyones = new ArrayList<>();
     public List<BaseUnit> someones = new ArrayList<>();
     public List<MapItem> escapePlaces = new ArrayList<>();
     public boolean isAllSurvivedUnitGainExtraExp = false;
-
-    public BattleMap() {
-    }
-
-    public BattleMap(BattleMap bm) {
-        battleName = bm.getBattleName();
-        map = new MapItem[map.length][map[0].length];
-        for (int i = 0; i < map.length; i++) {
-            for (int j = 0; j < map[i].length; j++) {
-                map[i][j] = new MapItem(bm.map[i][j], bm.map[i][j].army);
-            }
-        }
-        restores = ObjectCopyUtil.deepCopy(bm.restores);
-        enemies = ObjectCopyUtil.deepCopy(bm.enemies);
-        friends = ObjectCopyUtil.deepCopy(bm.friends);
-        roundLimit = bm.roundLimit;
-        currentRoundNo = bm.getCurrentRoundNo();
-        lord = new BaseUnit(bm.lord);
-        anyones = ObjectCopyUtil.deepCopy(bm.anyones);
-        someones = ObjectCopyUtil.deepCopy(bm.someones);
-        escapePlaces = ObjectCopyUtil.deepCopy(bm.escapePlaces);
-        isAllSurvivedUnitGainExtraExp = bm.isAllSurvivedUnitGainExtraExp;
-    }
-
-    @Override
-    public int hashCode() {
-        return currentRoundNo >> 3 | lord.force | lord.intelligence | lord.defense;
-    }
 
     public void fillingMap(int[][] mapIds) {
         map = new MapItem[mapIds.length][mapIds[0].length];
@@ -66,6 +40,7 @@ public abstract class BattleMap {
     }
 
     public boolean isPlayerSuccess() {
+        System.out.println("[BattleMap]isPlayerSuccess lord:" + lord);
         if (null != lord && lord.isEvacuated) {
             System.out.println("[BattleMap]lord evacuated");
             return true;
@@ -99,7 +74,7 @@ public abstract class BattleMap {
 
     }
 
-    public void loadEnemy(BaseUnit enemy) {
+    public void loadEnemy(BotUnit enemy) {
         enemies.add(enemy);
     }
 

@@ -59,7 +59,7 @@ public class Reko3Aii extends UCT<Reko3Transition, DefaultNode<Reko3Transition>>
             battle.loadMap(new BattleMap000TEST001());
             battle.map.loadEnemies(battle);
             // load player
-            BaseUnit royalUncleLiu = PlayerUnitGenerator.loadLiuBei(1, 1, null);
+            BaseUnit royalUncleLiu = PlayerUnitGenerator.getInstance(battle).loadLiuBei(1, 1, null);
             battle.addPlayerUnit(royalUncleLiu);
             battle.map.loadSomeone(royalUncleLiu);
         } catch (MaxPlayerUnitsLimitedException e) {
@@ -216,11 +216,11 @@ public class Reko3Aii extends UCT<Reko3Transition, DefaultNode<Reko3Transition>>
 
     @Override
     public Set<Reko3Transition> getPossibleTransitions() {
-        if (IS_SIM) {
-            System.out.println("[Reko3A-Simulation]getPossibleTransitions");
-        } else {
-            System.out.println("[Reko3A]getPossibleTransitions");
-        }
+//        if (IS_SIM) {
+//            System.out.println("[Reko3A-Simulation]getPossibleTransitions");
+//        } else {
+//            System.out.println("[Reko3A]getPossibleTransitions");
+//        }
         Set<Reko3Transition> moves = new HashSet<Reko3Transition>();
         BaseUnit currentPlayer = pickPlayerUnit();
         if (null == currentPlayer) {
@@ -248,9 +248,9 @@ public class Reko3Aii extends UCT<Reko3Transition, DefaultNode<Reko3Transition>>
                 // System.out.println(r3t);
             }
         }
-        for (Transition t : moves) {
-            System.out.println("[Reko3A]getPossibleTransitions " + t);
-        }
+//        for (Transition t : moves) {
+//            System.out.println("[Reko3A]getPossibleTransitions " + t);
+//        }
         return moves;
     }
 
@@ -280,17 +280,17 @@ public class Reko3Aii extends UCT<Reko3Transition, DefaultNode<Reko3Transition>>
 
     @Override
     public Reko3Transition expansionTransition(Set<Reko3Transition> possibleTransitions) {
-        if (IS_SIM) {
-            System.out.println("[Reko3A-Simulation]expansionTransition");
-        } else {
-            System.out.println("[Reko3A]expansionTransition");
-        }
+//        if (IS_SIM) {
+//            System.out.println("[Reko3A-Simulation]expansionTransition");
+//        } else {
+//            System.out.println("[Reko3A]expansionTransition");
+//        }
         List<Reko3Transition> transitions = new ArrayList<Reko3Transition>(possibleTransitions);
         int choosePossibleTransitionIdx = (int) Math.floor(Math.random() * possibleTransitions.size());
-        System.out.println("[Reko3A]expansionTransition possibleTransitions.size()->" + possibleTransitions.size());
-        System.out.println("[Reko3A]expansionTransition choosePossibleTransitionIdx->" + choosePossibleTransitionIdx);
+//        System.out.println("[Reko3A]expansionTransition possibleTransitions.size()->" + possibleTransitions.size());
+//        System.out.println("[Reko3A]expansionTransition choosePossibleTransitionIdx->" + choosePossibleTransitionIdx);
         Reko3Transition transition = transitions.get(choosePossibleTransitionIdx);
-        System.out.println("[Reko3A]expansionTransition choosePossibleTransitionUUID->" + transition.getTransitionId());
+//        System.out.println("[Reko3A]expansionTransition choosePossibleTransitionUUID->" + transition.getTransitionId());
         return transition;
     }
 

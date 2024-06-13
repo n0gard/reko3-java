@@ -6,4 +6,8 @@ public class Action {
 	public int actionValue = 1;
 	public BaseUnit target = null;
 	public String actionType = "Rest";
+
+	public Action(int actionValue) {
+		this.actionValue = actionValue;
+	}
 }
