@@ -26,7 +26,6 @@ public class BattleInfoSnapshot {
     private long timestamp = 0L;
 
     public BattleInfoSnapshot(BattleInfo battleInfo) {
-        super();
         setTimestamp(battleInfo.getTimestamp());
         setMap((BattleMap)ObjectCopyUtil.deepCopy(battleInfo.getMap()));
         setWeatherList(ObjectCopyUtil.deepCopy(battleInfo.weatherList));

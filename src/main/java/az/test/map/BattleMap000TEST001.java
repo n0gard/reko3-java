@@ -7,6 +7,7 @@ import az.test.model.army.BotUnit;
 import az.test.model.map.MapItem;
 import az.test.reko3ibm.AI02Standby;
 
+import az.test.util.LogUtil;
 import az.test.util.ObjectCopyUtil;
 import com.alibaba.fastjson.JSON;
 
@@ -30,14 +31,14 @@ public class BattleMap000TEST001 extends BattleMap {
 		bbd.isLord = true;
 		bi.map.lord = bbd;
 		List<BotUnit> loaded = bi.loadEnemyUnit(bi.map.lord);
-		System.out.println("loaded enemy " + loaded);
+		LogUtil.printInfo(bi.map.getCurrentRoundNo(),"loaded enemy " + loaded);
 	}
 
 	public static int[][] mapIds = {
 			//0, 1, 2
 			{ 0, 0, 0 }, // 0
-			{ 0, 0, 0 }, // 1
-			{ 0, 0, 7 }, // 2
+			{ 0, 0, 7 }, // 1
+//			{ 0, 0, 7 }, // 2
 	};// end
 
 	public static void main(String[] args) {
@@ -48,8 +49,7 @@ public class BattleMap000TEST001 extends BattleMap {
 			}
 		}
 
-		System.out.println(JSON.toJSONString(mapItemsTable, true));
+		LogUtil.printInfo(-1, JSON.toJSONString(mapItemsTable, true));
 
-		System.out.printf("%02d%n", 1);
 	}
 }

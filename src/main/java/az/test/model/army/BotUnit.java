@@ -2,6 +2,7 @@ package az.test.model.army;
 
 import az.test.battle.BattleInfo;
 import az.test.reko3ibm.Action;
+import az.test.util.LogUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +42,7 @@ public abstract class BotUnit extends BaseUnit implements BotAction {
                 attackActionValue = 1;
             }
 
-            for(AttackRange ar : attackRangeList) {
+            for (AttackRange ar : attackRangeList) {
                 ar.fillAttackRangeValues(actionValuesArray, target, attackActionValue);
             }
 
@@ -49,12 +50,12 @@ public abstract class BotUnit extends BaseUnit implements BotAction {
         for (int i = 0; i < actionValuesArray.length; i++) {
             for (int j = 0; j < actionValuesArray[i].length; j++) {
                 if (actionValuesArray[i][j].actionValue > 9) {
-                    System.out.print(actionValuesArray[i][j]);
-                }else{
-                    System.out.println(" " + actionValuesArray[i][j]);
+                    LogUtil.printInfo(battle.getMap().getCurrentRoundNo(), actionValuesArray[i][j].toString());
+                } else {
+                    LogUtil.printInfo(battle.getMap().getCurrentRoundNo(), " " + actionValuesArray[i][j]);
                 }
             }
-            System.out.println();
+            LogUtil.printInfo(battle.getMap().getCurrentRoundNo(), "");
         }
         return actionValuesArray;
     }

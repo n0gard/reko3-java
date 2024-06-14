@@ -1,7 +1,9 @@
 package az.test.reko3ibm;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import az.test.battle.BattleInfo;
 import az.test.exception.CounterattackHappenedException;
@@ -24,11 +26,11 @@ public class AI03Passive extends ActionAIType {
     public void action(BattleInfo battle, BotUnit army, boolean isSim) {
         LogUtil.printLog(battle.map.getCurrentRoundNo(), "action", army.name + "[" + army.y + "," + army.x + "]",
                 "AI03", "action start");
-        // caculate action value
+        // calculate action value
         Action[][] actionValuesArray = army.generateMyActionValues(battle);
         String valuesArray2String = parseValuesArray2String(actionValuesArray);
-        // caculate move range
-        army.canMoveToCoordinateRange = new ArrayList<MapItem>();
+        // calculate move range
+        army.canMoveToCoordinateRange = new HashSet<>();
         army.calculateMoveRange(battle, army.moveAbility, army.y, army.x);
         // army.drawMap(army.y, army.x);
         if (findAttackTarget(battle, army, army.canMoveToCoordinateRange)) {
@@ -75,7 +77,7 @@ public class AI03Passive extends ActionAIType {
         }
     }
 
-    private boolean findAttackTarget(BattleInfo battle, BaseUnit army, List<MapItem> range) {
+    private boolean findAttackTarget(BattleInfo battle, BaseUnit army, Set<MapItem> range) {
         for (MapItem mi : range) {
             try {
                 if (!(army instanceof Bow)) {
@@ -159,6 +161,7 @@ public class AI03Passive extends ActionAIType {
                     }
                 }
             } catch (Exception e) {
+                e.printStackTrace();
                 continue;
             }
         }
@@ -167,12 +170,12 @@ public class AI03Passive extends ActionAIType {
 
     private String parseValuesArray2String(Action[][] actions) {
         StringBuilder builder = new StringBuilder("\n");
-        for (int y = 0; y < actions.length; y++) {
+        for (Action[] action : actions) {
             builder.append("[");
             for (int x = 0; x < actions[0].length; x++) {
-                builder.append(actions[y][x].actionValue);
-                if (x < actions[0].length - 1) {
-                    if (actions[y][x].actionValue > 9) {
+                builder.append(action[x].actionValue);
+                if (x < actions[x].length - 1) {
+                    if (action[x].actionValue > 9) {
                         builder.append(",");
                     } else {
                         builder.append(", ");

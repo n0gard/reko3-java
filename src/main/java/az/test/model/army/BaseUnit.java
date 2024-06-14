@@ -23,7 +23,9 @@ import az.test.util.RandomHelper;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public abstract class BaseUnit implements Serializable {
     // personal attributes
@@ -64,7 +66,7 @@ public abstract class BaseUnit implements Serializable {
     public int dpBase;
 
     public int moveAbility;
-    public List<MapItem> canMoveToCoordinateRange = new ArrayList<>();
+    public Set<MapItem> canMoveToCoordinateRange = new HashSet<>();
 
     // current position related to battle map
     public int x;
@@ -196,16 +198,16 @@ public abstract class BaseUnit implements Serializable {
     }
 
     public void drawMap(BattleInfo battle, int targetY, int targetX) {
-        System.out.print("[Round " + battle.map.getCurrentRoundNo() + "][move]   ");
+        LogUtil.printInfo(battle.getMap().getCurrentRoundNo(), "[move]start");
         for (int len = 0; len < battle.map.map[0].length; len++) {
-            System.out.print(String.format("%02d", len) + " ");
+            LogUtil.printInfo(battle.getMap().getCurrentRoundNo(),String.format("%02d", len) + " ");
         }
-        System.out.println();
-        System.out.print("[Round " + battle.map.getCurrentRoundNo() + "][move]   ");
+        LogUtil.printInfo(battle.getMap().getCurrentRoundNo(), "");
+        LogUtil.printInfo(battle.getMap().getCurrentRoundNo(), "[move]end  ");
         for (int len = 0; len < battle.map.map[0].length; len++) {
-            System.out.print("___");
+            System.out.println("___");
         }
-        System.out.println();
+        LogUtil.printInfo(battle.getMap().getCurrentRoundNo(), "");
 
         for (int yyy = 0; yyy < battle.map.map.length; yyy++) {
             LogUtil.printInfoWithNoReturn(battle.map.getCurrentRoundNo(), "move", String.format("%02d", yyy) + "|");
@@ -359,7 +361,7 @@ public abstract class BaseUnit implements Serializable {
             }
             System.out.println();
         }
-        System.out.print("[Round " + battle.map.getCurrentRoundNo() + "][move]   ");
+        LogUtil.printInfo(battle.getMap().getCurrentRoundNo(),"[move]   ");
         for (int len = 0; len < battle.map.map[0].length; len++) {
             System.out.print("---");
         }
@@ -367,12 +369,12 @@ public abstract class BaseUnit implements Serializable {
     }
 
     public void drawMap(BattleInfo battle, String action, int targetY, int targetX) {
-        System.out.print("[Round " + battle.map.getCurrentRoundNo() + "][" + action + "]   ");
+        LogUtil.printInfo(battle.getMap().getCurrentRoundNo(),"[" + action + "]   ");
         for (int len = 0; len < battle.map.map[0].length; len++) {
             System.out.print(String.format("%02d", len) + " ");
         }
         System.out.println();
-        System.out.print("[Round " + battle.map.getCurrentRoundNo() + "][" + action + "]   ");
+        LogUtil.printInfo(battle.getMap().getCurrentRoundNo(),"[" + action + "]   ");
         for (int len = 0; len < battle.map.map[0].length; len++) {
             System.out.print("___");
         }
@@ -472,7 +474,7 @@ public abstract class BaseUnit implements Serializable {
             }
             System.out.println();
         }
-        System.out.print("[Round " + battle.map.getCurrentRoundNo() + "][" + action + "]   ");
+        LogUtil.printInfo(battle.getMap().getCurrentRoundNo(),"[" + action + "]   ");
         for (
 
                 int len = 0; len < battle.map.map[0].length; len++) {
@@ -481,7 +483,7 @@ public abstract class BaseUnit implements Serializable {
         System.out.println();
     }
 
-    private boolean containsMapItem(List<MapItem> list, MapItem mi) {
+    private boolean containsMapItem(Set<MapItem> list, MapItem mi) {
         for (MapItem item : list) {
             if (item.y == mi.y && item.x == mi.x) {
                 return true;
@@ -746,13 +748,6 @@ public abstract class BaseUnit implements Serializable {
         return target;
     }
 
-    /**
-     * @param target
-     * @param isCounterAttack
-     * @param enemyAttack
-     * @throws OutOfAttackRangeException
-     * @throws CounterattackHappenedException
-     */
     public void attack(BattleInfo battle, BaseUnit target, boolean isCounterAttack, boolean enemyAttack, boolean isSim)
             throws OutOfAttackRangeException, CounterattackHappenedException {
         if (null == target) {
@@ -916,7 +911,7 @@ public abstract class BaseUnit implements Serializable {
 
     public boolean isWeak() {
         if (this.currentArmyHP < initMaxArmyHP() * 0.4 || this.currentMorale < 40) {
-            System.out.println(this.name + "[" + this.y + "," + this.x + "]"
+            LogUtil.printInfo(0, this.name + "[" + this.y + "," + this.x + "]"
                     + " is weak.");
             return true;
         }

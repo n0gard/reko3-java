@@ -2,6 +2,7 @@ package tm.mcts.mcts4j.reko3;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import az.test.battle.BattleInfoSnapshot;
 import az.test.util.LogUtil;
@@ -49,7 +50,8 @@ import com.alibaba.fastjson.JSON;
  */
 public class Reko3Aii extends UCT<Reko3Transition, DefaultNode<Reko3Transition>> {
     private BattleInfo battle;
-    private final static Map<String, BattleInfoSnapshot> battleRecordMap = new ConcurrentHashMap<>();
+    private final static Map<Long, BattleInfoSnapshot> battleRecordMap = new ConcurrentHashMap<>();
+    private static final AtomicInteger transitionId = new AtomicInteger(0);
 
     public Reko3Aii() {
         super();
@@ -221,12 +223,12 @@ public class Reko3Aii extends UCT<Reko3Transition, DefaultNode<Reko3Transition>>
 //        } else {
 //            System.out.println("[Reko3A]getPossibleTransitions");
 //        }
-        Set<Reko3Transition> moves = new HashSet<Reko3Transition>();
+        Set<Reko3Transition> moves = new HashSet<>();
         BaseUnit currentPlayer = pickPlayerUnit();
         if (null == currentPlayer) {
             return moves;
         }
-        currentPlayer.canMoveToCoordinateRange = new ArrayList<MapItem>();
+        currentPlayer.canMoveToCoordinateRange = new HashSet<>();
         currentPlayer.calculateMoveRange(battle, currentPlayer.moveAbility, currentPlayer.y, currentPlayer.x);
 
         for (MapItem mi : currentPlayer.canMoveToCoordinateRange) {
@@ -234,19 +236,15 @@ public class Reko3Aii extends UCT<Reko3Transition, DefaultNode<Reko3Transition>>
             BaseUnit target = currentPlayer.calculateAssignedPositionAttackTarget(battle, mi.y, mi.x, currentPlayer.y,
                     currentPlayer.x);
             if (null != target) {
-                r3t = new Reko3Transition(UUID.randomUUID().toString(), currentPlayer, mi.y, mi.x, PlayerAction.ATTACK, target.x, target.y);
+                r3t = new Reko3Transition(transitionId.incrementAndGet(), currentPlayer, mi.y, mi.x, PlayerAction.ATTACK, target.x, target.y);
                 // TODO strategy
                 // TODO item
             } else {
-                r3t = new Reko3Transition(UUID.randomUUID().toString(), currentPlayer,mi.y, mi.x,  PlayerAction.REST, -1,-1);
+                r3t = new Reko3Transition(transitionId.incrementAndGet(), currentPlayer, mi.y, mi.x, PlayerAction.REST, -1, -1);
                 // TODO strategy
                 // TODO item
             }
-            if (!moves.contains(r3t)) {
-                moves.add(r3t);
-                // if (!IS_SIM)
-                // System.out.println(r3t);
-            }
+            moves.add(r3t);
         }
 //        for (Transition t : moves) {
 //            System.out.println("[Reko3A]getPossibleTransitions " + t);

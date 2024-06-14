@@ -50,6 +50,11 @@ public class BattleInfo implements Serializable {
         setOutOfBattleFriendUnits(ObjectCopyUtil.deepCopy(snapshot.getOutOfBattleFriendUnits()));
         setEnemyUnits(ObjectCopyUtil.deepCopy(snapshot.getEnemyUnits()));
         setOutOfBattleEnemyUnits(ObjectCopyUtil.deepCopy(snapshot.getOutOfBattleEnemyUnits()));
+        for (BotUnit bu : getEnemyUnits()) {
+            if (bu.isLord) {
+                getMap().setLord(bu);
+            }
+        }
     }
 
     public void addPlayerUnit(BaseUnit bu) throws MaxPlayerUnitsLimitedException {
@@ -450,7 +455,7 @@ public class BattleInfo implements Serializable {
         boolean allEvacuated = true;
 
         if (getMap().someones.isEmpty()) {
-            System.out.println("[BattleMap]areAllPlayersEvacuatedOrSomeoneEvacuated  someone or anyone not set yet.");
+            LogUtil.printInfo(getMap().getCurrentRoundNo(),"[BattleMap]areAllPlayersEvacuatedOrSomeoneEvacuated  someone or anyone not set yet.");
             return false;
         }
 
@@ -482,7 +487,7 @@ public class BattleInfo implements Serializable {
             weatherRand50Rounds.add((int) (Math.random() * 6.0));
         }
         int last = 2;
-        System.out.println("INIT LAST: " + last);
+        LogUtil.printInfo(-1,"INIT LAST: " + last);
         int current = last;
         int sun = 0;
         int cloud = 0;
@@ -528,14 +533,13 @@ public class BattleInfo implements Serializable {
                     rain++;
                     break;
                 default:
-                    System.out.println("IMPOSSIBLE");
                     imp++;
                     break;
             }
             last = current;
         }
-        System.out.println("--------- SUN: " + sun + " --- CLOUD: " + cloud + " --- RAIN: " + rain + " ------ IMP: "
+        LogUtil.printInfo(-1,"--------- SUN: " + sun + " --- CLOUD: " + cloud + " --- RAIN: " + rain + " ------ IMP: "
                 + imp + " ----------");
-        System.out.println("c0: " + c0 + " c1: " + c1 + " c2:" + c2 + " c3: " + c3 + " c4: " + c4 + " c5: " + c5);
+        LogUtil.printInfo(-1,"c0: " + c0 + " c1: " + c1 + " c2:" + c2 + " c3: " + c3 + " c4: " + c4 + " c5: " + c5);
     }
 }

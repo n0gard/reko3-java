@@ -11,6 +11,7 @@ import az.test.model.map.Abatis;
 import az.test.model.map.Barrack;
 import az.test.model.map.MapItem;
 import az.test.model.map.Village;
+import az.test.util.LogUtil;
 import az.test.util.ObjectCopyUtil;
 import lombok.Data;
 import org.lwjgl.system.CallbackI;
@@ -40,22 +41,22 @@ public abstract class BattleMap implements Serializable {
     }
 
     public boolean isPlayerSuccess() {
-        System.out.println("[BattleMap]isPlayerSuccess lord:" + lord);
+        LogUtil.printInfo(getCurrentRoundNo(),"[BattleMap]isPlayerSuccess lord:" + lord);
         if (null != lord && lord.isEvacuated) {
-            System.out.println("[BattleMap]lord evacuated");
+            LogUtil.printInfo(getCurrentRoundNo(),"[BattleMap]lord evacuated");
             return true;
         }
         if (enemies.isEmpty()) {
-            System.out.println("[BattleMap]enemies evacuated");
+            LogUtil.printInfo(getCurrentRoundNo(),"[BattleMap]enemies evacuated");
             return true;
         }
         if (areAllEscape(someones)) {
-            System.out.println("[BattleMap]someone escaped");
+            LogUtil.printInfo(getCurrentRoundNo(),"[BattleMap]someone escaped");
             isAllSurvivedUnitGainExtraExp = true;
             return true;
         }
         if (areAllEscape(anyones)) {
-            System.out.println("[BattleMap]anyones all evacuated");
+            LogUtil.printInfo(getCurrentRoundNo(),"[BattleMap]anyones all evacuated");
             isAllSurvivedUnitGainExtraExp = true;
             return true;
         }

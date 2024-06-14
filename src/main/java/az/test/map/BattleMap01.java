@@ -58,16 +58,4 @@ public class BattleMap01 extends BattleMap {
 			{ 13, 13, 13, 13, 13, 13, 13, 13, 0, 0, 0, 0, 0, 0, 12, 12, 0, 2, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 }, // 14
 			{ 13, 13, 13, 13, 13, 13, 13, 13, 13, 0, 0, 0, 2, 12, 12, 0, 2, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 } };// 15
 
-	public static void main(String[] args) {
-		MapItem[][] mapItemsTable = new MapItem[16][28];
-		for (int y = 0; y < 16; y++) {
-			for (int x = 0; x < 28; x++) {
-				mapItemsTable[y][x] = MapItem.generateById(mapIds[y][x], y, x);
-			}
-		}
-
-		System.out.println(JSON.toJSONString(mapItemsTable, true));
-
-		System.out.printf("%02d%n", 1);
-	}
 }

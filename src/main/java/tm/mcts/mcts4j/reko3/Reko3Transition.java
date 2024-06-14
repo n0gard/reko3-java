@@ -14,7 +14,7 @@ import java.util.Objects;
  */
 @Data
 public class Reko3Transition implements Transition {
-    private String transitionId;
+    private long transitionId;
     /**
      * player unit coordinates
      */
@@ -28,7 +28,7 @@ public class Reko3Transition implements Transition {
     private int targetX;
     private int targetY;
 
-    public Reko3Transition(String transitionId, BaseUnit player, int y, int x, PlayerAction action, int targetX, int targetY) {
+    public Reko3Transition(long transitionId, BaseUnit player, int y, int x, PlayerAction action, int targetX, int targetY) {
         this.transitionId = transitionId;
         this.playerY = player.y;
         this.playerX = player.x;
@@ -38,52 +38,6 @@ public class Reko3Transition implements Transition {
         this.targetX = targetX;
         this.targetY = targetY;
     }
-
-//    @Override
-//    public int hashCode() {
-//        final int prime = 31;
-//        int result = 1;
-//        result = prime * result + ((action == null) ? 0 : action.hashCode());
-//        result = prime * result + ((playerUnit == null) ? 0 : playerUnit.hashCode());
-//        result = prime * result + round;
-//        result = prime * result + ((target == null) ? 0 : target.hashCode());
-//        result = prime * result + x;
-//        result = prime * result + y;
-//        result = prime * result + Long.valueOf(transitionId).intValue();
-//        return result;
-//    }
-
-//    @Override
-//    public boolean equals(Object obj) {
-//        if (this == obj)
-//            return true;
-//        if (obj == null)
-//            return false;
-//        if (getClass() != obj.getClass())
-//            return false;
-//        Reko3Transition other = (Reko3Transition) obj;
-//        if (action != other.action)
-//            return false;
-//        if (playerUnit == null) {
-//            if (other.playerUnit != null)
-//                return false;
-//        } else if (!playerUnit.equals(other.playerUnit))
-//            return false;
-//        if (round != other.round)
-//            return false;
-//        if (target == null) {
-//            if (other.target != null)
-//                return false;
-//        } else if (!target.equals(other.target))
-//            return false;
-//        if (x != other.x)
-//            return false;
-//        if (y != other.y)
-//            return false;
-//        if (transitionId != other.transitionId)
-//            return false;
-//        return true;
-//    }
 
     @Override
     public boolean equals(Object o) {
