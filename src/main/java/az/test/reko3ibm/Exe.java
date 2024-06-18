@@ -3,6 +3,7 @@ package az.test.reko3ibm;
 import az.test.battle.BattleInfo;
 import az.test.battle.enums.BattleState;
 import az.test.exception.CounterattackHappenedException;
+import az.test.exception.ItemIndexOutOfBoundException;
 import az.test.exception.OutOfAttackRangeException;
 import az.test.map.BattleMap000TEST001;
 import az.test.model.army.BotUnit;
@@ -110,7 +111,11 @@ public class Exe {
                         int y = Integer.valueOf(itemAndTarget.split(",")[1]);
                         int x = Integer.valueOf(itemAndTarget.split(",")[2]);
                         BaseUnit target = ssgzz.queryEnemyUnitByCoordinate(y, x);
-                        lb.useItem(i, target);
+                        try {
+                            lb.useItem(i, target);
+                        } catch (ItemIndexOutOfBoundException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
 
                     // rest

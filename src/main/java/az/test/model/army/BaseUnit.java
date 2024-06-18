@@ -2,6 +2,7 @@ package az.test.model.army;
 
 import az.test.battle.BattleInfo;
 import az.test.exception.CounterattackHappenedException;
+import az.test.exception.ItemIndexOutOfBoundException;
 import az.test.exception.MaxItemsLimitedException;
 import az.test.exception.OutOfAttackRangeException;
 import az.test.model.army.bow.Bow;
@@ -15,6 +16,8 @@ import az.test.model.army.ride.Rider;
 import az.test.model.army.theif.Thief;
 import az.test.model.enums.ArmyType;
 import az.test.model.item.*;
+import az.test.model.item.consumption.FireSpells;
+import az.test.model.item.consumption.Spells;
 import az.test.model.map.*;
 import az.test.reko3ibm.Action;
 import az.test.reko3ibm.ActionAIType;
@@ -158,6 +161,35 @@ public abstract class BaseUnit implements Serializable {
             }
         }
         return inc;
+    }
+
+    public int calculateBaseExp(BaseUnit target) {
+        int baseGainedExp = 0;
+        if (this.level > target.level) {
+            baseGainedExp = 4;
+        } else {
+            baseGainedExp = (target.level - this.level + 3) * 2;
+        }
+        if (baseGainedExp > 16) {
+            baseGainedExp = 16;
+        }
+        return baseGainedExp;
+    }
+
+    public int calculateExtraExp(BaseUnit target) {
+        int extraGainedExp = 0;
+        if (target.isEvacuated) {
+            if (target.isLord) {
+                extraGainedExp = 48;
+            } else {
+                if (target.level > this.level) {
+                    extraGainedExp = 32;
+                } else {
+                    extraGainedExp = 64 / (this.level - target.level + 2);
+                }
+            }
+        }
+        return extraGainedExp;
     }
 
     public void gainExp(int value) {
@@ -766,71 +798,28 @@ public abstract class BaseUnit implements Serializable {
         if (isCounterAttack) {
             hpDamage = hpDamage / 2;
         }
-        // step 4
-        if (hpDamage <= 0) {
-            hpDamage = 1;
-        }
-        // step 5
-        if (hpDamage > target.currentArmyHP) {
-            hpDamage = target.currentArmyHP;
-        }
+        hpDamage = reduceHP(hpDamage, target);
         // calculate moral damage
         int moraleDamage = hpDamage / (target.level + 5) / 3;
-        if (0 == moraleDamage && hpDamage > 0) {
-            moraleDamage = 1;
-        }
-        if (0 == moraleDamage && 0 == hpDamage) {
-            moraleDamage = 0;
-        }
-        if (moraleDamage > target.currentMorale) {
-            moraleDamage = target.currentMorale;
-        }
 
-        target.currentArmyHP -= hpDamage;
-        target.currentMorale -= moraleDamage;
+        moraleDamage = reduceMorale(moraleDamage, hpDamage, target);
+
+        judgeKickOut(target, enemyAttack);
 
         int baseGainedExp = 0;
         int extraGainedExp = 0;
-        // ko
-        if (0 == target.currentArmyHP) {
-            if (enemyAttack) {
-                battle.outOfBattlePlayerUnits.add(target);
-            } else {
-                battle.outOfBattleEnemyUnits.add((BotUnit) target);
-            }
-            if (!isSim)
-                LogUtil.printInfo(battle.map.getCurrentRoundNo(), "INFO", target + " has been kicked out.");
-            target.evacuate();
-        }
 
         if (!enemyAttack) {
-            if (this.level > target.level) {
-                baseGainedExp = 4;
-            } else {
-                baseGainedExp = (target.level - this.level + 3) * 2;
-            }
-            if (baseGainedExp > 16) {
-                baseGainedExp = 16;
-            }
-            // ko
-            if (target.isEvacuated) {
-                if (target.isLord) {
-                    extraGainedExp = 48;
-                } else {
-                    if (target.level > this.level) {
-                        extraGainedExp = 32;
-                    } else {
-                        extraGainedExp = 64 / (this.level - target.level + 2);
-                    }
-                }
-            }
+            baseGainedExp = calculateBaseExp(target);
+            extraGainedExp = calculateExtraExp(target);
+        }
+        if (baseGainedExp + extraGainedExp > 0) {
             gainExp(baseGainedExp + extraGainedExp);
         }
 
         LogUtil.printLog(battle.map.getCurrentRoundNo(), isCounterAttack ? "Counter-ATTACK" : "ATTACK", this.name,
                 target.name, "hpDamage: " + hpDamage + " moraleDamage: " + moraleDamage + " unit: " + this.name
-                        + " gain exp: " + baseGainedExp + " " + extraGainedExp + " target: " + target.name + " HP: "
-                        + target.currentArmyHP + " Morale: " + target.currentMorale + ", kick-out?" + (target.isEvacuated));
+                        + " gain base exp: " + baseGainedExp + ", extra exp: " + extraGainedExp + ", target: " + target + ", kick-out?" + (target.isEvacuated));
 
         // Counter attack determination
         if (target instanceof Thief || target instanceof MartialArtist) {
@@ -895,8 +884,19 @@ public abstract class BaseUnit implements Serializable {
         // TODO
     }
 
-    public void useItem(int itemIdx, BaseUnit target) {
-        // TODO
+    public void useItem(int itemIdx, BaseUnit target) throws ItemIndexOutOfBoundException {
+        if (itemIdx > items.size() - 1) {
+            throw new ItemIndexOutOfBoundException();
+        }
+        Item item = items.get(itemIdx);
+        if (item instanceof Spells) {
+            if (item instanceof FireSpells) {
+                FireSpells fs = (FireSpells) item;
+                if (fs.consumptionCouldBeHappened(battle) && fs.consumptionCouldBeHappened(target)) {
+                    fs.consume(this, target);
+                }
+            }
+        }
     }
 
     public void evacuate() {
@@ -927,8 +927,6 @@ public abstract class BaseUnit implements Serializable {
         }
     }
 
-
-
     protected void increaseRestorePlacesValue(MapItem[][] map, Action[][] values, int value) {
         for (int j = 0; j < values.length; j++) {
             for (int i = 0; i < values[j].length; i++) {
@@ -938,9 +936,44 @@ public abstract class BaseUnit implements Serializable {
         }
     }
 
+    public int reduceHP(int damage, BaseUnit target) {
+        // step 4
+        if (damage <= 0) {
+            damage = 1;
+        }
+        // step 5
+        if (damage > target.currentArmyHP) {
+            damage = target.currentArmyHP;
+        }
+        target.currentArmyHP -= damage;
+        return damage;
+    }
 
+    public int reduceMorale(int moraleDamage, int hpDamage, BaseUnit target) {
+        if (0 == moraleDamage && hpDamage > 0) {
+            moraleDamage = 1;
+        }
+        if (0 == moraleDamage && 0 == hpDamage) {
+            return moraleDamage;
+        }
+        if (moraleDamage > target.currentMorale) {
+            moraleDamage = target.currentMorale;
+        }
+        target.currentMorale -= moraleDamage;
+        return moraleDamage;
+    }
 
-
+    public void judgeKickOut(BaseUnit target, boolean enemyAttack) {
+        // ko
+        if (0 == target.currentArmyHP) {
+            if (enemyAttack) {
+                battle.outOfBattlePlayerUnits.add(target);
+            } else {
+                battle.outOfBattleEnemyUnits.add((BotUnit) target);
+            }
+            target.evacuate();
+        }
+    }
 
     @Override
     public int hashCode() {
