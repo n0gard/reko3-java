@@ -4,7 +4,9 @@ import az.test.battle.BattleInfo;
 import az.test.exception.MaxItemsLimitedException;
 import az.test.model.army.bow.BowSoldier;
 import az.test.model.army.foot.ShortArmed;
+import az.test.model.army.ride.GuardRide;
 import az.test.model.army.ride.LightRide;
+import az.test.model.army.ride.Rider;
 import az.test.model.item.SnakeSpear;
 import az.test.model.item.consumption.FireSpells;
 import az.test.reko3ibm.ActionAIType;
@@ -186,6 +188,26 @@ public class PlayerUnitGenerator {
 		zc.y = y;
 		zc.aiType = aiType;
 		return zc;
+	}
+
+	public Rider loadCaocao(int y, int x, ActionAIType aiType) {
+		GuardRide cc = new GuardRide(battleInfo);
+		cc.name = "Caocao";
+		cc.level = 68;
+		cc.exp = 0;
+
+		cc.force = 75;
+		cc.intelligence = 94;
+		cc.defense = 98;
+
+		cc.currentArmyHP = cc.initMaxArmyHP();
+		cc.currentMorale = 100;
+		cc.currentMana = cc.initMaxMana();
+
+		cc.y = y;
+		cc.x = x;
+		cc.aiType = aiType;
+		return cc;
 	}
 
 	public ShortArmed loadFootmanArmy(int y, int x, int level, ActionAIType aiType) {

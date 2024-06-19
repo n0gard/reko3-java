@@ -4,10 +4,12 @@ import az.test.battle.BattleInfo;
 import az.test.battle.enums.BattleState;
 import az.test.exception.CounterattackHappenedException;
 import az.test.exception.ItemIndexOutOfBoundException;
+import az.test.exception.MaxPlayerUnitsLimitedException;
 import az.test.exception.OutOfAttackRangeException;
-import az.test.map.BattleMap000TEST001;
-import az.test.model.army.BotUnit;
+import az.test.map.BattleMapTestItemBug;
+import az.test.model.PlayerUnitGenerator;
 import az.test.model.army.BaseUnit;
+import az.test.model.army.BotUnit;
 import az.test.util.LogUtil;
 import com.alibaba.fastjson.JSON;
 
@@ -31,10 +33,19 @@ public class Exe {
         // try {
         // load map first !!!
         // ssgzz.loadMap(new BattleMap01());
-        ssgzz.loadMap(new BattleMap000TEST001());
+//        ssgzz.loadMap(new BattleMap000TEST001());
+        ssgzz.loadMap(new BattleMapTestItemBug());
+        // enemies
+        ssgzz.map.loadEnemies(ssgzz);
         // friends, optional
+
         // add players
-        // ssgzz.addPlayerUnit(PlayerUnitGenerator.loadLiuBei(9, 22, null));
+        try {
+            ssgzz.addPlayerUnit(PlayerUnitGenerator.getInstance(ssgzz).loadLiuBei(1, 2, null));
+            ssgzz.map.loadSomeone(ssgzz.playerUnits.get(0));
+        } catch (MaxPlayerUnitsLimitedException e) {
+            throw new RuntimeException(e);
+        }
         // ssgzz.addPlayerUnit(PlayerUnitGenerator.loadGuanyu(10, 20));
         // ssgzz.addPlayerUnit(PlayerUnitGenerator.loadZhangfei(9, 20));
 
@@ -42,7 +53,7 @@ public class Exe {
         // e.printStackTrace();
         // }
         // System.out.println(JSON.toJSONString(ssgzz));
-        String cmd = getDemoPlayMove(ssgzz.map.getCurrentRoundNo());
+        String cmd = getTestItemBug(ssgzz.map.getCurrentRoundNo());
         BattleState state = BattleState.INIT;
         while (true) {
             boolean allfinished = false;
@@ -58,16 +69,17 @@ public class Exe {
                     break;
                 case PLAYER_OPERATION:
                     LogUtil.printInfo(ssgzz.map.getCurrentRoundNo(), "state", state.name());
+                    LogUtil.printInfo(ssgzz.map.getCurrentRoundNo(), "cmd: " + cmd);
                     // TODO COLLECTION PLAYER INFOS
                     // player select
                     String playerUnitNo = cmd.substring(cmd.indexOf("p") + 1, cmd.indexOf("m"));
-                    int playerUnitIdx = Integer.valueOf(playerUnitNo);
+                    int playerUnitIdx = Integer.parseInt(playerUnitNo);
                     BaseUnit lb = ssgzz.playerUnits.get(playerUnitIdx);
                     // move
                     String xy = cmd.substring(cmd.indexOf("m") + 1, cmd.indexOf("a"));
-                    if (!"".equals(xy)) {
-                        int y = Integer.valueOf(xy.split(",")[0]);
-                        int x = Integer.valueOf(xy.split(",")[1]);
+                    if (!xy.isEmpty()) {
+                        int y = Integer.parseInt(xy.split(",")[0]);
+                        int x = Integer.parseInt(xy.split(",")[1]);
                         // try {
                         lb.moveTo(ssgzz, y, x, isSim);
                         // } catch (OutOfMoveRangeException e) {
@@ -82,9 +94,9 @@ public class Exe {
                     lb.drawMap(ssgzz, -1, -1);
                     // attack
                     String attackTargetCoordinate = cmd.substring(cmd.indexOf("a") + 1, cmd.indexOf("s"));
-                    if (!"".equals(attackTargetCoordinate)) {
-                        int y = Integer.valueOf(attackTargetCoordinate.split(",")[0]);
-                        int x = Integer.valueOf(attackTargetCoordinate.split(",")[1]);
+                    if (!attackTargetCoordinate.isEmpty()) {
+                        int y = Integer.parseInt(attackTargetCoordinate.split(",")[0]);
+                        int x = Integer.parseInt(attackTargetCoordinate.split(",")[1]);
                         BaseUnit target = ssgzz.queryUnitByCoordinate(y, x);
                         try {
                             lb.attack(ssgzz, target, false, false, isSim);
@@ -97,19 +109,19 @@ public class Exe {
 
                     // strategy
                     String strategyTargetCoordinate = cmd.substring(cmd.indexOf("s") + 1, cmd.indexOf("i"));
-                    if (!"".equals(strategyTargetCoordinate)) {
-                        int y = Integer.valueOf(strategyTargetCoordinate.split(",")[0]);
-                        int x = Integer.valueOf(strategyTargetCoordinate.split(",")[1]);
+                    if (!strategyTargetCoordinate.isEmpty()) {
+                        int y = Integer.parseInt(strategyTargetCoordinate.split(",")[0]);
+                        int x = Integer.parseInt(strategyTargetCoordinate.split(",")[1]);
                         BaseUnit target = ssgzz.queryUnitByCoordinate(y, x);
                         lb.strategy(target);
                     }
 
                     // item
                     String itemAndTarget = cmd.substring(cmd.indexOf("i") + 1, cmd.indexOf("r"));
-                    if (!"".equals(itemAndTarget)) {
-                        int i = Integer.valueOf(itemAndTarget.split(",")[0]);
-                        int y = Integer.valueOf(itemAndTarget.split(",")[1]);
-                        int x = Integer.valueOf(itemAndTarget.split(",")[2]);
+                    if (!itemAndTarget.isEmpty()) {
+                        int i = Integer.parseInt(itemAndTarget.split(",")[0]);
+                        int y = Integer.parseInt(itemAndTarget.split(",")[1]);
+                        int x = Integer.parseInt(itemAndTarget.split(",")[2]);
                         BaseUnit target = ssgzz.queryEnemyUnitByCoordinate(y, x);
                         try {
                             lb.useItem(i, target);
@@ -135,10 +147,23 @@ public class Exe {
                     break;
                 case DETERMINATION:
                     LogUtil.printInfo(ssgzz.map.getCurrentRoundNo(), "state", state.name());
+                    if (ssgzz.map.isPlayerSuccess()) {
+                        statistics(ssgzz);
+                        System.out.println("GG.");
+                        state = BattleState.FINISHED;
+                        break;
+                    }
+                    if (ssgzz.areAllPlayersEvacuatedOrSomeoneEvacuated()) {
+                        statistics(ssgzz);
+                        System.out.println("GG.");
+                        state = BattleState.FINISHED;
+                        break;
+                    }
+
                     // TODO end round or end all
                     if (ssgzz.map.isRunningOutOfRounds()) {
                         System.out.println("Running out of rounds.");
-                        stastics(ssgzz);
+                        statistics(ssgzz);
                         System.out.println("GG.");
                         state = BattleState.FINISHED;
                     } else {
@@ -213,15 +238,26 @@ public class Exe {
         }
     }
 
+    private static String getTestItemBug(int round) {
+        switch (round) {
+            case 0:
+                return "p0m1,1r";
+            case 1:
+                return "p0m0,1asi0,0,0r";
+            default:
+                return "p0m0,0asir"; // rest
+        }
+    }
+
     public static void determinationGameEnding(BattleInfo bi) {
         if (bi.map.isPlayerSuccess()) {
             LogUtil.printInfo(bi.map.getCurrentRoundNo(), "You have won!");
-            stastics(bi);
+            statistics(bi);
             System.exit(0);
         }
     }
 
-    public static void stastics(BattleInfo bi) {
+    public static void statistics(BattleInfo bi) {
         System.out.println(JSON.toJSONString(bi));
     }
 

@@ -232,12 +232,12 @@ public abstract class BaseUnit implements Serializable {
     public void drawMap(BattleInfo battle, int targetY, int targetX) {
         LogUtil.printInfo(battle.getMap().getCurrentRoundNo(), "[move]start");
         for (int len = 0; len < battle.map.map[0].length; len++) {
-            LogUtil.printInfo(battle.getMap().getCurrentRoundNo(),String.format("%02d", len) + " ");
+            LogUtil.printInfoWithNoReturn(String.format("%02d", len) + " ");
         }
-        LogUtil.printInfo(battle.getMap().getCurrentRoundNo(), "");
+        LogUtil.printlnInfo("");
         LogUtil.printInfo(battle.getMap().getCurrentRoundNo(), "[move]end  ");
         for (int len = 0; len < battle.map.map[0].length; len++) {
-            System.out.println("___");
+            LogUtil.printlnInfo("___");
         }
         LogUtil.printInfo(battle.getMap().getCurrentRoundNo(), "");
 
@@ -637,7 +637,7 @@ public abstract class BaseUnit implements Serializable {
     }
 
     public BaseUnit calculateCurrentPositionAttackTarget(BattleInfo battle) {
-        if (this instanceof LightRide || this instanceof ShortArmed) {
+        if (this instanceof Rider || this instanceof ShortArmed) {
             // north
             int northY = this.y - 1;
             int northX = this.x;
@@ -897,6 +897,8 @@ public abstract class BaseUnit implements Serializable {
                 }
             }
         }
+
+
     }
 
     public void evacuate() {

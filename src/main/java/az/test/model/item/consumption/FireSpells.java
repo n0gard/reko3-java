@@ -7,6 +7,7 @@ import az.test.model.map.City;
 import az.test.model.map.Forest;
 import az.test.model.map.Grassland;
 import az.test.model.map.Plain;
+import az.test.util.LogUtil;
 import az.test.util.RandomHelper;
 
 import static sun.audio.AudioPlayer.player;
@@ -27,17 +28,24 @@ public class FireSpells extends Spells implements Consume {
             fdp = player.reduceHP(fdp, t);
             fmdp = player.reduceMorale(fmdp, fdp, t);
 
+            player.judgeKickOut(t, false);
+
             int baseExp = player.calculateBaseExp(t);
             int extraExp = player.calculateExtraExp(t);
             if (baseExp + extraExp > 0) {
                 player.gainExp(baseExp + extraExp);
             }
+            LogUtil.printLog(player.battle.map.getCurrentRoundNo(), "ITEM", player.toString(),
+                    t.name, "hpDamage: " + fdp + " moraleDamage: " + fmdp + " spell: " + this.name
+                            + " gain base exp: " + baseExp + ", extra exp: " + extraExp + ", target: " + t + ", kick-out?" + (t.isEvacuated));
         }
         if (costMana > 0) {
             player.currentMana -= costMana;
         } else {
             player.items.remove(this);
         }
+
+
     }
 
     private int calculateDamage(BaseUnit enemy) {
