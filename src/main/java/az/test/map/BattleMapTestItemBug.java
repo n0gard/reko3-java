@@ -34,7 +34,7 @@ public class BattleMapTestItemBug extends BattleMap {
 	public static int[][] mapIds = {
 			//0, 1, 2
 			{ 0, 0, 0 }, // 0
-			{ 0, 0, 7 }, // 1
+			{ 0, 10, 7 }, // 1
 //			{ 0, 0, 7 }, // 2
 	};// end
 

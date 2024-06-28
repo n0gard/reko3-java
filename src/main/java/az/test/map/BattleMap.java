@@ -36,27 +36,39 @@ public abstract class BattleMap implements Serializable {
         for (int y = 0; y < mapIds.length; y++) {
             for (int x = 0; x < mapIds[y].length; x++) {
                 map[y][x] = MapItem.generateById(mapIds[y][x], y, x);
+                switch (map[y][x].id) {
+                    case 10:
+
+                }
+            }
+        }
+    }
+
+    public void fillingItem(int[][] itemIds) {
+        for (int y = 0; y < itemIds.length; y++) {
+            for (int x = 0; x < itemIds[y].length; x++) {
+                map[y][x] =
             }
         }
     }
 
     public boolean isPlayerSuccess() {
-        LogUtil.printInfo(getCurrentRoundNo(),"[BattleMap]isPlayerSuccess lord:" + lord);
+        LogUtil.printInfo(getCurrentRoundNo(), "[BattleMap]isPlayerSuccess lord:" + lord);
         if (null != lord && lord.isEvacuated) {
-            LogUtil.printInfo(getCurrentRoundNo(),"[BattleMap]lord evacuated");
+            LogUtil.printInfo(getCurrentRoundNo(), "[BattleMap]lord evacuated");
             return true;
         }
         if (enemies.isEmpty()) {
-            LogUtil.printInfo(getCurrentRoundNo(),"[BattleMap]enemies evacuated");
+            LogUtil.printInfo(getCurrentRoundNo(), "[BattleMap]enemies evacuated");
             return true;
         }
         if (areAllEscape(someones)) {
-            LogUtil.printInfo(getCurrentRoundNo(),"[BattleMap]someone escaped");
+            LogUtil.printInfo(getCurrentRoundNo(), "[BattleMap]someone escaped");
             isAllSurvivedUnitGainExtraExp = true;
             return true;
         }
         if (areAllEscape(anyones)) {
-            LogUtil.printInfo(getCurrentRoundNo(),"[BattleMap]anyones all evacuated");
+            LogUtil.printInfo(getCurrentRoundNo(), "[BattleMap]anyones all escaped");
             isAllSurvivedUnitGainExtraExp = true;
             return true;
         }
@@ -71,9 +83,7 @@ public abstract class BattleMap implements Serializable {
         return item instanceof Village || item instanceof Abatis || item instanceof Barrack;
     }
 
-    public void loadEnemies(BattleInfo bi) {
-
-    }
+    public abstract void loadEnemies(BattleInfo bi);
 
     public void loadEnemy(BotUnit enemy) {
         enemies.add(enemy);
@@ -87,23 +97,4 @@ public abstract class BattleMap implements Serializable {
         this.someones.add(someone);
     }
 
-    public boolean areAllEscape(List<BaseUnit> players) {
-        for (MapItem mi : escapePlaces) {
-            for (BaseUnit player : players) {
-                if (mi.x == player.x && mi.y == player.y) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    public boolean isEscape(MapItem playerPos) {
-        for (MapItem mi : escapePlaces) {
-            if (mi.x == playerPos.x && mi.y == playerPos.y) {
-                return true;
-            }
-        }
-        return false;
-    }
 }
