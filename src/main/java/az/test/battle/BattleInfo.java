@@ -31,6 +31,7 @@ public class BattleInfo implements Serializable {
     public List<BotUnit> enemyUnits = new ArrayList<>();
     public List<BotUnit> outOfBattleEnemyUnits = new ArrayList<>();
     public BattleMap map;
+    public int obtainGold = 0;
     public long timestamp = 0L;
 
     public BattleInfo() {
@@ -134,8 +135,8 @@ public class BattleInfo implements Serializable {
             for (BaseUnit band : bands) {
                 player.currentMana += band.level / 10 + 1;
             }
-            if (player.currentMana > player.initMaxMana()) {
-                player.currentMana = player.initMaxMana();
+            if (player.currentMana > player.calculateMaxMana()) {
+                player.currentMana = player.calculateMaxMana();
             }
             int manaRestore = player.currentMana - beforeMana;
             // case 3 - auto wake up
@@ -176,8 +177,8 @@ public class BattleInfo implements Serializable {
             for (BaseUnit band : bands) {
                 friend.currentMana += band.level / 10 + 1;
             }
-            if (friend.currentMana > friend.initMaxMana()) {
-                friend.currentMana = friend.initMaxMana();
+            if (friend.currentMana > friend.calculateMaxMana()) {
+                friend.currentMana = friend.calculateMaxMana();
             }
             int manaRestore = friend.currentMana - beforeMana;
             // case 3 - auto wake up
@@ -217,8 +218,8 @@ public class BattleInfo implements Serializable {
             for (BaseUnit band : bands) {
                 enemy.currentMana += band.level / 10 + 1;
             }
-            if (enemy.currentMana > enemy.initMaxMana()) {
-                enemy.currentMana = enemy.initMaxMana();
+            if (enemy.currentMana > enemy.calculateMaxMana()) {
+                enemy.currentMana = enemy.calculateMaxMana();
             }
             int manaRestore = enemy.currentMana - beforeMana;
             // case 3 - auto wake up
@@ -276,8 +277,8 @@ public class BattleInfo implements Serializable {
                 for (BaseUnit band : bands) {
                     enemy.currentMana += band.level / 10 + 1;
                 }
-                if (enemy.currentMana > enemy.initMaxMana()) {
-                    enemy.currentMana = enemy.initMaxMana();
+                if (enemy.currentMana > enemy.calculateMaxMana()) {
+                    enemy.currentMana = enemy.calculateMaxMana();
                 }
                 int manaRestore = enemy.currentMana - beforeMana;
                 // case 3 - auto wake up
@@ -305,16 +306,21 @@ public class BattleInfo implements Serializable {
         }
     }
 
+    /**
+     * 特别需要注意的是，当兵力恢复后离最大兵力的差距不足10时，系统将自动不满该差距。例如等级1的刘备最大兵力为500，当前兵力241，如果计算出的随机数是10，那么他可以恢复250点兵力，恢复后兵力为491，只差9点兵力，系统将自动不满这9点，因此最后兵力的恢复量为259。
+     * @param army
+     * @return
+     */
     public int triggerHPRestore(BaseUnit army) {
         int restoreHP = 150 + RandomHelper.generateInt(0, 10) * 10;
         int beforeHP = army.currentArmyHP;
         army.currentArmyHP += restoreHP;
-        if (army.currentArmyHP > army.initMaxArmyHP()) {
-            army.currentArmyHP = army.initMaxArmyHP();
+        if (army.currentArmyHP > army.calculateMaxArmyHP()) {
+            army.currentArmyHP = army.calculateMaxArmyHP();
         }
-        if (army.initMaxArmyHP() - army.currentArmyHP <= 9) {
-            army.currentArmyHP = army.initMaxArmyHP();
-            restoreHP = army.initMaxArmyHP() - beforeHP;
+        if (army.calculateMaxArmyHP() - army.currentArmyHP <= 9) {
+            army.currentArmyHP = army.calculateMaxArmyHP();
+            restoreHP = army.calculateMaxArmyHP() - beforeHP;
         }
         return restoreHP;
     }

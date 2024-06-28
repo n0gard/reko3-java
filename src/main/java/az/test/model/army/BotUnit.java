@@ -18,11 +18,11 @@ public abstract class BotUnit extends BaseUnit implements BotAction {
 
     public Action[][] generateMyActionValues(BattleInfo battle) {
         // step 0 init values
-        fillValuesArray(actionValuesArray, 1);
+        fillValuesArray(actionValuesArray);
 
         // step 1 deal with weak army
         if (this.isWeak()) {
-            increaseRestorePlacesValue(battle.map.map, actionValuesArray, 50);
+            increaseRestorePlacesValue(battle.map.map, actionValuesArray);
         }
 
         // step 2 attack

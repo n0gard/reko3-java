@@ -2,6 +2,7 @@ package az.test.reko3ibm;
 
 import az.test.battle.BattleInfo;
 import az.test.exception.CounterattackHappenedException;
+import az.test.exception.ItemIndexOutOfBoundException;
 import az.test.exception.OutOfAttackRangeException;
 import az.test.model.army.BotUnit;
 import az.test.model.army.BaseUnit;
@@ -20,11 +21,11 @@ public class AI01Active extends ActionAIType {
     @Override
     public void action(BattleInfo battle, BotUnit army, boolean isSim) {
         LogUtil.printLog(battle.map.getCurrentRoundNo(), "action", army.name, "AI01", "action start");
-        // caculate action value
+        // calculate action value
         Action[][] actionValuesArray = army.generateMyActionValues(battle);
         LogUtil.printLog(battle.map.getCurrentRoundNo(), "action", army.name, "AI01", "values: "
                 + JSON.toJSONString(actionValuesArray));
-        // caculate move range
+        // calculate move range
         army.calculateMoveRange(battle, army.moveAbility, army.y, army.x);
         MapItem maxValueCoordinate = null;
         Action maxValueAction = null;
@@ -43,19 +44,25 @@ public class AI01Active extends ActionAIType {
         // e.printStackTrace();
         // return;
         // }
-        // caculate attack target
+        // calculate attack target
         BaseUnit target = maxValueAction.target;
         if (null != target) {
-            if ("Attack".equals(maxValueAction.actionType)) {
-                try {
-                    army.attack(battle, target, false, isEnemy, isSim);
-                } catch (OutOfAttackRangeException ooare) {
-                    ooare.printStackTrace();
-                } catch (CounterattackHappenedException che) {
-
-                }
-            } else if ("Strategy".equals(maxValueAction.actionType)) {
-            } else if ("Rest".equals(maxValueAction.actionType)) {
+            switch (maxValueAction.playerAction) {
+                case ATTACK:
+                    try {
+                        army.attack(battle, target, false, isEnemy, isSim);
+                    } catch (OutOfAttackRangeException ooare) {
+                        ooare.printStackTrace();
+                    } catch (CounterattackHappenedException che) {
+                        LogUtil.printInfo(battle.map.getCurrentRoundNo(), "AI01Active: ATTACK, get Counter attack");
+                    }
+                    break;
+                case USE_ITEM:
+                    try {
+                        army.useItem(maxValueAction.itemIdx, target);
+                    } catch (ItemIndexOutOfBoundException e) {
+                        throw new RuntimeException(e);
+                    }
             }
         }
     }

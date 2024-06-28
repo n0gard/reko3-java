@@ -1,5 +1,6 @@
 package az.test.model.army;
 
+import az.test.battle.enums.PlayerAction;
 import az.test.reko3ibm.Action;
 
 import java.io.Serializable;
@@ -12,7 +13,7 @@ public abstract class AttackRange implements Serializable {
             return;
         }
         if (value > actionArray[y][x].actionValue) {
-            actionArray[y][x].actionType = "Attack";
+            actionArray[y][x].playerAction = PlayerAction.ATTACK;
             actionArray[y][x].actionValue = value;
             actionArray[y][x].target = target;
         }

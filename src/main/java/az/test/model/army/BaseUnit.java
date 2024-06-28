@@ -1,6 +1,7 @@
 package az.test.model.army;
 
 import az.test.battle.BattleInfo;
+import az.test.battle.enums.PlayerAction;
 import az.test.exception.CounterattackHappenedException;
 import az.test.exception.ItemIndexOutOfBoundException;
 import az.test.exception.MaxItemsLimitedException;
@@ -17,11 +18,16 @@ import az.test.model.army.theif.Thief;
 import az.test.model.enums.ArmyType;
 import az.test.model.item.*;
 import az.test.model.item.consumption.FireSpells;
-import az.test.model.item.consumption.Spells;
+import az.test.model.Spells;
+import az.test.model.item.restore.Commandment;
+import az.test.model.item.restore.ImperialJadeSeal;
+import az.test.model.item.restore.SupportReport;
+import az.test.model.item.weapon.Weapon;
 import az.test.model.map.*;
 import az.test.reko3ibm.Action;
 import az.test.reko3ibm.ActionAIType;
 import az.test.util.LogUtil;
+import az.test.util.ObjectCopyUtil;
 import az.test.util.RandomHelper;
 
 import java.io.Serializable;
@@ -80,6 +86,7 @@ public abstract class BaseUnit implements Serializable {
     public boolean roundFinished;
     public boolean isEvacuated;
     public boolean isLord;
+    public boolean isEscaped;
 
     // auto action stuff
     public ActionAIType aiType;
@@ -98,11 +105,27 @@ public abstract class BaseUnit implements Serializable {
         if (null == items) {
             items = new ArrayList<Item>();
         }
+        if (item instanceof Gold) {
+            Gold g = (Gold) item;
+            battle.obtainGold += g.liang;
+            return items;
+        }
         if (items.size() == MAX_ITEM_LIMIT) {
             throw new MaxItemsLimitedException();
         }
         items.add(item);
         return items;
+    }
+
+    public void obtainItem() {
+        if (currentPositionMap.isItemPlace()) {
+            try {
+                addItem((Item) ObjectCopyUtil.deepCopy(currentPositionMap.item));
+                currentPositionMap.item = null;
+            } catch (MaxItemsLimitedException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     public boolean haveRestoreHPItem() {
@@ -114,6 +137,16 @@ public abstract class BaseUnit implements Serializable {
         return false;
     }
 
+    public void restoreHP(int hpRestored) {
+        currentArmyHP += hpRestored;
+        // TODO
+    }
+
+    public void restoreMorale(int moraleRestored) {
+        currentMorale += moraleRestored;
+        // TODO
+    }
+
     public boolean haveRestoreMoraleItem() {
         for (Item item : items) {
             if (item instanceof ImperialJadeSeal || item instanceof Commandment) {
@@ -123,11 +156,11 @@ public abstract class BaseUnit implements Serializable {
         return false;
     }
 
-    public int initMaxArmyHP() {
+    public int calculateMaxArmyHP() {
         return armyHPBase + armyHPInc * (level - 1);
     }
 
-    public int initMaxMana() {
+    public int calculateMaxMana() {
         return (level + 10) * intelligence * 5 / 200;
     }
 
@@ -157,7 +190,7 @@ public abstract class BaseUnit implements Serializable {
         for (Item i : items) {
             if (i instanceof Book) {
                 Book b = (Book) i;
-                inc = b.dpIncreasementPercentage;
+                inc = b.dpIncrementalPercentage;
             }
         }
         return inc;
@@ -208,6 +241,27 @@ public abstract class BaseUnit implements Serializable {
      * ===============================ACTIONS================================
      */
 
+    /**
+     * 部队在特殊地形上的行动受限问题：
+     *
+     * 这里的特殊地形，指的是行动消耗超过1的地形，并且是相对的。例如对于骑兵，荒地相对草地是行动艰难的地形，相对鹿砦则是行动容易的地形。
+     *
+     * 名词解释：
+     * 1.暗格：包括障碍地形、该部队不能进入的地形、被敌军占领的地方。
+     * 2.亮格：包括该部队可以移动到的空地、被己军或友军占领的地方。
+     * (暗格或者亮格能够在点击部队时直接看出来)
+     *
+     * 受限为一格的条件如下：
+     * 1.紧挨部队的四格至少有两个亮格。
+     * 2.紧挨部队的亮格地形不同，有行动容易的地形，也有行动艰难的地形。
+     * 3.由于敌军阻碍，部队向行动最容易的各个亮格方向只能行动一步。
+     * 当上述三个满足时，该部队只能向行动艰难的各个亮格方向走一格，即只能向各个亮格方向走一格。
+     * 一旦条件改变，部队的受限情况也发生改变。
+     * @param battle
+     * @param targetY
+     * @param targetX
+     * @param isSim
+     */
     public void moveTo(BattleInfo battle, int targetY, int targetX, boolean isSim) {
         // canMoveToCoordinateRange = new ArrayList<MapItem>();
         LogUtil.printLog(battle.map.getCurrentRoundNo(), "move", this.name, " move to " + targetY + "," + targetX,
@@ -248,7 +302,7 @@ public abstract class BaseUnit implements Serializable {
                 BaseUnit army = mi.army;
                 int mapItemId = mi.id;
                 // draw whole map range
-                if (containsMapItem(canMoveToCoordinateRange, mi) && -1 != targetY) {
+                if (-1 != targetY) {
                     if (null != army) {
                         switch (mapItemId) {
                             case 0:
@@ -393,7 +447,7 @@ public abstract class BaseUnit implements Serializable {
             }
             System.out.println();
         }
-        LogUtil.printInfo(battle.getMap().getCurrentRoundNo(),"[move]   ");
+        LogUtil.printInfo(battle.getMap().getCurrentRoundNo(), "[move]   ");
         for (int len = 0; len < battle.map.map[0].length; len++) {
             System.out.print("---");
         }
@@ -401,12 +455,12 @@ public abstract class BaseUnit implements Serializable {
     }
 
     public void drawMap(BattleInfo battle, String action, int targetY, int targetX) {
-        LogUtil.printInfo(battle.getMap().getCurrentRoundNo(),"[" + action + "]   ");
+        LogUtil.printInfo(battle.getMap().getCurrentRoundNo(), "[" + action + "]   ");
         for (int len = 0; len < battle.map.map[0].length; len++) {
             System.out.print(String.format("%02d", len) + " ");
         }
         System.out.println();
-        LogUtil.printInfo(battle.getMap().getCurrentRoundNo(),"[" + action + "]   ");
+        LogUtil.printInfo(battle.getMap().getCurrentRoundNo(), "[" + action + "]   ");
         for (int len = 0; len < battle.map.map[0].length; len++) {
             System.out.print("___");
         }
@@ -506,22 +560,13 @@ public abstract class BaseUnit implements Serializable {
             }
             System.out.println();
         }
-        LogUtil.printInfo(battle.getMap().getCurrentRoundNo(),"[" + action + "]   ");
+        LogUtil.printInfo(battle.getMap().getCurrentRoundNo(), "[" + action + "]   ");
         for (
 
                 int len = 0; len < battle.map.map[0].length; len++) {
             System.out.print("---");
         }
         System.out.println();
-    }
-
-    private boolean containsMapItem(Set<MapItem> list, MapItem mi) {
-        for (MapItem item : list) {
-            if (item.y == mi.y && item.x == mi.x) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private boolean existOtherArmy(BattleInfo battle, MapItem mi) {
@@ -548,15 +593,66 @@ public abstract class BaseUnit implements Serializable {
         return false;
     }
 
+    /**
+     * 英杰传移动型AI算法<br>
+     *<br>
+     * 定义：   (A)部队当前的横纵坐标；<br>
+     *         (B)部队的目标坐标；<br>
+     *         (C)部队本回合的目标坐标。<br>
+     *<br>
+     * 若AI=0（移动）或4（无攻击移动）：<br>
+     *<br>
+     * 1、如果存在仇人，则取仇人的坐标为目标坐标(B)。<br>
+     * 2、在移动范围内，查找最近敌的战场代码。查找方法为：<br>
+     *         2.1、以(A)为中心，将所有的坐标都标上其消耗的总移动力，移动范围之外的标记-1<br>
+     *         2.2、令x=0~移动力的循环，每次循环，都按逐行扫描的方式检查该坐标的移动力总消耗是否等于x，如果是，就按上右下左的顺序检查该格的周围四格是否有敌人，若有，则结束查找，返回该敌人的战场代码。<br>
+     *         2.3、如果查找不到敌人，则返回-1。<br>
+     * 3、如果最近敌恰好为仇人，那么<br>
+     *         3.1、若(B)没人则(B)的行动价值+30；<br>
+     *         3.2、以(B)为中心，周围4格中属于(A)为中心的移动范围内的格子，行动价值+30（若(B)没人则只+10）；<br>
+     *         3.3、以(B)为中心，上2右2下2左2以及斜四格中属于(A)为中心的移动范围的格子，行动价值+10（若(B)没人则不加）；<br>
+     * 4、如果最近敌不是仇人或没有仇人或之前返回-1，则<br>
+     *         4.1、以(B)作为中心坐标，移动力无限，计算战场上所有坐标的总消耗移动力；<br>
+     *         4.2、如果发现(B)到(A)的路线被封堵（注意是(B)到(A)不是(A)到(B)，即以无限的移动力经过一个回合的移动无法到达(A)，或者(B)是不可移动地形），则本回合采用AI=1（攻击最近敌）的方式操作，否则转下一步。<br>
+     *         4.3、取(C)=(A)；<br>
+     *         4.4、以(C)作为中心坐标，按上右下左的顺序查找周围四格中总消耗移动力最小的格子，并用那个格子取代(C)作为新的(C)；<br>
+     *         4.5、重复4.4，直到移动力消耗完毕或者(C)=(B)为止。<br>
+     *         4.6、若(C)没人则(C)的行动价值+30；<br>
+     *         4.7、以(C)为中心，周围4格中属于(A)为中心的移动范围内的格子，行动价值+30（若(C)没人则只+10）；<br>
+     *         4.8、以(C)为中心，上2右2下2左2以及斜四格中属于(A)为中心的移动范围的格子，行动价值+10（若(C)没人则不加）；<br>
+     *<br>
+     *<br>
+     * 若AI=1（攻击最近敌）<br>
+     *<br>
+     * 1、以(A)为中心，如果移动范围+攻击范围内有敌人，则按照AI=3（休息）的方式操作；<br>
+     * 2、以(A)为中心，无限移动力，如果移动范围+攻击范围内没有敌人，则本回合不动，也不用策略，否则转第3步；<br>
+     * 3、查找最近敌坐标<br>
+     *         3.1、以(A)为中心，将所有的坐标都标上其消耗的总移动力，移动范围之外的标记-1<br>
+     *         3.2、令x=0~移动力的循环，每次循环，都按逐行扫描的方式检查该坐标的移动力总消耗是否等于x，如果是，就按上右下左的顺序检查该格的周围四格是否有敌人，若有，则结束查找，返回该敌人的战场代码。<br>
+     *         3.3、(C)取为该敌人的坐标<br>
+     *         3.4、以(B)作为中心坐标，移动力无限，计算战场上所有坐标的总消耗移动力；<br>
+     *         3.5、如果发现(B)到(A)的路线被封堵（即以无限的移动力经过一个回合的移动无法到达(A)，或者(B)是不可移动地形），则本回合不动也不使用策略，否则转下一步。<br>
+     *         3.6、取(C)=(A)；<br>
+     *         3.7、以(C)作为中心坐标，按上右下左的顺序查找周围四格中总消耗移动力最小的格子，并用那个格子取代(C)作为新的(C)；<br>
+     *         3.8、重复3.7，直到移动力消耗完毕或者(C)=(B)为止。<br>
+     *         3.9、若(C)没人则(C)的行动价值+30；<br>
+     *         3.10、以(C)为中心，周围4格中属于(A)为中心的移动范围内的格子，行动价值+30（若(C)没人则只+10）；<br>
+     *         3.11、以(C)为中心，上2右2下2左2以及斜四格中属于(A)为中心的移动范围的格子，行动价值+10（若(C)没人则不加）；<br>
+     *<br>
+     *<br>
+     * 最后，计算移动范围内各个坐标的行动价值。（AI=4时不计算攻击或策略的行动价值）<br>
+     * @param battle
+     * @param moveAbility
+     * @param nowY
+     * @param nowX
+     */
     public void calculateMoveRange(BattleInfo battle, int moveAbility, int nowY, int nowX) {
         if (this.isInChaos || this.roundFinished) {
             return;
         }
         MapItem c = battle.map.map[nowY][nowX];
         // add current position
-        if (!containsMapItem(canMoveToCoordinateRange, c)) {
-            canMoveToCoordinateRange.add(c);
-        }
+        canMoveToCoordinateRange.add(c);
         if (isSurroundByOppositeArmy(battle, nowY, nowX) && this.y != nowY && this.x != nowX) {
             return;
         }
@@ -568,14 +664,9 @@ public abstract class BaseUnit implements Serializable {
                     MapItem mapItemNorth = battle.map.map[targetY][targetX];
                     // no army or no opposite army
                     if (null == mapItemNorth.army || !existOtherArmy(battle, mapItemNorth)) {
-                        if (!containsMapItem(canMoveToCoordinateRange, mapItemNorth)) {
-                            canMoveToCoordinateRange.add(mapItemNorth);
-                        }
+                        canMoveToCoordinateRange.add(mapItemNorth);
                         calculateMoveRange(battle, moveAbility - mapItemNorth.queryCost(this), mapItemNorth.y,
                                 mapItemNorth.x);
-                    }
-                    // army and exist opposite army
-                    else {
                     }
                 }
             }
@@ -585,12 +676,9 @@ public abstract class BaseUnit implements Serializable {
                 if (battle.canIStandHere(this, targetY, targetX)) {
                     MapItem mapItemEast = battle.map.map[targetY][targetX];
                     if (null == mapItemEast.army || !existOtherArmy(battle, mapItemEast)) {
-                        if (!containsMapItem(canMoveToCoordinateRange, mapItemEast)) {
-                            canMoveToCoordinateRange.add(mapItemEast);
-                        }
+                        canMoveToCoordinateRange.add(mapItemEast);
                         calculateMoveRange(battle, moveAbility - mapItemEast.queryCost(this), mapItemEast.y,
                                 mapItemEast.x);
-                    } else {
                     }
                 }
             }
@@ -600,12 +688,9 @@ public abstract class BaseUnit implements Serializable {
                 if (battle.canIStandHere(this, targetY, targetX)) {
                     MapItem mapItemSouth = battle.map.map[targetY][targetX];
                     if (null == mapItemSouth.army || !existOtherArmy(battle, mapItemSouth)) {
-                        if (!containsMapItem(canMoveToCoordinateRange, mapItemSouth)) {
-                            canMoveToCoordinateRange.add(mapItemSouth);
-                        }
+                        canMoveToCoordinateRange.add(mapItemSouth);
                         calculateMoveRange(battle, moveAbility - mapItemSouth.queryCost(this), mapItemSouth.y,
                                 mapItemSouth.x);
-                    } else {
                     }
                 }
             }
@@ -615,25 +700,13 @@ public abstract class BaseUnit implements Serializable {
                 if (battle.canIStandHere(this, targetY, targetX)) {
                     MapItem mapItemWest = battle.map.map[targetY][targetX];
                     if (null == mapItemWest.army || !existOtherArmy(battle, mapItemWest)) {
-                        if (!containsMapItem(canMoveToCoordinateRange, mapItemWest)) {
-                            canMoveToCoordinateRange.add(mapItemWest);
-                        }
+                        canMoveToCoordinateRange.add(mapItemWest);
                         calculateMoveRange(battle, moveAbility - mapItemWest.queryCost(this), mapItemWest.y,
                                 mapItemWest.x);
-                    } else {
                     }
                 }
             }
         }
-    }
-
-    public boolean containsCoordinate(List<MapItem> coordinates, int y, int x) {
-        for (MapItem c : coordinates) {
-            if (c.y == y && c.x == x) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public BaseUnit calculateCurrentPositionAttackTarget(BattleInfo battle) {
@@ -838,6 +911,7 @@ public abstract class BaseUnit implements Serializable {
                 }
             }
         }
+        rest();
     }
 
     public int generateDefensiveCorrection(BaseUnit target) {
@@ -882,6 +956,7 @@ public abstract class BaseUnit implements Serializable {
 
     public void strategy(BaseUnit target) {
         // TODO
+        rest();
     }
 
     public void useItem(int itemIdx, BaseUnit target) throws ItemIndexOutOfBoundException {
@@ -897,8 +972,12 @@ public abstract class BaseUnit implements Serializable {
                 }
             }
         }
+        rest();
+    }
 
-
+    public void rest() {
+        obtainItem();
+        this.roundFinished = true;
     }
 
     public void evacuate() {
@@ -911,8 +990,12 @@ public abstract class BaseUnit implements Serializable {
         // this.x = -99;
     }
 
+    public void escape() {
+        isEscaped = true;
+    }
+
     public boolean isWeak() {
-        if (this.currentArmyHP < initMaxArmyHP() * 0.4 || this.currentMorale < 40) {
+        if (this.currentArmyHP < calculateMaxArmyHP() * 0.4 || this.currentMorale < 40) {
             LogUtil.printInfo(0, this.name + "[" + this.y + "," + this.x + "]"
                     + " is weak.");
             return true;
@@ -920,20 +1003,19 @@ public abstract class BaseUnit implements Serializable {
         return false;
     }
 
-
-    protected void fillValuesArray(Action[][] values, int value) {
+    protected void fillValuesArray(Action[][] values) {
         for (int j = 0; j < values.length; j++) {
             for (int i = 0; i < values[j].length; i++) {
-                values[j][i] = new Action(value);
+                values[j][i] = new Action(PlayerAction.REST, 1);
             }
         }
     }
 
-    protected void increaseRestorePlacesValue(MapItem[][] map, Action[][] values, int value) {
+    protected void increaseRestorePlacesValue(MapItem[][] map, Action[][] values) {
         for (int j = 0; j < values.length; j++) {
             for (int i = 0; i < values[j].length; i++) {
                 if (map[j][i] instanceof Village || map[j][i] instanceof Abatis || map[j][i] instanceof Barrack)
-                    values[j][i].actionValue += value;
+                    values[j][i].actionValue += 50;
             }
         }
     }

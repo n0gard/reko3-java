@@ -7,7 +7,7 @@ import az.test.model.army.foot.ShortArmed;
 import az.test.model.army.ride.GuardRide;
 import az.test.model.army.ride.LightRide;
 import az.test.model.army.ride.Rider;
-import az.test.model.item.SnakeSpear;
+import az.test.model.item.weapon.SnakeSpear;
 import az.test.model.item.consumption.FireSpells;
 import az.test.reko3ibm.ActionAIType;
 
@@ -42,9 +42,9 @@ public class PlayerUnitGenerator {
 		} catch (MaxItemsLimitedException e) {
 			System.err.println("Items full.");
 		}
-		lb.currentArmyHP = lb.initMaxArmyHP();
+		lb.currentArmyHP = lb.calculateMaxArmyHP();
 		lb.currentMorale = 100;
-		lb.currentMana = lb.initMaxMana();
+		lb.currentMana = lb.calculateMaxMana();
 
 		// initPosition
 		lb.x = x;
@@ -69,9 +69,9 @@ public class PlayerUnitGenerator {
 //		} catch (MaxItemsLimitedException e) {
 //			e.printStackTrace();
 //		}
-		gy.currentArmyHP = gy.initMaxArmyHP();
+		gy.currentArmyHP = gy.calculateMaxArmyHP();
 		gy.currentMorale = 100;
-		gy.currentMana = gy.initMaxMana();
+		gy.currentMana = gy.calculateMaxMana();
 
 		// initPosition
 		gy.x = x;
@@ -95,9 +95,9 @@ public class PlayerUnitGenerator {
 		} catch (MaxItemsLimitedException e) {
 			e.printStackTrace();
 		}
-		zf.currentArmyHP = zf.initMaxArmyHP();
+		zf.currentArmyHP = zf.calculateMaxArmyHP();
 		zf.currentMorale = 100;
-		zf.currentMana = zf.initMaxMana();
+		zf.currentMana = zf.calculateMaxMana();
 
 		// initPosition
 		zf.x = x;
@@ -116,9 +116,9 @@ public class PlayerUnitGenerator {
 		hx.intelligence = 29;
 		hx.defense = 88;
 
-		hx.currentArmyHP = hx.initMaxArmyHP();
+		hx.currentArmyHP = hx.calculateMaxArmyHP();
 		hx.currentMorale = 100;
-		hx.currentMana = hx.initMaxMana();
+		hx.currentMana = hx.calculateMaxMana();
 
 		// initPosition
 		hx.x = x;
@@ -137,9 +137,9 @@ public class PlayerUnitGenerator {
 		ls.intelligence = 68;
 		ls.defense = 50;
 
-		ls.currentArmyHP = ls.initMaxArmyHP();
+		ls.currentArmyHP = ls.calculateMaxArmyHP();
 		ls.currentMorale = 100;
-		ls.currentMana = ls.initMaxMana();
+		ls.currentMana = ls.calculateMaxMana();
 
 		// initPosition
 		ls.x = x;
@@ -158,9 +158,9 @@ public class PlayerUnitGenerator {
 		hz.intelligence = 30;
 		hz.defense = 37;
 
-		hz.currentArmyHP = hz.initMaxArmyHP();
+		hz.currentArmyHP = hz.calculateMaxArmyHP();
 		hz.currentMorale = 100;
-		hz.currentMana = hz.initMaxMana();
+		hz.currentMana = hz.calculateMaxMana();
 
 		// initPosition
 		hz.x = x;
@@ -179,9 +179,9 @@ public class PlayerUnitGenerator {
 		zc.intelligence = 25;
 		zc.defense = 57;
 
-		zc.currentArmyHP = zc.initMaxArmyHP();
+		zc.currentArmyHP = zc.calculateMaxArmyHP();
 		zc.currentMorale = 100;
-		zc.currentMana = zc.initMaxMana();
+		zc.currentMana = zc.calculateMaxMana();
 
 		// initPosition
 		zc.x = x;
@@ -200,9 +200,9 @@ public class PlayerUnitGenerator {
 		cc.intelligence = 94;
 		cc.defense = 98;
 
-		cc.currentArmyHP = cc.initMaxArmyHP();
+		cc.currentArmyHP = cc.calculateMaxArmyHP();
 		cc.currentMorale = 100;
-		cc.currentMana = cc.initMaxMana();
+		cc.currentMana = cc.calculateMaxMana();
 
 		cc.y = y;
 		cc.x = x;
@@ -220,9 +220,9 @@ public class PlayerUnitGenerator {
 		bbd.intelligence = 30;
 		bbd.defense = 50;
 
-		bbd.currentArmyHP = bbd.initMaxArmyHP();
+		bbd.currentArmyHP = bbd.calculateMaxArmyHP();
 		bbd.currentMorale = 100;
-		bbd.currentMana = bbd.initMaxMana();
+		bbd.currentMana = bbd.calculateMaxMana();
 
 		// initPosition
 		bbd.x = x;

@@ -1,4 +1,4 @@
-package az.test.model.item;
+package az.test.model.item.horse;
 
 public class Dilu extends Horse {
     public Dilu() {

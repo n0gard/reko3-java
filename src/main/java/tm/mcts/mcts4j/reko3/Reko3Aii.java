@@ -1,27 +1,28 @@
 package tm.mcts.mcts4j.reko3;
 
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import az.test.battle.BattleInfoSnapshot;
-import az.test.util.LogUtil;
-import tm.mcts.mcts4j.DefaultNode;
-import tm.mcts.mcts4j.Node;
-import tm.mcts.mcts4j.Transition;
-import tm.mcts.mcts4j.UCT;
 import az.test.battle.BattleInfo;
+import az.test.battle.BattleInfoSnapshot;
 import az.test.battle.enums.PlayerAction;
 import az.test.exception.CounterattackHappenedException;
+import az.test.exception.ItemIndexOutOfBoundException;
 import az.test.exception.MaxPlayerUnitsLimitedException;
 import az.test.exception.OutOfAttackRangeException;
 import az.test.map.BattleMap000TEST001;
 import az.test.model.PlayerUnitGenerator;
 import az.test.model.army.BaseUnit;
 import az.test.model.map.MapItem;
+import az.test.reko3ibm.Action;
 import az.test.reko3ibm.Exe;
-
+import az.test.util.LogUtil;
+import az.test.util.RandomHelper;
 import com.alibaba.fastjson.JSON;
+import tm.mcts.mcts4j.DefaultNode;
+import tm.mcts.mcts4j.Node;
+import tm.mcts.mcts4j.UCT;
+
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /*
  * This file is part of mcts4j.
@@ -50,6 +51,7 @@ import com.alibaba.fastjson.JSON;
  */
 public class Reko3Aii extends UCT<Reko3Transition, DefaultNode<Reko3Transition>> {
     private BattleInfo battle;
+    private int totalGold = 500;
     private final static Map<Long, BattleInfoSnapshot> battleRecordMap = new ConcurrentHashMap<>();
     private static final AtomicInteger transitionId = new AtomicInteger(0);
 
@@ -128,7 +130,7 @@ public class Reko3Aii extends UCT<Reko3Transition, DefaultNode<Reko3Transition>>
         // } catch (OutOfMoveRangeException oomre) {
         // oomre.printStackTrace();
         // }
-        switch (transition.getAction()) {
+        switch (transition.getAction().playerAction) {
             case REST:
                 break;
             case ATTACK:
@@ -141,6 +143,11 @@ public class Reko3Aii extends UCT<Reko3Transition, DefaultNode<Reko3Transition>>
                 }
                 break;
             case USE_ITEM:
+                try {
+                    player.useItem(transition.getAction().itemIdx, target);
+                } catch (ItemIndexOutOfBoundException e) {
+                    e.printStackTrace();
+                }
                 break;
             case TRANSPORT_ITEM:
                 break;
@@ -236,11 +243,11 @@ public class Reko3Aii extends UCT<Reko3Transition, DefaultNode<Reko3Transition>>
             BaseUnit target = currentPlayer.calculateAssignedPositionAttackTarget(battle, mi.y, mi.x, currentPlayer.y,
                     currentPlayer.x);
             if (null != target) {
-                r3t = new Reko3Transition(transitionId.incrementAndGet(), currentPlayer, mi.y, mi.x, PlayerAction.ATTACK, target.x, target.y);
+                r3t = new Reko3Transition(transitionId.incrementAndGet(), currentPlayer, mi.y, mi.x, new Action(PlayerAction.ATTACK, -1), target.x, target.y);
                 // TODO strategy
                 // TODO item
             } else {
-                r3t = new Reko3Transition(transitionId.incrementAndGet(), currentPlayer, mi.y, mi.x, PlayerAction.REST, -1, -1);
+                r3t = new Reko3Transition(transitionId.incrementAndGet(), currentPlayer, mi.y, mi.x, new Action(PlayerAction.REST, -1), -1, -1);
                 // TODO strategy
                 // TODO item
             }
@@ -272,8 +279,8 @@ public class Reko3Aii extends UCT<Reko3Transition, DefaultNode<Reko3Transition>>
     public Reko3Transition simulationTransition(Set<Reko3Transition> possibleTransitions) {
         if (!IS_SIM)
             System.out.println("[Reko3A]simulationTransition");
-        List<Reko3Transition> transitions = new ArrayList<Reko3Transition>(possibleTransitions);
-        return transitions.get((int) Math.floor(Math.random() * possibleTransitions.size()));
+        List<Reko3Transition> transitions = new ArrayList<>(possibleTransitions);
+        return transitions.get(RandomHelper.generateInt(0, possibleTransitions.size() - 1));
     }
 
     @Override
@@ -283,13 +290,12 @@ public class Reko3Aii extends UCT<Reko3Transition, DefaultNode<Reko3Transition>>
 //        } else {
 //            System.out.println("[Reko3A]expansionTransition");
 //        }
-        List<Reko3Transition> transitions = new ArrayList<Reko3Transition>(possibleTransitions);
-        int choosePossibleTransitionIdx = (int) Math.floor(Math.random() * possibleTransitions.size());
+        List<Reko3Transition> transitions = new ArrayList<>(possibleTransitions);
+        int choosePossibleTransitionIdx = RandomHelper.generateInt(0, possibleTransitions.size() - 1);
 //        System.out.println("[Reko3A]expansionTransition possibleTransitions.size()->" + possibleTransitions.size());
 //        System.out.println("[Reko3A]expansionTransition choosePossibleTransitionIdx->" + choosePossibleTransitionIdx);
-        Reko3Transition transition = transitions.get(choosePossibleTransitionIdx);
 //        System.out.println("[Reko3A]expansionTransition choosePossibleTransitionUUID->" + transition.getTransitionId());
-        return transition;
+        return transitions.get(choosePossibleTransitionIdx);
     }
 
     @Override

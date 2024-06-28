@@ -1,9 +1,9 @@
-package az.test.model.item;
+package az.test.model.item.restore;
 
 /**
  * 援军报告
  */
-public class SupportReport extends Restore {
+public class SupportReport extends RestoreItem {
 
     public SupportReport() {
         super();

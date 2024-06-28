@@ -2,10 +2,10 @@ package az.test.model.item.consumption;
 
 import az.test.battle.BattleInfo;
 import az.test.battle.enums.Weather;
+import az.test.model.Consume;
+import az.test.model.Spells;
 import az.test.model.army.BaseUnit;
 import az.test.model.map.Bridge;
-import az.test.model.map.Forest;
-import az.test.model.map.Grassland;
 import az.test.model.map.Plain;
 import az.test.util.RandomHelper;
 

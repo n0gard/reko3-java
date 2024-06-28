@@ -2,6 +2,8 @@ package az.test.model.item.consumption;
 
 import az.test.battle.BattleInfo;
 import az.test.battle.enums.Weather;
+import az.test.model.Consume;
+import az.test.model.Spells;
 import az.test.model.army.BaseUnit;
 import az.test.model.map.City;
 import az.test.model.map.Forest;
@@ -10,9 +12,7 @@ import az.test.model.map.Plain;
 import az.test.util.LogUtil;
 import az.test.util.RandomHelper;
 
-import static sun.audio.AudioPlayer.player;
-
-public class FireSpells extends Spells implements Consume {
+public class FireSpells extends Spells implements ConsumeItem {
 
     public FireSpells(String name, int baseDamage) {
         super();
@@ -84,4 +84,8 @@ public class FireSpells extends Spells implements Consume {
                 || enemy.currentPositionMap instanceof Plain || enemy.currentPositionMap instanceof City;
     }
 
+    @Override
+    public void reduceItem(BaseUnit army) {
+        army.items.remove(this);
+    }
 }

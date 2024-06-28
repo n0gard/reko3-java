@@ -1,9 +1,9 @@
-package az.test.model.item;
+package az.test.model.item.restore;
 
 /**
  * 玉玺
  */
-public class ImperialJadeSeal extends Restore {
+public class ImperialJadeSeal extends RestoreItem {
 
     public ImperialJadeSeal() {
         super();

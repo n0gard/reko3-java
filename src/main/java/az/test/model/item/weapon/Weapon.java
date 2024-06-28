@@ -1,4 +1,6 @@
-package az.test.model.item;
+package az.test.model.item.weapon;
+
+import az.test.model.item.Item;
 
 public abstract class Weapon extends Item {
 	public int apIncrementPercentage;

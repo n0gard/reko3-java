@@ -2,13 +2,14 @@ package az.test.model.item.consumption;
 
 import az.test.battle.BattleInfo;
 import az.test.exception.BaseException;
-import az.test.model.strategy.defensive.RestoreArmyHP;
 import az.test.model.army.BaseUnit;
+import az.test.model.strategy.defensive.RestoreArmyHP;
+import az.test.model.strategy.defensive.RestoreArmyMorale;
 
-public class Bean extends RestoreArmyHP implements ConsumeItem {
+public class Wine extends RestoreArmyMorale implements ConsumeItem {
 
-	public Bean() {
-		super(600);
+	public Wine() {
+		super(30);
 	}
 
 	@Override
@@ -18,12 +19,12 @@ public class Bean extends RestoreArmyHP implements ConsumeItem {
 
 	@Override
 	public boolean consumptionCouldBeHappened(BaseUnit target) {
-		return target.currentArmyHP < target.calculateMaxArmyHP();
+		return target.currentMorale < 100;
 	}
 
 	@Override
 	public void consume(BaseUnit player, BaseUnit... target) throws BaseException {
-		super.restoreHP(player, target);
+		super.restoreMorale(player, target);
 		reduceItem(player);
 	}
 

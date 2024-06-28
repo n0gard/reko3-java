@@ -2,6 +2,7 @@ package tm.mcts.mcts4j.reko3;
 
 import az.test.battle.enums.PlayerAction;
 import az.test.model.army.BaseUnit;
+import az.test.reko3ibm.Action;
 import lombok.Data;
 import tm.mcts.mcts4j.Transition;
 
@@ -24,11 +25,11 @@ public class Reko3Transition implements Transition {
     private int moveTargetX;
     private int moveTargetY;
 
-    private PlayerAction action;
+    private Action action;
     private int targetX;
     private int targetY;
 
-    public Reko3Transition(long transitionId, BaseUnit player, int y, int x, PlayerAction action, int targetX, int targetY) {
+    public Reko3Transition(long transitionId, BaseUnit player, int y, int x, Action action, int targetX, int targetY) {
         this.transitionId = transitionId;
         this.playerY = player.y;
         this.playerX = player.x;

@@ -1,12 +1,11 @@
-package az.test.model.item.consumption;
+package az.test.model;
 
 import az.test.model.army.BaseUnit;
 import az.test.model.army.other.MilitaryBand;
 import az.test.model.army.other.TransportTeam;
 import az.test.model.army.other.Wizard;
-import az.test.model.item.Item;
 
-public abstract class Spells extends Item {
+public abstract class Spells {
 	public int baseDamage;
 	public int costMana;
 
@@ -14,14 +13,14 @@ public abstract class Spells extends Item {
 		super();
 	}
 
-	int reduceDamage(BaseUnit enemy, int currentDamage) {
+	public int reduceDamage(BaseUnit enemy, int currentDamage) {
 		if (enemy instanceof MilitaryBand || enemy instanceof TransportTeam || enemy instanceof Wizard) {
 			return currentDamage / 2;
 		}
 		return currentDamage;
 	}
 
-	int calculateMoralDamage(int finalDamage) {
+	public int calculateMoralDamage(int finalDamage) {
 		int moralDamage = 0;
 		if (0 == finalDamage) {
 			return moralDamage;

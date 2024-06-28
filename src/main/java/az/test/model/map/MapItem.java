@@ -8,6 +8,7 @@ import az.test.model.army.other.MilitaryBand;
 import az.test.model.army.other.TransportTeam;
 import az.test.model.army.ride.Rider;
 import az.test.model.army.theif.Thief;
+import az.test.model.item.Item;
 
 import java.io.Serializable;
 
@@ -18,6 +19,14 @@ public class MapItem implements Serializable, Comparable<MapItem> {
     public int y;
     public int x;
     public String name;
+    public Item item;
+    public boolean isEscape;
+
+    public static MapItem generateById(int id, int y, int x, boolean isEscape) {
+        MapItem mi = generateById(id, y, x);
+        mi.isEscape = isEscape;
+        return mi;
+    }
 
     public static MapItem generateById(int id, int y, int x) {
         MapItem mi;
@@ -83,6 +92,10 @@ public class MapItem implements Serializable, Comparable<MapItem> {
         mi.y = y;
         mi.x = x;
         return mi;
+    }
+
+    public boolean isItemPlace() {
+        return null != item;
     }
 
     public boolean isRestoreHPPlace() {
