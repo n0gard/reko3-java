@@ -86,6 +86,7 @@ public abstract class BaseUnit implements Serializable {
     public boolean roundFinished;
     public boolean isEvacuated;
     public boolean isLord;
+    public boolean canEscape;
     public boolean isEscaped;
 
     // auto action stuff

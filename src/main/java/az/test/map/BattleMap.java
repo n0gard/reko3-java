@@ -7,6 +7,7 @@ import java.util.List;
 import az.test.battle.BattleInfo;
 import az.test.model.army.BaseUnit;
 import az.test.model.army.BotUnit;
+import az.test.model.item.ItemGenerator;
 import az.test.model.map.Abatis;
 import az.test.model.map.Barrack;
 import az.test.model.map.MapItem;
@@ -26,8 +27,6 @@ public abstract class BattleMap implements Serializable {
     public int roundLimit;
     public int currentRoundNo = 1;
     public BotUnit lord;
-    public List<BaseUnit> anyones = new ArrayList<>();
-    public List<BaseUnit> someones = new ArrayList<>();
     public List<MapItem> escapePlaces = new ArrayList<>();
     public boolean isAllSurvivedUnitGainExtraExp = false;
 
@@ -47,7 +46,7 @@ public abstract class BattleMap implements Serializable {
     public void fillingItem(int[][] itemIds) {
         for (int y = 0; y < itemIds.length; y++) {
             for (int x = 0; x < itemIds[y].length; x++) {
-                map[y][x] =
+                map[y][x].item = ItemGenerator.generateItemById(itemIds[y][x]);
             }
         }
     }
