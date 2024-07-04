@@ -1,5 +1,6 @@
 package az.test.model.item;
 
+import az.test.model.item.consumption.Bean;
 import az.test.model.item.consumption.transform.Dunjiatianshu;
 import az.test.model.item.consumption.transform.Guchuiju;
 import az.test.model.item.consumption.transform.Qingnangshu;
@@ -29,7 +30,7 @@ public class ItemGenerator {
      * 39 雌雄双剑 3A 英雄之剑 3B 霸王之剑
      * 3C 六韬 3D 三略 3E 吴子兵法
      */
-    public static Item generateItemById(int id) {
+    public static BaseItem generateItemById(int id) {
         switch (id) {
             case 0x00:
                 return new Dunjiatianshu();
@@ -37,7 +38,13 @@ public class ItemGenerator {
                 return new Qingnangshu();
             case 0x02:
                 return new Guchuiju();
+            case 0x1E:
+                return new Bean();
         }
         return null;
+    }
+
+    public static Gold generateGold(int gold) {
+        return new Gold(gold);
     }
 }

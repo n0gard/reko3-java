@@ -7,6 +7,7 @@ import java.util.List;
 import az.test.battle.BattleInfo;
 import az.test.model.army.BaseUnit;
 import az.test.model.army.BotUnit;
+import az.test.model.item.BaseItem;
 import az.test.model.item.ItemGenerator;
 import az.test.model.map.Abatis;
 import az.test.model.map.Barrack;
@@ -43,12 +44,12 @@ public abstract class BattleMap implements Serializable {
         }
     }
 
-    public void fillingItem(int[][] itemIds) {
-        for (int y = 0; y < itemIds.length; y++) {
-            for (int x = 0; x < itemIds[y].length; x++) {
-                map[y][x].item = ItemGenerator.generateItemById(itemIds[y][x]);
-            }
-        }
+    public void fillingItem(int y, int x, BaseItem item) {
+        map[y][x].item = ItemGenerator.generateItemById(item.id);
+    }
+
+    public void fillingGold(int y, int x, int gold) {
+        map[y][x].item = ItemGenerator.generateGold(gold);
     }
 
     public boolean isPlayerSuccess() {
