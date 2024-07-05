@@ -24,14 +24,14 @@ import az.test.model.effect.EffectAction;
  * 36 茶 37 赦命书 38 援军报告<br>
  * 39 雌雄双剑 3A 英雄之剑 3B 霸王之剑<br>
  * 3C 六韬 3D 三略 3E 吴子兵法<br>
- * 99 金<br>
+ * FF 金<br>
  */
 public abstract class BaseItem {
     public int id;
-    public EffectAction effectAction;
+    public String name;
 
-    public BaseItem(int id, EffectAction effectAction) {
+    public BaseItem(int id, String name) {
         this.id = id;
-        this.effectAction = effectAction;
+        this.name = name;
     }
 }

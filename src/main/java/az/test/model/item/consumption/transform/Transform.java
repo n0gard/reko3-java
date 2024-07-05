@@ -3,13 +3,14 @@ package az.test.model.item.consumption.transform;
 import az.test.battle.BattleInfo;
 import az.test.exception.BaseException;
 import az.test.model.army.BaseUnit;
+import az.test.model.effect.TransformArmyType;
 import az.test.model.item.BaseItem;
-import az.test.model.item.consumption.ConsumeItem;
+import az.test.model.item.consumption.ConsumableItem;
 
-public abstract class Transform extends BaseItem implements ConsumeItem {
+public abstract class Transform extends ConsumableItem {
 
-    public Transform(int id) {
-        super(id);
+    public Transform(int id, String name) {
+        super(id, name, new TransformArmyType());
     }
 
     @Override

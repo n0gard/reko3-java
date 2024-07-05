@@ -4,13 +4,15 @@ import az.test.model.army.BaseUnit;
 import az.test.model.army.other.MilitaryBand;
 import az.test.model.army.other.TransportTeam;
 import az.test.model.army.other.Wizard;
+import az.test.model.effect.EffectAction;
+import az.test.model.item.consumption.ConsumableItem;
 
-public abstract class Spells {
+public abstract class Spells extends ConsumableItem {
 	public int baseDamage;
 	public int costMana;
 
-	public Spells() {
-		super();
+	public Spells(int id, String name, EffectAction effectAction) {
+		super(id, name, effectAction);
 	}
 
 	public int reduceDamage(BaseUnit enemy, int currentDamage) {

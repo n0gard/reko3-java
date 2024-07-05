@@ -10,9 +10,6 @@ import az.test.util.RandomHelper;
 public class RestoreArmyHP extends EffectAction {
     public int baseRestore;
 
-    public RestoreArmyHP() {
-    }
-
     public RestoreArmyHP(int baseRestore) {
         this.baseRestore = baseRestore;
     }

@@ -4,6 +4,7 @@ import az.test.battle.BattleInfo;
 import az.test.model.army.BaseUnit;
 import az.test.model.army.BotUnit;
 import az.test.model.army.CrossAttack;
+import az.test.model.item.BaseItem;
 import az.test.model.item.Item;
 import az.test.util.ObjectCopyUtil;
 
@@ -33,7 +34,7 @@ public class MilitaryBand extends BotUnit {
 		this.intelligence = transformFrom.intelligence;
 		this.force = transformFrom.force;
 		this.defense = transformFrom.defense;
-		this.items = (List<Item>) ObjectCopyUtil.deepCopy(transformFrom.items);
+		this.items = (List<BaseItem>) ObjectCopyUtil.deepCopy(transformFrom.items);
 		this.exp = transformFrom.exp;
 		this.currentArmyHP = transformFrom.currentArmyHP;
 		this.currentMorale = transformFrom.currentMorale;

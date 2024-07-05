@@ -1,14 +1,13 @@
-package az.test.model.strategy.defensive;
+package az.test.model.effect;
 
-import az.test.exception.HPFullException;
-import az.test.exception.MoraleFullException;
+import az.test.exception.MoraleFullAndNotInChaosException;
 import az.test.exception.NotInChaosException;
 import az.test.model.army.BaseUnit;
 import az.test.model.item.Item;
 import az.test.util.RandomHelper;
 
-public abstract class RestoreArmyMorale extends Defensive implements RestoreMorale {
-
+public class RestoreArmyMorale extends EffectAction {
+    int baseRestore;
     public RestoreArmyMorale() {
     }
 
@@ -17,7 +16,7 @@ public abstract class RestoreArmyMorale extends Defensive implements RestoreMora
     }
 
     @Override
-    public void restoreMorale(BaseUnit player, BaseUnit... targets) throws MoraleFullException, NotInChaosException {
+    public void effect(BaseUnit player, BaseUnit... targets) throws MoraleFullAndNotInChaosException {
         int baseMoraleRestore = 0;
         if (this instanceof Item) {
             baseMoraleRestore = baseRestore;
@@ -26,11 +25,12 @@ public abstract class RestoreArmyMorale extends Defensive implements RestoreMora
         }
         if (1 == targets.length) {
             BaseUnit target = targets[0];
-            if (100 == target.currentMorale) {
-                throw new MoraleFullException();
-            }
+            // 没有混乱
             if (!target.isInChaos) {
-                throw new NotInChaosException();
+                // 士气满 不能生效
+                if (100 == target.currentMorale) {
+                    throw new MoraleFullAndNotInChaosException();
+                }
             }
         }
         for (BaseUnit target : targets) {

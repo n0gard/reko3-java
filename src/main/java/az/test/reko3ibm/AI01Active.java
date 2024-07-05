@@ -3,6 +3,7 @@ package az.test.reko3ibm;
 import az.test.battle.BattleInfo;
 import az.test.exception.CounterattackHappenedException;
 import az.test.exception.ItemIndexOutOfBoundException;
+import az.test.exception.ItemNotConsumableException;
 import az.test.exception.OutOfAttackRangeException;
 import az.test.model.army.BotUnit;
 import az.test.model.army.BaseUnit;
@@ -61,6 +62,8 @@ public class AI01Active extends ActionAIType {
                     try {
                         army.useItem(maxValueAction.itemIdx, target);
                     } catch (ItemIndexOutOfBoundException e) {
+                        throw new RuntimeException(e);
+                    } catch (ItemNotConsumableException e) {
                         throw new RuntimeException(e);
                     }
             }

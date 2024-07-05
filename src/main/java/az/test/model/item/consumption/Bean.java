@@ -2,14 +2,15 @@ package az.test.model.item.consumption;
 
 import az.test.battle.BattleInfo;
 import az.test.exception.BaseException;
+import az.test.model.effect.RestoreArmyHP;
 import az.test.model.item.BaseItem;
 import az.test.model.strategy.defensive.RestoreArmyHP;
 import az.test.model.army.BaseUnit;
 
-public class Bean extends BaseItem implements ConsumeItem {
+public class Bean extends ConsumableItem {
 
 	public Bean() {
-		super(0x1E);
+		super(0x1E, "豆", new RestoreArmyHP(600));
 	}
 
 	@Override
@@ -23,13 +24,9 @@ public class Bean extends BaseItem implements ConsumeItem {
 	}
 
 	@Override
-	public void consume(BaseUnit player, BaseUnit... target) throws BaseException {
-		super.restoreHP(player, target);
+	public void consume(BaseUnit player, BaseUnit... targets) throws BaseException {
+		effectAction.effect(player, targets);
 		reduceItem(player);
 	}
 
-	@Override
-	public void reduceItem(BaseUnit army) {
-		army.items.remove(this);
-	}
 }

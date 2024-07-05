@@ -13,11 +13,7 @@ public class Dunjiatianshu extends Transform {
 
     @Override
     public void consume(BaseUnit player, BaseUnit... target) throws BaseException {
-        for (BaseUnit t : target) {
-            if (!consumptionCouldBeHappened(t)) {
-                throw new LiuBeiCannotTransformException();
-            }
-        }
+        effectAction.effect(player, target);
         player = new Wizard(player.battle, player);
     }
 }

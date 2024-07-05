@@ -2,10 +2,7 @@ package az.test.model.army;
 
 import az.test.battle.BattleInfo;
 import az.test.battle.enums.PlayerAction;
-import az.test.exception.CounterattackHappenedException;
-import az.test.exception.ItemIndexOutOfBoundException;
-import az.test.exception.MaxItemsLimitedException;
-import az.test.exception.OutOfAttackRangeException;
+import az.test.exception.*;
 import az.test.model.army.bow.Bow;
 import az.test.model.army.foot.Infantry;
 import az.test.model.army.foot.ShortArmed;
@@ -17,6 +14,7 @@ import az.test.model.army.ride.Rider;
 import az.test.model.army.theif.Thief;
 import az.test.model.enums.ArmyType;
 import az.test.model.item.*;
+import az.test.model.item.consumption.ConsumableItem;
 import az.test.model.item.consumption.FireSpells;
 import az.test.model.Spells;
 import az.test.model.item.restore.Commandment;
@@ -54,7 +52,7 @@ public abstract class BaseUnit implements Serializable {
      */
     public int defense;
     // bag
-    public List<Item> items = new ArrayList<>();
+    public List<BaseItem> items = new ArrayList<>();
     public static final int MAX_ITEM_LIMIT = 8;
     // army attributes
     public int armyHPBase;
@@ -102,9 +100,9 @@ public abstract class BaseUnit implements Serializable {
         this.battle = battle;
     }
 
-    public List<Item> addItem(Item item) throws MaxItemsLimitedException {
+    public List<BaseItem> addItem(BaseItem item) throws MaxItemsLimitedException {
         if (null == items) {
-            items = new ArrayList<Item>();
+            items = new ArrayList<BaseItem>();
         }
         if (item instanceof Gold) {
             Gold g = (Gold) item;
@@ -121,7 +119,7 @@ public abstract class BaseUnit implements Serializable {
     public void obtainItem() {
         if (currentPositionMap.isItemPlace()) {
             try {
-                addItem((Item) ObjectCopyUtil.deepCopy(currentPositionMap.item));
+                addItem((BaseItem) ObjectCopyUtil.deepCopy(currentPositionMap.item));
                 currentPositionMap.item = null;
             } catch (MaxItemsLimitedException e) {
                 throw new RuntimeException(e);
@@ -130,7 +128,7 @@ public abstract class BaseUnit implements Serializable {
     }
 
     public boolean haveRestoreHPItem() {
-        for (Item item : items) {
+        for (BaseItem item : items) {
             if (item instanceof ImperialJadeSeal || item instanceof SupportReport) {
                 return true;
             }
@@ -149,7 +147,7 @@ public abstract class BaseUnit implements Serializable {
     }
 
     public boolean haveRestoreMoraleItem() {
-        for (Item item : items) {
+        for (BaseItem item : items) {
             if (item instanceof ImperialJadeSeal || item instanceof Commandment) {
                 return true;
             }
@@ -177,7 +175,7 @@ public abstract class BaseUnit implements Serializable {
 
     public int queryItemAPInc() {
         int inc = 0;
-        for (Item i : items) {
+        for (BaseItem i : items) {
             if (i instanceof Weapon) {
                 Weapon w = (Weapon) i;
                 inc = w.apIncrementPercentage;
@@ -188,7 +186,7 @@ public abstract class BaseUnit implements Serializable {
 
     public int queryItemDPInc() {
         int inc = 0;
-        for (Item i : items) {
+        for (BaseItem i : items) {
             if (i instanceof Book) {
                 Book b = (Book) i;
                 inc = b.dpIncrementalPercentage;
@@ -960,18 +958,19 @@ public abstract class BaseUnit implements Serializable {
         rest();
     }
 
-    public void useItem(int itemIdx, BaseUnit target) throws ItemIndexOutOfBoundException {
+    public void useItem(int itemIdx, BaseUnit ...targets) throws ItemIndexOutOfBoundException, ItemNotConsumableException {
         if (itemIdx > items.size() - 1) {
             throw new ItemIndexOutOfBoundException();
         }
-        Item item = items.get(itemIdx);
-        if (item instanceof Spells) {
-            if (item instanceof FireSpells) {
-                FireSpells fs = (FireSpells) item;
-                if (fs.consumptionCouldBeHappened(battle) && fs.consumptionCouldBeHappened(target)) {
-                    fs.consume(this, target);
-                }
-            }
+        BaseItem item = items.get(itemIdx);
+        if (!(item instanceof ConsumableItem)) {
+            throw new ItemNotConsumableException();
+        }
+        ConsumableItem consumableItem = (ConsumableItem) item;
+        try {
+            consumableItem.consume(this, targets);
+        } catch (BaseException e) {
+            throw new RuntimeException(e);
         }
         rest();
     }

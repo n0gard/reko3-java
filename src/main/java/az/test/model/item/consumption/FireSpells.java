@@ -12,11 +12,11 @@ import az.test.model.map.Plain;
 import az.test.util.LogUtil;
 import az.test.util.RandomHelper;
 
-public class FireSpells extends Spells implements ConsumeItem {
+public class FireSpells extends Spells implements ItemConsume {
 
-    public FireSpells(String name, int baseDamage) {
-        super();
-        super.name = name;
+    public FireSpells(int id, String name, int baseDamage) {
+        super(id, name, ;
+        super./name = name;
         super.baseDamage = baseDamage;
     }
 
@@ -84,8 +84,4 @@ public class FireSpells extends Spells implements ConsumeItem {
                 || enemy.currentPositionMap instanceof Plain || enemy.currentPositionMap instanceof City;
     }
 
-    @Override
-    public void reduceItem(BaseUnit army) {
-        army.items.remove(this);
-    }
 }
