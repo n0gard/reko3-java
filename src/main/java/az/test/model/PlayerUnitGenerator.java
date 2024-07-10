@@ -8,7 +8,7 @@ import az.test.model.army.ride.GuardRide;
 import az.test.model.army.ride.LightRide;
 import az.test.model.army.ride.Rider;
 import az.test.model.item.weapon.SnakeSpear;
-import az.test.model.item.consumption.FireSpells;
+import az.test.model.item.consumption.spell.fire.FireSpells;
 import az.test.reko3ibm.ActionAIType;
 
 public class PlayerUnitGenerator {

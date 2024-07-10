@@ -1,6 +1,6 @@
 package az.test.model.item;
 
-import az.test.model.item.consumption.Bean;
+import az.test.model.item.consumption.food.Bean;
 import az.test.model.item.consumption.transform.Dunjiatianshu;
 import az.test.model.item.consumption.transform.Guchuiju;
 import az.test.model.item.consumption.transform.Qingnangshu;

@@ -12,7 +12,7 @@ import az.test.model.army.CrossAttack;
 public class Barbarian extends BotUnit {
 
     public Barbarian(BattleInfo battleInfo) {
-        super(battleInfo);
+        super(battleInfo, "异民族");
         armyHPBase = 700;
         armyHPInc = 50;
         apBase = 70;

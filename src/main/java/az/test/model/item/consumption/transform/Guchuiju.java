@@ -8,16 +8,12 @@ import az.test.model.army.other.MilitaryBand;
 public class Guchuiju extends Transform {
 
     public Guchuiju() {
-        super(0x02);
+        super(0x02, "鼓吹具");
     }
 
     @Override
     public void consume(BaseUnit player, BaseUnit... target) throws BaseException {
-        for (BaseUnit t : target) {
-            if (!consumptionCouldBeHappened(t)) {
-                throw new LiuBeiCannotTransformException();
-            }
-        }
-        player = new MilitaryBand(player.battle, player);
+        effectAction.effect(player, null, target);
+        player = new MilitaryBand(player);
     }
 }

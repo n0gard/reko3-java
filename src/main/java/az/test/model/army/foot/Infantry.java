@@ -9,8 +9,8 @@ import az.test.model.army.CrossAttack;
  */
 public abstract class Infantry extends BotUnit {
 
-    public Infantry(BattleInfo battleInfo) {
-        super(battleInfo);
+    public Infantry(BattleInfo battleInfo, String name) {
+        super(battleInfo, name);
         armyHPBase = 500;
         armyHPInc = 50;
         moveAbility = 4;

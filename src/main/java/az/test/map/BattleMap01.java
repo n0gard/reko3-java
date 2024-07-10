@@ -2,14 +2,10 @@ package az.test.map;
 
 import az.test.battle.BattleInfo;
 import az.test.model.PlayerUnitGenerator;
-import az.test.model.army.BaseUnit;
 import az.test.model.army.BotUnit;
-import az.test.model.item.consumption.Bean;
-import az.test.model.map.MapItem;
+import az.test.model.item.consumption.food.Bean;
 import az.test.reko3ibm.AI02Standby;
 import az.test.reko3ibm.AI03Passive;
-
-import com.alibaba.fastjson.JSON;
 
 public class BattleMap01 extends BattleMap {
 

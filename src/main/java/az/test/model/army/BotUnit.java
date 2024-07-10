@@ -4,15 +4,11 @@ import az.test.battle.BattleInfo;
 import az.test.reko3ibm.Action;
 import az.test.util.LogUtil;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public abstract class BotUnit extends BaseUnit implements BotAction {
     public Action[][] actionValuesArray;
-    public List<AttackRange> attackRangeList = new ArrayList<>();
 
-    public BotUnit(BattleInfo battle) {
-        super(battle);
+    public BotUnit(BattleInfo battle, String name) {
+        super(battle, name);
         this.actionValuesArray = new Action[battle.map.map.length][battle.map.map[0].length];
     }
 

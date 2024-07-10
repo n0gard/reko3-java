@@ -1,11 +1,10 @@
 package az.test.model.effect;
 
-import az.test.exception.LiuBeiCannotTransformException;
 import az.test.model.army.BaseUnit;
 
-public class PlayerGoldIncrease extends EffectAction {
+public class GoldIncrease extends EffectAction {
 
-    public PlayerGoldIncrease() {
+    public GoldIncrease() {
     }
 
     @Override

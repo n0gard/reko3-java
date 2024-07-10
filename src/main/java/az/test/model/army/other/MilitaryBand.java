@@ -22,8 +22,8 @@ public class MilitaryBand extends BotUnit {
 		attackRangeList.add(CrossAttack.getInstance());
 	}
 
-	public MilitaryBand(BattleInfo battleInfo, BaseUnit transformFrom) {
-		super(battleInfo);
+	public MilitaryBand(BaseUnit transformFrom) {
+		super(transformFrom.battle);
 		armyHPBase = 300;
 		armyHPInc = 40;
 		apBase = 20;
