@@ -12,7 +12,7 @@ public class Dunjiatianshu extends Transform {
 
     @Override
     public void consume(BaseUnit player, BaseUnit... target) throws BaseException {
-        effectAction.effect(player, null, target);
+        effection.effect(player, null, target);
         player = new Wizard(player.battle, player);
     }
 }

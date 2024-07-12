@@ -4,7 +4,7 @@ public class Gate extends MapItem {
 
 	public Gate() {
 		super();
-		id = 15;
+		id = 0x0A;
 		canStay = false;
 		name = "城门";
 	}

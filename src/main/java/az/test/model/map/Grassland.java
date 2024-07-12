@@ -4,7 +4,7 @@ public class Grassland extends MapItem {
 
 	public Grassland() {
 		super();
-		id = 2;
+		id = 0x07;
 		name = "草地";
 	}
 

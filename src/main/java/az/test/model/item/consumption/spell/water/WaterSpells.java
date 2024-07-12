@@ -27,7 +27,7 @@ public abstract class WaterSpells extends Spells implements Consume {
 				return damage;
 			}
 		};
-		effectAction.effect(player, calculateExtra, targets);
+		effection.effect(player, calculateExtra, targets);
 	}
 
 	@Override

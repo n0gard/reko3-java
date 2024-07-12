@@ -7,6 +7,8 @@ import az.test.model.army.foot.ShortArmed;
 import az.test.model.army.ride.GuardRide;
 import az.test.model.army.ride.LightRide;
 import az.test.model.army.ride.Rider;
+import az.test.model.item.consumption.spell.fire.JiaoReBook;
+import az.test.model.item.weapon.GreenDragonCrescentBlade;
 import az.test.model.item.weapon.SnakeSpear;
 import az.test.model.item.consumption.spell.fire.FireSpells;
 import az.test.reko3ibm.ActionAIType;
@@ -34,11 +36,11 @@ public class PlayerUnitGenerator {
 		lb.defense = 91;
 
 		try {
-//			lb.addItem(new GreenDragonCrescentBlade(12));
-			lb.addItem(new FireSpells("Coke", 200));
-			lb.addItem(new FireSpells("Coke", 200));
-			lb.addItem(new FireSpells("Coke", 200));
-			lb.addItem(new FireSpells("Coke", 200));
+			lb.addItem(new GreenDragonCrescentBlade());
+			lb.addItem(new JiaoReBook());
+			lb.addItem(new JiaoReBook());
+			lb.addItem(new JiaoReBook());
+			lb.addItem(new JiaoReBook());
 		} catch (MaxItemsLimitedException e) {
 			System.err.println("Items full.");
 		}

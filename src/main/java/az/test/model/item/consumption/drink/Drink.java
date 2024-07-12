@@ -7,7 +7,7 @@ import az.test.model.item.consumption.ConsumableItem;
 
 public abstract class Drink extends ConsumableItem {
     public Drink(int id, String name, int baseRestore) {
-        super(id, name, new RestoreArmyMorale(baseRestore));
+        super(id, name, new RestoreArmyMorale(baseRestore, true));
     }
 
     @Override

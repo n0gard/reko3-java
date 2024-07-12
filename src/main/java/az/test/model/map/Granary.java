@@ -4,7 +4,7 @@ public class Granary extends MapItem {
 
 	public Granary() {
 		super();
-		id = 11;
+		id = 0x0F;
 		name = "粮仓";
 	}
 

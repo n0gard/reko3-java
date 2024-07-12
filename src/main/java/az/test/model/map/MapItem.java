@@ -13,6 +13,11 @@ import az.test.model.item.Item;
 
 import java.io.Serializable;
 
+/**
+ * 00 平原  01 森林  02 山地  03 河流  04 桥梁  05  城墙  06  城池  07  草原
+ * 08 村庄  09 悬崖  0A 城门  0B 荒地  0C 栅栏  0D 鹿砦  0E  兵营  0F  粮仓
+ * 10 宝物库  11 房舍  12 火焰  13 浊流
+ */
 public class MapItem implements Serializable, Comparable<MapItem> {
     public int id;
     public boolean canStay = true;
@@ -29,6 +34,28 @@ public class MapItem implements Serializable, Comparable<MapItem> {
         return mi;
     }
 
+    /**
+     * 00 平原
+     * 01 森林
+     * 02 山地
+     * 03 河流
+     * 04 桥梁
+     * 05 城墙
+     * 06 城池
+     * 07 草原
+     * 08 村庄
+     * 09 悬崖
+     * 0A 城门
+     * 0B 荒地
+     * 0C 栅栏
+     * 0D 鹿砦
+     * 0E 兵营
+     * 0F 粮仓
+     * 10 宝物库
+     * 11 房舍
+     * 12 火焰
+     * 13 浊流
+     */
     public static MapItem generateById(int id, int y, int x) {
         MapItem mi;
         switch (id) {
@@ -36,56 +63,61 @@ public class MapItem implements Serializable, Comparable<MapItem> {
                 mi = new Plain();// all
                 break;
             case 1:
-                mi = new City();// all
-                break;
-            case 2:
-                mi = new Grassland();// all
-                break;
-            case 3:
-                mi = new Bridge();// all
-                break;
-            case 4:
                 mi = new Forest();// all but Ride
                 break;
-            case 5:
-                mi = new Wasteland();// all
-                break;
-            case 6:
+            case 2:
                 mi = new Mountain();// MA(武术家),Thief only
                 break;
-            case 7:
-                mi = new Village();// all
-                break;
-            case 8:
-                mi = new Abatis();// all
-                break;
-            case 9:
-                mi = new Barrack();// all
-                break;
-            case 10:
-                mi = new TreasureStore();// all
-                break;
-            case 11:
-                mi = new Granary();// all
-                break;
-            case 12:
+            case 3:
                 mi = new River();// none
                 break;
-            case 13:
-                mi = new Cliff();// none
+            case 4:
+                mi = new Bridge();// all
                 break;
-            case 14:
+            case 5:
                 mi = new Wall();// none
                 break;
-            case 15:
+            case 6:
+                mi = new City();// all
+                break;
+            case 7:
+                mi = new Grassland();// all
+                break;
+            case 8:
+                mi = new Village();// all
+                break;
+            case 9:
+                mi = new Cliff();// none
+                break;
+            case 10: // 0x0A
                 mi = new Gate();// none
                 break;
-            case 16:
+            case 11: // 0x0B
+                mi = new Wasteland();// all
+                break;
+            case 12: // 0x0C
                 mi = new Fence();// none
+                break;
+            case 13: // 0x0D
+                mi = new Abatis();// all
+                break;
+            case 14:
+                mi = new Barrack();// all
+                break;
+            case 15:
+                mi = new Granary();// all
+                break;
+            case 16:
+                mi = new TreasureStore();// all
                 break;
             case 17:
                 mi = new House();// none
                 break;
+            case 18:
+                mi = new Flame(); // none
+                break;
+            case 19:
+                mi = new Flow(); // none
             default:
                 mi = new MapItem();
                 break;

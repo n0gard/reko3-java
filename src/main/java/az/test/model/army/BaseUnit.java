@@ -101,6 +101,19 @@ public abstract class BaseUnit implements Serializable {
         this.armyName = armyName;
     }
 
+    public void copyProperties(BaseUnit transformFrom) {
+        this.name = (String) ObjectCopyUtil.deepCopy(transformFrom.name);
+        this.intelligence = transformFrom.intelligence;
+        this.force = transformFrom.force;
+        this.defense = transformFrom.defense;
+        this.items = (List<BaseItem>) ObjectCopyUtil.deepCopy(transformFrom.items);
+        this.exp = transformFrom.exp;
+        this.currentArmyHP = transformFrom.currentArmyHP;
+        this.currentMorale = transformFrom.currentMorale;
+        this.currentMana = transformFrom.currentMana;
+        this.level = transformFrom.level;
+    }
+
     public List<BaseItem> addItem(BaseItem item) throws MaxItemsLimitedException {
         if (null == items) {
             items = new ArrayList<BaseItem>();
@@ -137,6 +150,15 @@ public abstract class BaseUnit implements Serializable {
         return false;
     }
 
+    public boolean haveRestoreMoraleItem() {
+        for (BaseItem item : items) {
+            if (item instanceof ImperialJadeSeal || item instanceof Commandment) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void restoreHP(int hpRestored) {
         currentArmyHP += hpRestored;
         // TODO
@@ -145,15 +167,6 @@ public abstract class BaseUnit implements Serializable {
     public void restoreMorale(int moraleRestored) {
         currentMorale += moraleRestored;
         // TODO
-    }
-
-    public boolean haveRestoreMoraleItem() {
-        for (BaseItem item : items) {
-            if (item instanceof ImperialJadeSeal || item instanceof Commandment) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public int calculateMaxArmyHP() {

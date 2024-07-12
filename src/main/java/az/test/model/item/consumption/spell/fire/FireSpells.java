@@ -32,7 +32,7 @@ public abstract class FireSpells extends Spells {
                     return damage;
                 }
             };
-            effectAction.effect(player, calculateExtra, target);
+            effection.effect(player, calculateExtra, target);
         }
     }
 

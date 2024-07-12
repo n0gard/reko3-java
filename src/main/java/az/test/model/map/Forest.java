@@ -4,7 +4,7 @@ public class Forest extends MapItem {
 
 	public Forest() {
 		super();
-		id = 4;
+		id = 0x01;
 		name = "树林";
 	}
 

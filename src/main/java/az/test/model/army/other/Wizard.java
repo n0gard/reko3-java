@@ -4,16 +4,14 @@ import az.test.battle.BattleInfo;
 import az.test.model.army.BaseUnit;
 import az.test.model.army.BotUnit;
 import az.test.model.army.CrossAttack;
-import az.test.model.item.BaseItem;
-import az.test.model.item.Item;
-import az.test.util.ObjectCopyUtil;
 
-import java.util.List;
-
+/**
+ * 妖术师
+ */
 public class Wizard extends BotUnit {
 
 	public Wizard(BattleInfo battleInfo) {
-		super(battleInfo);
+		super(battleInfo, "妖术师");
 		armyHPBase = 300;
 		armyHPInc = 50;
 		apBase = 20;
@@ -23,22 +21,14 @@ public class Wizard extends BotUnit {
 	}
 
 	public Wizard(BattleInfo battleInfo, BaseUnit transformFrom) {
-		super(battleInfo);
+		super(battleInfo, "妖术师");
 		armyHPBase = 300;
 		armyHPInc = 50;
 		apBase = 20;
 		dpBase = 20;
 		moveAbility = 4;
 		attackRangeList.add(CrossAttack.getInstance());
-		this.name = (String) ObjectCopyUtil.deepCopy(transformFrom.name);
-		this.intelligence = transformFrom.intelligence;
-		this.force = transformFrom.force;
-		this.defense = transformFrom.defense;
-		this.items = (List<BaseItem>) ObjectCopyUtil.deepCopy(transformFrom.items);
-		this.exp = transformFrom.exp;
-		this.currentArmyHP = transformFrom.currentArmyHP;
-		this.currentMorale = transformFrom.currentMorale;
-		this.currentMana = transformFrom.currentMana;
+		copyProperties(transformFrom);
 	}
 
 }

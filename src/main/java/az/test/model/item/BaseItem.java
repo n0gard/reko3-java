@@ -1,7 +1,5 @@
 package az.test.model.item;
 
-import az.test.model.effect.EffectAction;
-
 /**
  * 00 遁甲天书&nbsp;&nbsp;&nbsp;01 青囊书&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;02 鼓吹具<br>
  * 03 孙子兵法&nbsp;&nbsp;&nbsp;04 孟德新书&nbsp;&nbsp;&nbsp;05 黄爪飞电<br>

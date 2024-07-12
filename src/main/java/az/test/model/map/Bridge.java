@@ -4,7 +4,7 @@ public class Bridge extends MapItem {
 
 	public Bridge() {
 		super();
-		id = 3;
+		id = 0x04;
 		name = "桥梁";
 	}
 

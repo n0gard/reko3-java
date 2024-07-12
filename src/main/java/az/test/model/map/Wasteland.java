@@ -4,7 +4,7 @@ public class Wasteland extends MapItem {
 
 	public Wasteland() {
 		super();
-		id = 5;
+		id = 0x0B;
 		name = "荒地";
 	}
 

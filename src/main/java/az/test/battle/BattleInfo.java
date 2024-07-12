@@ -307,9 +307,9 @@ public class BattleInfo implements Serializable {
     }
 
     /**
-     * 特别需要注意的是，当兵力恢复后离最大兵力的差距不足10时，系统将自动不满该差距。例如等级1的刘备最大兵力为500，当前兵力241，如果计算出的随机数是10，那么他可以恢复250点兵力，恢复后兵力为491，只差9点兵力，系统将自动不满这9点，因此最后兵力的恢复量为259。
-     * @param army
-     * @return
+     * 特别需要注意的是，当兵力恢复后离最大兵力的差距不足10时，系统将自动不满该差距。
+     * 例如等级1的刘备最大兵力为500，当前兵力241，如果计算出的随机数是10，
+     * 那么他可以恢复250点兵力，恢复后兵力为491，只差9点兵力，系统将自动不满这9点，因此最后兵力的恢复量为259。
      */
     public int triggerHPRestore(BaseUnit army) {
         int restoreHP = 150 + RandomHelper.generateInt(0, 10) * 10;
@@ -452,21 +452,15 @@ public class BattleInfo implements Serializable {
     }
 
     public boolean areAllPlayersEvacuatedOrSomeoneEvacuated() {
-        for (BaseUnit anyone : getMap().anyones) {
-            if (anyone.isEvacuated) {
+        for (BaseUnit anyone : playerUnits) {
+            if (anyone.isLord && anyone.isEvacuated) {
                 return true;
             }
         }
 
         boolean allEvacuated = true;
-
-        if (getMap().someones.isEmpty()) {
-            LogUtil.printInfo(getMap().getCurrentRoundNo(),"[BattleMap]areAllPlayersEvacuatedOrSomeoneEvacuated  someone or anyone not set yet.");
-            return false;
-        }
-
         boolean someonesAllEvacuated = true;
-        for (BaseUnit someone : getMap().someones) {
+        for (BaseUnit someone : playerUnits) {
             if (!someone.isEvacuated) {
                 someonesAllEvacuated = false;
                 break;

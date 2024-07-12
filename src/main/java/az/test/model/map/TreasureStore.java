@@ -4,7 +4,8 @@ public class TreasureStore extends MapItem {
 
 	public TreasureStore() {
 		super();
-		id = 10;
+		id = 0x10;
+		name = "宝物库";
 	}
 
 }

@@ -4,7 +4,7 @@ public class Wall extends MapItem {
 
 	public Wall() {
 		super();
-		id = 14;
+		id = 0x05;
 		canStay = false;
 		name = "城墙";
 	}

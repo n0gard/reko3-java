@@ -2,25 +2,26 @@ package az.test.model.effect;
 
 import az.test.exception.HPFullException;
 import az.test.model.army.BaseUnit;
-import az.test.model.item.Item;
-import az.test.model.strategy.defensive.Defensive;
-import az.test.model.strategy.defensive.RestoreHP;
 import az.test.util.RandomHelper;
 
-public class RestoreArmyHP extends EffectAction {
-    public int baseRestore;
+import java.util.function.Function;
 
-    public RestoreArmyHP(int baseRestore) {
+public class RestoreArmyHP extends Effection {
+    public int baseRestore;
+    public boolean isItem;
+
+    public RestoreArmyHP(int baseRestore, boolean isItem) {
         this.baseRestore = baseRestore;
+        this.isItem = isItem;
     }
 
     @Override
-    public void effect(BaseUnit player, BaseUnit... targets) throws HPFullException {
+    public void effect(BaseUnit player, Function<Integer, Integer> extra, BaseUnit... targets) throws HPFullException {
         int baseHPRestore = 0;
-        if (this instanceof Item) {
-            baseHPRestore = baseRestore;
-        } else {
+        if (isItem) {
             baseHPRestore = baseRestore + player.intelligence * player.level / 20;
+        } else {
+            baseHPRestore = baseRestore;
         }
         if (1 == targets.length) {
             BaseUnit target = targets[0];

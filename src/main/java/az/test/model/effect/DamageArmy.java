@@ -10,7 +10,7 @@ import az.test.util.RandomHelper;
 
 import java.util.function.Function;
 
-public class DamageArmy extends EffectAction {
+public class DamageArmy extends Effection {
     public int baseDamage;
 
 

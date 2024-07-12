@@ -4,7 +4,8 @@ public class Barrack extends MapItem {
 
 	public Barrack() {
 		super();
-		id = 9;
+		id = 0x0E;
+		name = "兵营";
 	}
 
 }

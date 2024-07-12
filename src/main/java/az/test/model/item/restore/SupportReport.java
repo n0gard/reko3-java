@@ -6,8 +6,7 @@ package az.test.model.item.restore;
 public class SupportReport extends RestoreItem {
 
     public SupportReport() {
-        super();
-        canRestoreHP = true;
+        super(0x38, "援军报告");
     }
 
 }

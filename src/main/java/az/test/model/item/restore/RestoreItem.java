@@ -1,14 +1,14 @@
 package az.test.model.item.restore;
 
-import az.test.model.effect.EffectAction;
 import az.test.model.item.BaseItem;
 import az.test.model.item.Item;
 
+/**
+ * 08 玉玺 37 赦命书 38 援军报告
+ */
 public abstract class RestoreItem extends BaseItem implements Item {
-	public boolean canRestoreHP = false;
-	public boolean canRestoreMorale = false;
 
-	public RestoreItem(int id, String name, EffectAction effectAction) {
-		super(id, name, effectAction);
+	public RestoreItem(int id, String name) {
+		super(id, name);
 	}
 }

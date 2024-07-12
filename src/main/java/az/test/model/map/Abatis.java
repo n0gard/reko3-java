@@ -4,7 +4,7 @@ public class Abatis extends MapItem {
 
 	public Abatis() {
 		super();
-		id = 8;
+		id = 0x0D;
 		name = "鹿砦";
 	}
 

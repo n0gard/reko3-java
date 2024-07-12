@@ -37,7 +37,7 @@ public class BattleMap000TEST001 extends BattleMap {
 	public static int[][] mapIds = {
 			//0, 1, 2
 			{ 0, 0, 0 }, // 0
-			{ 0, 0, 7 }, // 1
+			{ 0, 0, 8 }, // 1
 //			{ 0, 0, 7 }, // 2
 	};// end
 

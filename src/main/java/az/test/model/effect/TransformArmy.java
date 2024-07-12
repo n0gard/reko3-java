@@ -5,7 +5,7 @@ import az.test.model.army.BaseUnit;
 
 import java.util.function.Function;
 
-public class TransformArmy extends EffectAction {
+public class TransformArmy extends Effection {
 
     public TransformArmy() {
     }

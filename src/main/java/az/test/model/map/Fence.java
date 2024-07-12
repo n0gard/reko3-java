@@ -4,7 +4,7 @@ public class Fence extends MapItem {
 
 	public Fence() {
 		super();
-		id = 16;
+		id = 0x0C;
 		canStay = false;
 		name = "栅栏";
 	}

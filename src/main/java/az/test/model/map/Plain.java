@@ -4,7 +4,7 @@ public class Plain extends MapItem {
 
 	public Plain() {
 		super();
-		id = 0;
+		id = 0x00;
 		name = "平原";
 	}
 

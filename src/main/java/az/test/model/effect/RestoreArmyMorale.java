@@ -1,24 +1,24 @@
 package az.test.model.effect;
 
 import az.test.exception.MoraleFullAndNotInChaosException;
-import az.test.exception.NotInChaosException;
 import az.test.model.army.BaseUnit;
-import az.test.model.item.Item;
 import az.test.util.RandomHelper;
 
-public class RestoreArmyMorale extends EffectAction {
-    int baseRestore;
-    public RestoreArmyMorale() {
-    }
+import java.util.function.Function;
 
-    public RestoreArmyMorale(int baseRestore) {
+public class RestoreArmyMorale extends Effection {
+    public int baseRestore;
+    public boolean isItem = true;
+
+    public RestoreArmyMorale(int baseRestore, boolean isItem) {
         this.baseRestore = baseRestore;
+        this.isItem = isItem;
     }
 
     @Override
-    public void effect(BaseUnit player, BaseUnit... targets) throws MoraleFullAndNotInChaosException {
+    public void effect(BaseUnit player, Function<Integer, Integer> extra, BaseUnit... targets) throws MoraleFullAndNotInChaosException {
         int baseMoraleRestore = 0;
-        if (this instanceof Item) {
+        if (isItem) {
             baseMoraleRestore = baseRestore;
         } else {
             baseMoraleRestore = baseRestore + player.level / 10;

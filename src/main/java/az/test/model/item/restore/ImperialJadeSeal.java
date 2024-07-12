@@ -6,9 +6,7 @@ package az.test.model.item.restore;
 public class ImperialJadeSeal extends RestoreItem {
 
     public ImperialJadeSeal() {
-        super();
-        canRestoreHP = true;
-        canRestoreMorale = true;
+        super(0x08, "玉玺");
     }
 
 }

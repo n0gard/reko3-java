@@ -7,7 +7,7 @@ import az.test.model.army.foot.ShortArmed;
 
 import java.util.function.Function;
 
-public class UpgradeArmy extends EffectAction {
+public class UpgradeArmy extends Effection {
 
     public UpgradeArmy() {
     }

@@ -7,7 +7,7 @@ import az.test.model.item.consumption.ConsumableItem;
 
 public abstract class Food extends ConsumableItem {
     public Food(int id, String name, int baseRestore) {
-        super(id, name, new RestoreArmyHP(baseRestore));
+        super(id, name, new RestoreArmyHP(baseRestore, true));
     }
 
     @Override
@@ -17,7 +17,7 @@ public abstract class Food extends ConsumableItem {
 
     @Override
     public void consume(BaseUnit player, BaseUnit... targets) throws BaseException {
-        super.consume(player, targets);
+        effection.effect(player, null, targets);
         reduceItem(player);
     }
 }

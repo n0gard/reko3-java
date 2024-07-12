@@ -6,8 +6,7 @@ package az.test.model.item.restore;
 public class Commandment extends RestoreItem {
 
     public Commandment() {
-        super();
-        canRestoreMorale = true;
+        super(0x37, "赦命书");
     }
 
 }
