@@ -1,15 +1,10 @@
 package az.test.reko3ibm;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import az.test.battle.BattleInfo;
-import az.test.exception.CounterattackHappenedException;
-import az.test.exception.ItemIndexOutOfBoundException;
-import az.test.exception.OutOfAttackRangeException;
-import az.test.model.army.BotUnit;
+import az.test.exception.*;
 import az.test.model.army.BaseUnit;
 import az.test.model.army.bow.Bow;
 import az.test.model.army.bow.BowSoldier;
@@ -24,15 +19,15 @@ public class AI03Passive extends ActionAIType {
     }
 
     @Override
-    public void action(BattleInfo battle, BotUnit army, boolean isSim) {
+    public void action(BattleInfo battle, BaseUnit army, boolean isSim) {
         LogUtil.printLog(battle.map.getCurrentRoundNo(), "action", army.name + "[" + army.y + "," + army.x + "]",
                 "AI03", "action start");
         // calculate action value
-        Action[][] actionValuesArray = army.generateMyActionValues(battle);
+        Action[][] actionValuesArray = botAction.generateMyActionValues();
         String valuesArray2String = parseValuesArray2String(actionValuesArray);
         // calculate move range
         army.canMoveToCoordinateRange = new HashSet<>();
-        army.calculateMoveRange(battle, army.moveAbility, army.y, army.x);
+        army.calculateMoveRange(battle, army.calculateMoveAbility(), army.y, army.x);
         // army.drawMap(army.y, army.x);
         if (findAttackTarget(battle, army, army.canMoveToCoordinateRange)) {
             MapItem maxValueMapItem = null;
@@ -74,7 +69,7 @@ public class AI03Passive extends ActionAIType {
                     case USE_ITEM:
                         try {
                             army.useItem(maxValueAction.itemIdx, target);
-                        } catch (ItemIndexOutOfBoundException e) {
+                        } catch (BaseException e) {
                             throw new RuntimeException(e);
                         }
                 }

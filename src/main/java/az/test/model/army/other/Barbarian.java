@@ -2,14 +2,13 @@ package az.test.model.army.other;
 
 import az.test.battle.BattleInfo;
 import az.test.model.army.BaseUnit;
-import az.test.model.army.BotUnit;
 import az.test.model.army.CornerAttack;
 import az.test.model.army.CrossAttack;
 
 /**
  * 异民族
  */
-public class Barbarian extends BotUnit {
+public class Barbarian extends BaseUnit {
 
     public Barbarian(BattleInfo battleInfo) {
         super(battleInfo, "异民族");

@@ -2,14 +2,10 @@ package az.test.reko3ibm;
 
 import az.test.battle.BattleInfo;
 import az.test.battle.enums.BattleState;
-import az.test.exception.CounterattackHappenedException;
-import az.test.exception.ItemIndexOutOfBoundException;
-import az.test.exception.MaxPlayerUnitsLimitedException;
-import az.test.exception.OutOfAttackRangeException;
+import az.test.exception.*;
 import az.test.map.BattleMapTestItemBug;
 import az.test.model.PlayerUnitGenerator;
 import az.test.model.army.BaseUnit;
-import az.test.model.army.BotUnit;
 import az.test.util.LogUtil;
 import com.alibaba.fastjson.JSON;
 
@@ -42,10 +38,13 @@ public class Exe {
         // add players
         try {
             ssgzz.addPlayerUnit(PlayerUnitGenerator.getInstance(ssgzz).loadLiuBei(1, 2, null));
-            ssgzz.map.loadSomeone(ssgzz.playerUnits.get(0));
+            BaseUnit liubei = ssgzz.playerUnits.get(0);
+            liubei.canEscape = false;
+            liubei.isLord = true;
         } catch (MaxPlayerUnitsLimitedException e) {
             throw new RuntimeException(e);
         }
+        // ssgzz.addPlayerUnit(PlayerUnitGenerator.getInstance(ssgzz).loadLiuBei(10, 22));
         // ssgzz.addPlayerUnit(PlayerUnitGenerator.loadGuanyu(10, 20));
         // ssgzz.addPlayerUnit(PlayerUnitGenerator.loadZhangfei(9, 20));
 
@@ -125,7 +124,7 @@ public class Exe {
                         BaseUnit target = ssgzz.queryEnemyUnitByCoordinate(y, x);
                         try {
                             lb.useItem(i, target);
-                        } catch (ItemIndexOutOfBoundException e) {
+                        } catch (BaseException e) {
                             throw new RuntimeException(e);
                         }
                     }
@@ -238,6 +237,61 @@ public class Exe {
         }
     }
 
+    private static String singleByLiuBei(int round) {
+        switch (round) {
+            case 0:
+                return "p0m10,19asir";
+            case 1:
+                return "p0m10,15asir";
+            case 2:
+                return "p0m11,14a10,14sir";
+            case 3:
+                return "p0m12,13a11,13sir";
+            case 4:
+                return "p0ma11,13sir";
+            case 5:
+                return "p0ma11,13sir";
+            case 6:
+                return "p0ma11,13sir";
+            case 7:
+                return "p0ma12,14sir";
+            case 8:
+                return "p0ma12,14sir";
+            case 9:
+                return "p0ma12,14sir";
+            case 10:
+                return "p0m9,12asir";
+            case 11:
+                return "p0m8,11a8,12sir";
+            case 12:
+                return "p0ma8,12sir";
+            case 13:
+                return "p0ma8,12sir";
+            case 14:
+                return "p0ma8,12sir";
+            case 15:
+                return "p0m8,8asir";
+            case 16:
+                return "p0m8,11asir";
+            case 17:
+                return "p0ma8,10sir";
+            case 18:
+                return "p0ma8,10sir";
+            case 19:
+                return "p0ma8,10sir";
+            case 20:
+                return "p0ma9,11sir";
+            case 21:
+                return "p0ma9,11sir";
+            case 22:
+                return "p0ma9,11sir";
+            case 23:
+                return "p0m8,10a8,9sir";
+            default:
+                return "p0masir"; // rest
+        }
+    }
+
     private static String getTestItemBug(int round) {
         switch (round) {
             case 0:
@@ -262,68 +316,68 @@ public class Exe {
     }
 
     private static void friendArmyActions(BattleInfo battle, boolean isSim) {
-        List<BotUnit> friends = battle.friendUnits;
-        List<BotUnit> atRestorePlaceFriends = new ArrayList<>();
-        for (BotUnit friend : friends) {
+        List<BaseUnit> friends = battle.friendUnits;
+        List<BaseUnit> atRestorePlaceFriends = new ArrayList<>();
+        for (BaseUnit friend : friends) {
             if (battle.map.isRestorePlace(friend.currentPositionMap)) {
                 atRestorePlaceFriends.add(friend);
             }
         }
-        for (BotUnit friend : atRestorePlaceFriends) {
+        for (BaseUnit friend : atRestorePlaceFriends) {
             action(battle, friend, isSim);
         }
-        List<BotUnit> weakFriends = new ArrayList<>();
-        for (BotUnit friend : friends) {
+        List<BaseUnit> weakFriends = new ArrayList<>();
+        for (BaseUnit friend : friends) {
             if (friend.isWeak()) {
                 weakFriends.add(friend);
             }
         }
-        for (BotUnit friend : weakFriends) {
+        for (BaseUnit friend : weakFriends) {
             action(battle, friend, isSim);
         }
-        for (BotUnit friend : friends) {
+        for (BaseUnit friend : friends) {
             action(battle, friend, isSim);
         }
     }
 
     public static void enemyArmyActions(BattleInfo battle, boolean isSim) {
-        List<BotUnit> enemies = battle.enemyUnits;
+        List<BaseUnit> enemies = battle.enemyUnits;
         if (enemies.isEmpty()) {
             LogUtil.printInfo(battle.map.getCurrentRoundNo(), "Action][Enemy", " no enemies to action. ");
         }
-        List<BotUnit> atRestorePlaceEnemies = new ArrayList<>();
-        for (BotUnit enemy : enemies) {
+        List<BaseUnit> atRestorePlaceEnemies = new ArrayList<>();
+        for (BaseUnit enemy : enemies) {
             if (battle.map.isRestorePlace(enemy.currentPositionMap)) {
                 atRestorePlaceEnemies.add(enemy);
             }
         }
         LogUtil.printInfo(battle.map.getCurrentRoundNo(), "Action][Enemy", atRestorePlaceEnemies.size()
                 + " armies at restore place(s).");
-        for (BotUnit enemy : atRestorePlaceEnemies) {
+        for (BaseUnit enemy : atRestorePlaceEnemies) {
             if (!enemy.isEvacuated) {
                 action(battle, enemy, isSim);
             }
         }
-        List<BotUnit> weakEnemies = new ArrayList<>();
-        for (BotUnit enemy : enemies) {
+        List<BaseUnit> weakEnemies = new ArrayList<>();
+        for (BaseUnit enemy : enemies) {
             if (enemy.isWeak() && !enemy.isEvacuated) {
                 weakEnemies.add(enemy);
             }
         }
         LogUtil.printInfo(battle.map.getCurrentRoundNo(), "Action][Enemy", weakEnemies.size() + " armies is(are) weak.");
-        for (BotUnit enemy : weakEnemies) {
+        for (BaseUnit enemy : weakEnemies) {
             if (!enemy.roundFinished && !enemy.isEvacuated) {
                 action(battle, enemy, isSim);
             }
         }
-        for (BotUnit enemy : enemies) {
+        for (BaseUnit enemy : enemies) {
             if (!enemy.roundFinished && !enemy.isEvacuated) {
                 action(battle, enemy, isSim);
             }
         }
     }
 
-    private static void action(BattleInfo bi, BotUnit bu, boolean isSim) {
+    private static void action(BattleInfo bi, BaseUnit bu, boolean isSim) {
         if (bu.isEvacuated) {
             LogUtil.printInfo(bi.map.getCurrentRoundNo(), "action", bu + " is already out.");
             return;

@@ -1,11 +1,7 @@
 package az.test.reko3ibm;
 
 import az.test.battle.BattleInfo;
-import az.test.exception.CounterattackHappenedException;
-import az.test.exception.ItemIndexOutOfBoundException;
-import az.test.exception.ItemNotConsumableException;
-import az.test.exception.OutOfAttackRangeException;
-import az.test.model.army.BotUnit;
+import az.test.exception.*;
 import az.test.model.army.BaseUnit;
 import az.test.model.map.MapItem;
 import az.test.util.LogUtil;
@@ -20,10 +16,10 @@ public class AI01Active extends ActionAIType {
     }
 
     @Override
-    public void action(BattleInfo battle, BotUnit army, boolean isSim) {
+    public void action(BattleInfo battle, BaseUnit army, boolean isSim) {
         LogUtil.printLog(battle.map.getCurrentRoundNo(), "action", army.name, "AI01", "action start");
         // calculate action value
-        Action[][] actionValuesArray = army.generateMyActionValues(battle);
+        Action[][] actionValuesArray = botAction.generateMyActionValues();
         LogUtil.printLog(battle.map.getCurrentRoundNo(), "action", army.name, "AI01", "values: "
                 + JSON.toJSONString(actionValuesArray));
         // calculate move range
@@ -61,9 +57,7 @@ public class AI01Active extends ActionAIType {
                 case USE_ITEM:
                     try {
                         army.useItem(maxValueAction.itemIdx, target);
-                    } catch (ItemIndexOutOfBoundException e) {
-                        throw new RuntimeException(e);
-                    } catch (ItemNotConsumableException e) {
+                    } catch (BaseException e) {
                         throw new RuntimeException(e);
                     }
             }

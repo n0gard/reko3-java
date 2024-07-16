@@ -1,6 +1,12 @@
 package az.test.util;
 
+import az.test.battle.BattleInfo;
+
 public class LogUtil {
+    public static void printInfo(BattleInfo bi, String info) {
+        System.out.println("[battle at:" + bi.map.battleName + ",round:" + bi.map.getCurrentRoundNo() + "]" + info);
+    }
+
     public static void printInfoWithNoReturn(String info) {
         System.out.print(info);
     }

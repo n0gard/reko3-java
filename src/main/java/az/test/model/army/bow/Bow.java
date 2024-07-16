@@ -2,7 +2,6 @@ package az.test.model.army.bow;
 
 import az.test.battle.BattleInfo;
 import az.test.model.army.BaseUnit;
-import az.test.model.army.BotUnit;
 import az.test.model.army.CornerAttack;
 import az.test.model.army.Cross2Attack;
 

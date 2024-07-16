@@ -3,19 +3,19 @@ package az.test.model.item.consumption.upgrade;
 import az.test.exception.BaseException;
 import az.test.exception.InvalidItemUseTargetException;
 import az.test.model.army.BaseUnit;
-import az.test.model.army.foot.LongArmed;
-import az.test.model.army.foot.ShortArmed;
+import az.test.model.army.ride.GuardRide;
+import az.test.model.army.ride.HeavyRide;
 
-public class ChangQiang extends Upgrade {
-    public ChangQiang() {
-        super(0x13, "长枪");
+public class JinWeiDeng extends Upgrade {
+    public JinWeiDeng() {
+        super(0x18, "近卫镫");
     }
 
     @Override
     public void consume(BaseUnit player, BaseUnit... targets) throws BaseException {
         super.consume(player, targets);
-        if (player instanceof ShortArmed) {
-            player = new LongArmed((ShortArmed) player);
+        if (player instanceof HeavyRide) {
+            player = new GuardRide((HeavyRide) player);
         } else {
             throw new InvalidItemUseTargetException();
         }

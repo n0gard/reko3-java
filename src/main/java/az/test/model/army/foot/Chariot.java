@@ -14,4 +14,12 @@ public class Chariot extends Infantry {
 		moveAbility = 5;
 	}
 
+	public Chariot(LongArmed army) {
+		super(army.battle, "步兵车");
+		apBase = 60;
+		dpBase = 80;
+		moveAbility = 5;
+		copyProperties(army);
+	}
+
 }

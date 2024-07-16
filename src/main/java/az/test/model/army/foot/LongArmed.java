@@ -1,7 +1,6 @@
 package az.test.model.army.foot;
 
 import az.test.battle.BattleInfo;
-import az.test.model.army.BaseUnit;
 import az.test.model.army.CornerAttack;
 
 /**
@@ -16,12 +15,12 @@ public class LongArmed extends Infantry {
 		attackRangeList.add(CornerAttack.getInstance());
 	}
 
-	public LongArmed(BaseUnit player) {
+	public LongArmed(ShortArmed player) {
 		super(player.battle, "长兵");
 		apBase = 60;
 		dpBase = 60;
 		attackRangeList.add(CornerAttack.getInstance());
-
+		copyProperties(player);
 	}
 
 }

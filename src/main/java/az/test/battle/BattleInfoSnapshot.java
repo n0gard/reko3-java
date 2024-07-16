@@ -3,7 +3,6 @@ package az.test.battle;
 import az.test.battle.enums.Weather;
 import az.test.map.BattleMap;
 import az.test.model.army.BaseUnit;
-import az.test.model.army.BotUnit;
 import az.test.util.ObjectCopyUtil;
 import lombok.Data;
 
@@ -18,10 +17,10 @@ public class BattleInfoSnapshot {
     private List<BaseUnit> playerUnits = new ArrayList<>();
     private List<BaseUnit> outOfBattlePlayerUnits = new ArrayList<>();
     public static final int MAX_PLAYER_UNITS = 20;
-    private List<BotUnit> friendUnits = new ArrayList<>();
-    private List<BotUnit> outOfBattleFriendUnits = new ArrayList<>();
-    private List<BotUnit> enemyUnits = new ArrayList<>();
-    private List<BotUnit> outOfBattleEnemyUnits = new ArrayList<>();
+    private List<BaseUnit> friendUnits = new ArrayList<>();
+    private List<BaseUnit> outOfBattleFriendUnits = new ArrayList<>();
+    private List<BaseUnit> enemyUnits = new ArrayList<>();
+    private List<BaseUnit> outOfBattleEnemyUnits = new ArrayList<>();
     private BattleMap map;
     private long timestamp = 0L;
 
@@ -36,7 +35,7 @@ public class BattleInfoSnapshot {
         setFriendUnits(ObjectCopyUtil.deepCopy(battleInfo.getFriendUnits()));
         setOutOfBattleFriendUnits(ObjectCopyUtil.deepCopy(battleInfo.getOutOfBattleFriendUnits()));
         setEnemyUnits(ObjectCopyUtil.deepCopy(battleInfo.getEnemyUnits()));
-        for(BotUnit ebu : getEnemyUnits()) {
+        for(BaseUnit ebu : getEnemyUnits()) {
             if (ebu.isLord) {
                 getMap().setLord(ebu);
             }

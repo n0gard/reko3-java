@@ -2,13 +2,12 @@ package az.test.model.army.other;
 
 import az.test.battle.BattleInfo;
 import az.test.model.army.BaseUnit;
-import az.test.model.army.BotUnit;
 import az.test.model.army.CrossAttack;
 
 /**
  * 妖术师
  */
-public class Wizard extends BotUnit {
+public class Wizard extends BaseUnit {
 
 	public Wizard(BattleInfo battleInfo) {
 		super(battleInfo, "妖术师");

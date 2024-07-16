@@ -1,12 +1,12 @@
 package az.test.model.army.other;
 
 import az.test.battle.BattleInfo;
-import az.test.model.army.BotUnit;
+import az.test.model.army.BaseUnit;
 
-public class People extends BotUnit {
+public class People extends BaseUnit {
 
 	public People(BattleInfo battleInfo) {
-		super(battleInfo);
+		super(battleInfo, "民众");
 		armyHPBase = 500;
 		armyHPInc = 50;
 		apBase = 20;

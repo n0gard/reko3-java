@@ -2,7 +2,7 @@ package az.test.map;
 
 import az.test.battle.BattleInfo;
 import az.test.model.PlayerUnitGenerator;
-import az.test.model.army.BotUnit;
+import az.test.model.army.BaseUnit;
 import az.test.model.item.consumption.food.Bean;
 import az.test.reko3ibm.AI02Standby;
 import az.test.reko3ibm.AI03Passive;
@@ -24,7 +24,7 @@ public class BattleMap01 extends BattleMap {
 
 	public void loadEnemies(BattleInfo bi) {
 		// load enemies
-		BotUnit huaxiong = PlayerUnitGenerator.getInstance(bi).loadHuaxiong(9, 3, new AI02Standby(true));
+		BaseUnit huaxiong = PlayerUnitGenerator.getInstance(bi).loadHuaxiong(9, 3, new AI02Standby(true));
 		huaxiong.isLord = true;
 		bi.map.lord = huaxiong;
 		bi.loadEnemyUnit(bi.map.lord);

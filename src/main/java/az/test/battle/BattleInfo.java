@@ -7,7 +7,6 @@ import java.util.List;
 import az.test.battle.enums.Weather;
 import az.test.exception.MaxPlayerUnitsLimitedException;
 import az.test.map.BattleMap;
-import az.test.model.army.BotUnit;
 import az.test.model.army.BaseUnit;
 import az.test.model.army.other.MilitaryBand;
 import az.test.model.army.ride.Rider;
@@ -26,10 +25,10 @@ public class BattleInfo implements Serializable {
     public List<BaseUnit> playerUnits = new ArrayList<>();
     public List<BaseUnit> outOfBattlePlayerUnits = new ArrayList<>();
     public static final int MAX_PLAYER_UNITS = 20;
-    public List<BotUnit> friendUnits = new ArrayList<>();
-    public List<BotUnit> outOfBattleFriendUnits = new ArrayList<>();
-    public List<BotUnit> enemyUnits = new ArrayList<>();
-    public List<BotUnit> outOfBattleEnemyUnits = new ArrayList<>();
+    public List<BaseUnit> friendUnits = new ArrayList<>();
+    public List<BaseUnit> outOfBattleFriendUnits = new ArrayList<>();
+    public List<BaseUnit> enemyUnits = new ArrayList<>();
+    public List<BaseUnit> outOfBattleEnemyUnits = new ArrayList<>();
     public BattleMap map;
     public int obtainGold = 0;
     public long timestamp = 0L;
@@ -51,7 +50,7 @@ public class BattleInfo implements Serializable {
         setOutOfBattleFriendUnits(ObjectCopyUtil.deepCopy(snapshot.getOutOfBattleFriendUnits()));
         setEnemyUnits(ObjectCopyUtil.deepCopy(snapshot.getEnemyUnits()));
         setOutOfBattleEnemyUnits(ObjectCopyUtil.deepCopy(snapshot.getOutOfBattleEnemyUnits()));
-        for (BotUnit bu : getEnemyUnits()) {
+        for (BaseUnit bu : getEnemyUnits()) {
             if (bu.isLord) {
                 getMap().setLord(bu);
             }
@@ -74,7 +73,7 @@ public class BattleInfo implements Serializable {
         bu.currentPositionMap = map.map[bu.y][bu.x];
     }
 
-    public List<BotUnit> loadEnemyUnit(BotUnit bu) {
+    public List<BaseUnit> loadEnemyUnit(BaseUnit bu) {
         bu.armyType = ArmyType.ENEMY;
         if (null == enemyUnits) {
             enemyUnits = new ArrayList<>();
@@ -89,7 +88,7 @@ public class BattleInfo implements Serializable {
         return enemyUnits;
     }
 
-    public List<BotUnit> loadFriendUnit(BotUnit bu) {
+    public List<BaseUnit> loadFriendUnit(BaseUnit bu) {
         if (null == friendUnits) {
             friendUnits = new ArrayList<>();
         }

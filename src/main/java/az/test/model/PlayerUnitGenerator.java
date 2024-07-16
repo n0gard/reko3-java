@@ -1,17 +1,24 @@
 package az.test.model;
 
 import az.test.battle.BattleInfo;
+import az.test.exception.BaseException;
+import az.test.exception.ItemIndexOutOfBoundException;
+import az.test.exception.ItemNotConsumableException;
 import az.test.exception.MaxItemsLimitedException;
+import az.test.map.BattleMapTestItemBug;
+import az.test.model.army.BaseUnit;
 import az.test.model.army.bow.BowSoldier;
 import az.test.model.army.foot.ShortArmed;
 import az.test.model.army.ride.GuardRide;
 import az.test.model.army.ride.LightRide;
 import az.test.model.army.ride.Rider;
 import az.test.model.item.consumption.spell.fire.JiaoReBook;
+import az.test.model.item.consumption.upgrade.ChangQiang;
 import az.test.model.item.weapon.GreenDragonCrescentBlade;
 import az.test.model.item.weapon.SnakeSpear;
 import az.test.model.item.consumption.spell.fire.FireSpells;
 import az.test.reko3ibm.ActionAIType;
+import az.test.util.LogUtil;
 
 public class PlayerUnitGenerator {
 	static BattleInfo battleInfo;
@@ -233,4 +240,22 @@ public class PlayerUnitGenerator {
 		bbd.aiType = aiType;
 		return bbd;
 	}
+
+	public static void main(String[] args) {
+		BattleInfo bi = new BattleInfo();
+		bi.loadMap(new BattleMapTestItemBug());
+		BaseUnit lb = getInstance(bi).loadLiuBei(0,0,null);
+		LogUtil.printInfo(bi, lb.toString());
+        try {
+            lb.addItem(new ChangQiang());
+        } catch (MaxItemsLimitedException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            lb.useItem(0, lb);
+        } catch (BaseException e) {
+            throw new RuntimeException(e);
+        }
+        LogUtil.printInfo(bi, lb.toString());
+    }
 }

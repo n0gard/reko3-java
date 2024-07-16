@@ -3,10 +3,7 @@ package tm.mcts.mcts4j.reko3;
 import az.test.battle.BattleInfo;
 import az.test.battle.BattleInfoSnapshot;
 import az.test.battle.enums.PlayerAction;
-import az.test.exception.CounterattackHappenedException;
-import az.test.exception.ItemIndexOutOfBoundException;
-import az.test.exception.MaxPlayerUnitsLimitedException;
-import az.test.exception.OutOfAttackRangeException;
+import az.test.exception.*;
 import az.test.map.BattleMap000TEST001;
 import az.test.model.PlayerUnitGenerator;
 import az.test.model.army.BaseUnit;
@@ -65,7 +62,7 @@ public class Reko3Aii extends UCT<Reko3Transition, DefaultNode<Reko3Transition>>
             // load player
             BaseUnit royalUncleLiu = PlayerUnitGenerator.getInstance(battle).loadLiuBei(1, 1, null);
             battle.addPlayerUnit(royalUncleLiu);
-            battle.map.loadSomeone(royalUncleLiu);
+            royalUncleLiu.isLord = true;
         } catch (MaxPlayerUnitsLimitedException e) {
             System.err.println("Max Players Limited.");
         }
@@ -147,6 +144,8 @@ public class Reko3Aii extends UCT<Reko3Transition, DefaultNode<Reko3Transition>>
                     player.useItem(transition.getAction().itemIdx, target);
                 } catch (ItemIndexOutOfBoundException e) {
                     e.printStackTrace();
+                } catch (BaseException e) {
+                    throw new RuntimeException(e);
                 }
                 break;
             case TRANSPORT_ITEM:
@@ -236,7 +235,7 @@ public class Reko3Aii extends UCT<Reko3Transition, DefaultNode<Reko3Transition>>
             return moves;
         }
         currentPlayer.canMoveToCoordinateRange = new HashSet<>();
-        currentPlayer.calculateMoveRange(battle, currentPlayer.moveAbility, currentPlayer.y, currentPlayer.x);
+        currentPlayer.calculateMoveRange(battle, currentPlayer.calculateMoveAbility(), currentPlayer.y, currentPlayer.x);
 
         for (MapItem mi : currentPlayer.canMoveToCoordinateRange) {
             Reko3Transition r3t = null;

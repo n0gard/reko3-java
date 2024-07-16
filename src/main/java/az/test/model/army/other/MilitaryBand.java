@@ -2,13 +2,12 @@ package az.test.model.army.other;
 
 import az.test.battle.BattleInfo;
 import az.test.model.army.BaseUnit;
-import az.test.model.army.BotUnit;
 import az.test.model.army.CrossAttack;
 
 /**
  * 军乐队
  */
-public class MilitaryBand extends BotUnit {
+public class MilitaryBand extends BaseUnit {
 
 	public MilitaryBand(BattleInfo battleInfo) {
 		super(battleInfo, "军乐队");

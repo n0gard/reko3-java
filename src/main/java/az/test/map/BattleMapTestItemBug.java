@@ -2,7 +2,7 @@ package az.test.map;
 
 import az.test.battle.BattleInfo;
 import az.test.model.PlayerUnitGenerator;
-import az.test.model.army.BotUnit;
+import az.test.model.army.BaseUnit;
 import az.test.model.map.MapItem;
 import az.test.reko3ibm.AI02Standby;
 import az.test.util.LogUtil;
@@ -24,17 +24,17 @@ public class BattleMapTestItemBug extends BattleMap {
 
 	public void loadEnemies(BattleInfo bi) {
 		// load enemies
-		BotUnit cc = PlayerUnitGenerator.getInstance(bi).loadCaocao(0, 0,  new AI02Standby(true));
+		BaseUnit cc = PlayerUnitGenerator.getInstance(bi).loadCaocao(0, 0,  new AI02Standby(true));
 		cc.isLord = true;
 		bi.map.lord = cc;
-		List<BotUnit> loaded = bi.loadEnemyUnit(bi.map.lord);
+		List<BaseUnit> loaded = bi.loadEnemyUnit(bi.map.lord);
 		LogUtil.printInfo(bi.map.getCurrentRoundNo(),"loaded enemy " + loaded);
 	}
 
 	public static int[][] mapIds = {
 			//0, 1, 2
 			{ 0, 0, 0 }, // 0
-			{ 0, 0, 7 }, // 1
+			{ 0, 0, 8 }, // 1
 //			{ 0, 0, 7 }, // 2
 	};// end
 

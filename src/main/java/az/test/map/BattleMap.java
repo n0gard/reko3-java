@@ -6,7 +6,6 @@ import java.util.List;
 
 import az.test.battle.BattleInfo;
 import az.test.model.army.BaseUnit;
-import az.test.model.army.BotUnit;
 import az.test.model.item.BaseItem;
 import az.test.model.item.ItemGenerator;
 import az.test.model.map.Abatis;
@@ -14,20 +13,19 @@ import az.test.model.map.Barrack;
 import az.test.model.map.MapItem;
 import az.test.model.map.Village;
 import az.test.util.LogUtil;
-import az.test.util.ObjectCopyUtil;
 import lombok.Data;
-import org.lwjgl.system.CallbackI;
 
 @Data
 public abstract class BattleMap implements Serializable {
     public String battleName;
     public MapItem[][] map;
     public List<MapItem> restores = new ArrayList<>();
-    public List<BotUnit> enemies = new ArrayList<>();
-    public List<BotUnit> friends = new ArrayList<>();
+    public List<BaseUnit> players = new ArrayList<>();
+    public List<BaseUnit> enemies = new ArrayList<>();
+    public List<BaseUnit> friends = new ArrayList<>();
     public int roundLimit;
     public int currentRoundNo = 1;
-    public BotUnit lord;
+    public BaseUnit lord;
     public List<MapItem> escapePlaces = new ArrayList<>();
     public boolean isAllSurvivedUnitGainExtraExp = false;
 
@@ -36,10 +34,6 @@ public abstract class BattleMap implements Serializable {
         for (int y = 0; y < mapIds.length; y++) {
             for (int x = 0; x < mapIds[y].length; x++) {
                 map[y][x] = MapItem.generateById(mapIds[y][x], y, x);
-                switch (map[y][x].id) {
-                    case 10:
-
-                }
             }
         }
     }
@@ -62,13 +56,19 @@ public abstract class BattleMap implements Serializable {
             LogUtil.printInfo(getCurrentRoundNo(), "[BattleMap]enemies evacuated");
             return true;
         }
-        if (areAllEscape(someones)) {
-            LogUtil.printInfo(getCurrentRoundNo(), "[BattleMap]someone escaped");
-            isAllSurvivedUnitGainExtraExp = true;
-            return true;
+        boolean allEscaped = true;
+        List<String> escapedPlayerNames = new ArrayList<>();
+        for(BaseUnit player : players) {
+            if (player.canEscape) {
+                if (player.isEscaped) {
+                    escapedPlayerNames.add(player.name);
+                } else {
+                    allEscaped = false;
+                }
+            }
         }
-        if (areAllEscape(anyones)) {
-            LogUtil.printInfo(getCurrentRoundNo(), "[BattleMap]anyones all escaped");
+        if (allEscaped) {
+            LogUtil.printInfo(getCurrentRoundNo(), "[BattleMap]" + escapedPlayerNames + " escaped");
             isAllSurvivedUnitGainExtraExp = true;
             return true;
         }
@@ -85,16 +85,8 @@ public abstract class BattleMap implements Serializable {
 
     public abstract void loadEnemies(BattleInfo bi);
 
-    public void loadEnemy(BotUnit enemy) {
+    public void loadEnemy(BaseUnit enemy) {
         enemies.add(enemy);
-    }
-
-    public void loadAnyone(BaseUnit anyone) {
-        this.anyones.add(anyone);
-    }
-
-    public void loadSomeone(BaseUnit someone) {
-        this.someones.add(someone);
     }
 
 }
