@@ -63,7 +63,7 @@ public class AI03Passive extends ActionAIType {
                         } catch (OutOfAttackRangeException ooare) {
                             ooare.printStackTrace();
                         } catch (CounterattackHappenedException che) {
-                            LogUtil.printInfo(battle.map.getCurrentRoundNo(), "AI01Active: ATTACK, get Counter attack");
+                            LogUtil.printlnInfo(battle.map.getCurrentRoundNo(), "AI01Active: ATTACK, get Counter attack");
                         }
                         break;
                     case USE_ITEM:
@@ -76,7 +76,7 @@ public class AI03Passive extends ActionAIType {
 
             }
         } else {
-            LogUtil.printInfo(battle.map.getCurrentRoundNo(), "No player could be attacked.");
+            LogUtil.printlnInfo(battle.map.getCurrentRoundNo(), "No player could be attacked.");
         }
     }
 
@@ -173,12 +173,12 @@ public class AI03Passive extends ActionAIType {
 
     private String parseValuesArray2String(Action[][] actions) {
         StringBuilder builder = new StringBuilder("\n");
-        for (Action[] action : actions) {
+        for (int y = 0; y < actions.length; y++) {
             builder.append("[");
             for (int x = 0; x < actions[0].length; x++) {
-                builder.append(action[x].actionValue);
-                if (x < actions[x].length - 1) {
-                    if (action[x].actionValue > 9) {
+                builder.append(actions[y][x].actionValue);
+                if (x < actions[y].length - 1) {
+                    if (actions[y][x].actionValue > 9) {
                         builder.append(",");
                     } else {
                         builder.append(", ");

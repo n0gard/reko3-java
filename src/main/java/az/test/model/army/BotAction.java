@@ -102,16 +102,16 @@ public class BotAction {
             }
 
         }
-        for (int i = 0; i < actionValuesArray.length; i++) {
-            for (int j = 0; j < actionValuesArray[i].length; j++) {
-                if (actionValuesArray[i][j].actionValue > 9) {
-                    LogUtil.printInfo(battleInfo.getMap().getCurrentRoundNo(), actionValuesArray[i][j].toString());
-                } else {
-                    LogUtil.printInfo(battleInfo.getMap().getCurrentRoundNo(), " " + actionValuesArray[i][j]);
-                }
-            }
-            LogUtil.printInfo(battleInfo.getMap().getCurrentRoundNo(), "");
-        }
+//        for (int i = 0; i < actionValuesArray.length; i++) {
+//            for (int j = 0; j < actionValuesArray[i].length; j++) {
+//                if (actionValuesArray[i][j].actionValue > 9) {
+//                    LogUtil.printlnInfo(battleInfo.getMap().getCurrentRoundNo(), actionValuesArray[i][j].toString());
+//                } else {
+//                    LogUtil.printlnInfo(battleInfo.getMap().getCurrentRoundNo(), " " + actionValuesArray[i][j]);
+//                }
+//            }
+//            LogUtil.printlnInfo(battleInfo.getMap().getCurrentRoundNo(), "");
+//        }
         return actionValuesArray;
     }
 
@@ -126,7 +126,7 @@ public class BotAction {
     private void increaseRestorePlacesValue(MapItem[][] map, Action[][] values) {
         for (int j = 0; j < values.length; j++) {
             for (int i = 0; i < values[j].length; i++) {
-                if (map[j][i] instanceof Village || map[j][i] instanceof Abatis || map[j][i] instanceof Barrack)
+                if (null == map[j][i].army && (map[j][i] instanceof Village || map[j][i] instanceof Abatis || map[j][i] instanceof Barrack))
                     values[j][i].actionValue += 50;
             }
         }

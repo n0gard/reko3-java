@@ -8,4 +8,8 @@ public class Granary extends MapItem {
 		name = "粮仓";
 	}
 
+	@Override
+	public void drawMapItem() {
+		System.out.print("G");
+	}
 }

@@ -8,4 +8,8 @@ public class Barrack extends MapItem {
 		name = "兵营";
 	}
 
+	@Override
+	public void drawMapItem() {
+		System.out.print("B");
+	}
 }

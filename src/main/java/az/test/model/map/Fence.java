@@ -9,4 +9,8 @@ public class Fence extends MapItem {
 		name = "栅栏";
 	}
 
+	@Override
+	public void drawMapItem() {
+		System.out.print("++");
+	}
 }

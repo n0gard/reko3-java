@@ -9,4 +9,8 @@ public class Wall extends MapItem {
 		name = "城墙";
 	}
 
+	@Override
+	public void drawMapItem() {
+		System.out.print("WW ");
+	}
 }

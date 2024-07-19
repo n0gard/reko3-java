@@ -51,7 +51,7 @@ public class AI01Active extends ActionAIType {
                     } catch (OutOfAttackRangeException ooare) {
                         ooare.printStackTrace();
                     } catch (CounterattackHappenedException che) {
-                        LogUtil.printInfo(battle.map.getCurrentRoundNo(), "AI01Active: ATTACK, get Counter attack");
+                        LogUtil.printlnInfo(battle.map.getCurrentRoundNo(), "AI01Active: ATTACK, get Counter attack");
                     }
                     break;
                 case USE_ITEM:

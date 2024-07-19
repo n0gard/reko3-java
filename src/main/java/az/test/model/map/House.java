@@ -9,4 +9,8 @@ public class House extends MapItem {
 		name = "房舍";
 	}
 
+	@Override
+	public void drawMapItem() {
+		System.out.print("hh ");
+	}
 }

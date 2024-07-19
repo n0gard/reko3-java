@@ -26,7 +26,7 @@ public class AI02Standby extends ActionAIType {
 
 			}
 		} else {
-			LogUtil.printInfo(battle.map.getCurrentRoundNo(), "AI02", "No player could be attacked.");
+			LogUtil.printlnInfo(battle.map.getCurrentRoundNo(), "AI02", "No player could be attacked.");
 		}
 	}
 

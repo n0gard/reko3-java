@@ -8,4 +8,8 @@ public class Abatis extends MapItem {
 		name = "鹿砦";
 	}
 
+	@Override
+	public void drawMapItem() {
+		System.out.print("A");
+	}
 }

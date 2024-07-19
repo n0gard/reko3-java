@@ -9,4 +9,8 @@ public class Flame extends MapItem {
 		name = "火焰";
 	}
 
+	@Override
+	public void drawMapItem() {
+		System.out.print("^^ ");
+	}
 }

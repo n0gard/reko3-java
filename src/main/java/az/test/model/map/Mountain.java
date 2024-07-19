@@ -8,4 +8,8 @@ public class Mountain extends MapItem {
 		name = "山地";
 	}
 
+	@Override
+	public void drawMapItem() {
+		System.out.print("m");
+	}
 }

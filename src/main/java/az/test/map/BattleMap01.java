@@ -3,6 +3,7 @@ package az.test.map;
 import az.test.battle.BattleInfo;
 import az.test.model.PlayerUnitGenerator;
 import az.test.model.army.BaseUnit;
+import az.test.model.army.BotAction;
 import az.test.model.item.consumption.food.Bean;
 import az.test.reko3ibm.AI02Standby;
 import az.test.reko3ibm.AI03Passive;
@@ -28,12 +29,24 @@ public class BattleMap01 extends BattleMap {
 		huaxiong.isLord = true;
 		bi.map.lord = huaxiong;
 		bi.loadEnemyUnit(bi.map.lord);
-		bi.loadEnemyUnit(PlayerUnitGenerator.getInstance(bi).loadLisu(10, 5, new AI03Passive(true)));
-		bi.loadEnemyUnit(PlayerUnitGenerator.getInstance(bi).loadHuzhen(9, 4, new AI03Passive(true)));
-		bi.loadEnemyUnit(PlayerUnitGenerator.getInstance(bi).loadZhaocen(9, 6, new AI03Passive(true)));
-		bi.loadEnemyUnit(PlayerUnitGenerator.getInstance(bi).loadFootmanArmy(8, 11, 1, new AI03Passive(true)));
-		bi.loadEnemyUnit(PlayerUnitGenerator.getInstance(bi).loadFootmanArmy(10, 11, 1,new AI03Passive(true)));
-		bi.loadEnemyUnit(PlayerUnitGenerator.getInstance(bi).loadFootmanArmy(12, 11, 1,new AI03Passive(true)));
+		BaseUnit lisu = PlayerUnitGenerator.getInstance(bi).loadLisu(10, 5, new AI03Passive(true));
+		lisu.aiType.botAction = new BotAction(lisu, bi);
+		bi.loadEnemyUnit(lisu);
+		BaseUnit huzhen = PlayerUnitGenerator.getInstance(bi).loadHuzhen(9, 4, new AI03Passive(true));
+		huzhen.aiType.botAction = new BotAction(huzhen, bi);
+		bi.loadEnemyUnit(huzhen);
+		BaseUnit zhaocen = PlayerUnitGenerator.getInstance(bi).loadZhaocen(9, 6, new AI03Passive(true));
+		zhaocen.aiType.botAction = new BotAction(zhaocen, bi);
+		bi.loadEnemyUnit(zhaocen);
+		BaseUnit bbd1 = PlayerUnitGenerator.getInstance(bi).loadFootmanArmy(8, 11, 1, new AI03Passive(true));
+		bbd1.aiType.botAction = new BotAction(bbd1, bi);
+		bi.loadEnemyUnit(bbd1);
+		BaseUnit bbd2 = PlayerUnitGenerator.getInstance(bi).loadFootmanArmy(10, 11, 1,new AI03Passive(true));
+		bbd2.aiType.botAction = new BotAction(bbd2, bi);
+		bi.loadEnemyUnit(bbd2);
+		BaseUnit bbd3 = PlayerUnitGenerator.getInstance(bi).loadFootmanArmy(12, 11, 1,new AI03Passive(true));
+		bbd3.aiType.botAction = new BotAction(bbd3, bi);
+		bi.loadEnemyUnit(bbd3);
 	}
 
 

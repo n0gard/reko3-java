@@ -9,4 +9,8 @@ public class Gate extends MapItem {
 		name = "城门";
 	}
 
+	@Override
+	public void drawMapItem() {
+		System.out.print("gg ");
+	}
 }

@@ -8,4 +8,8 @@ public class Forest extends MapItem {
 		name = "树林";
 	}
 
+	@Override
+	public void drawMapItem() {
+		System.out.print("F");
+	}
 }

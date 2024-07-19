@@ -28,7 +28,7 @@ public class BattleMapTestItemBug extends BattleMap {
 		cc.isLord = true;
 		bi.map.lord = cc;
 		List<BaseUnit> loaded = bi.loadEnemyUnit(bi.map.lord);
-		LogUtil.printInfo(bi.map.getCurrentRoundNo(),"loaded enemy " + loaded);
+		LogUtil.printlnInfo(bi.map.getCurrentRoundNo(),"loaded enemy " + loaded);
 	}
 
 	public static int[][] mapIds = {
@@ -46,7 +46,7 @@ public class BattleMapTestItemBug extends BattleMap {
 			}
 		}
 
-		LogUtil.printInfo(-1, JSON.toJSONString(mapItemsTable, true));
+		LogUtil.printlnInfo(-1, JSON.toJSONString(mapItemsTable, true));
 
 	}
 }

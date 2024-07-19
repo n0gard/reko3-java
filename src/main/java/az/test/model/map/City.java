@@ -8,4 +8,8 @@ public class City extends MapItem {
 		name = "城池";
 	}
 
+	@Override
+	public void drawMapItem() {
+		System.out.print("c");
+	}
 }

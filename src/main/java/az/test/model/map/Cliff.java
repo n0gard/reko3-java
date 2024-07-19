@@ -9,4 +9,8 @@ public class Cliff extends MapItem {
 		name = "悬崖";
 	}
 
+	@Override
+	public void drawMapItem() {
+		System.out.print("cc ");
+	}
 }

@@ -24,7 +24,7 @@ public class BattleInfo implements Serializable {
     public List<Integer> weatherRands = new ArrayList<>();
     public List<BaseUnit> playerUnits = new ArrayList<>();
     public List<BaseUnit> outOfBattlePlayerUnits = new ArrayList<>();
-    public static final int MAX_PLAYER_UNITS = 20;
+    public static final int MAX_PLAYER_UNITS = 15;
     public List<BaseUnit> friendUnits = new ArrayList<>();
     public List<BaseUnit> outOfBattleFriendUnits = new ArrayList<>();
     public List<BaseUnit> enemyUnits = new ArrayList<>();
@@ -108,10 +108,10 @@ public class BattleInfo implements Serializable {
     }
 
     public void initRound() {
-        LogUtil.printInfo(map.getCurrentRoundNo(), "[BattleInfo]initRound");
+        LogUtil.printlnInfo(map.getCurrentRoundNo(), "[BattleInfo]initRound");
         // init weather
         int currentWeatherCode = Weather.generateNextWeather(lastRoundWeatherCode, weatherRands.get(map.getCurrentRoundNo() - 1));
-        LogUtil.printInfo(map.getCurrentRoundNo(), "Weather: " + weatherList.get(map.getCurrentRoundNo() - 1) + "(" + currentWeatherCode + ") last:" + lastRoundWeatherCode);
+        LogUtil.printlnInfo(map.getCurrentRoundNo(), "Weather: " + weatherList.get(map.getCurrentRoundNo() - 1) + "(" + currentWeatherCode + ") last:" + lastRoundWeatherCode);
         lastRoundWeatherCode = currentWeatherCode;
         //
         // calculate restores & chaos restore
@@ -151,7 +151,7 @@ public class BattleInfo implements Serializable {
             }
             // case 4 - TODO init place by hand
             if (hpRestore > 0 || moraleRestore > 0 || manaRestore > 0 || goIn2Determination) {
-                LogUtil.printInfo(map.getCurrentRoundNo(), "Restore", "Player: " + player.name + " Restored HP: "
+                LogUtil.printlnInfo(map.getCurrentRoundNo(), "Restore", "Player: " + player.name + " Restored HP: "
                         + hpRestore + " now: " + player.currentArmyHP + " Morale: " + moraleRestore + " now: "
                         + player.currentMorale + " Mana: " + manaRestore + " now: " + player.currentMana
                         + " Recovery? " + isRecoveryFromChaos);
@@ -193,7 +193,7 @@ public class BattleInfo implements Serializable {
             }
             // case 4 - TODO init place by hand
             if (hpRestore > 0 || moraleRestore > 0 || manaRestore > 0 || goIn2Determination) {
-                LogUtil.printInfo(map.getCurrentRoundNo(), "Restore", "Player: " + friend.name + " Restored HP: "
+                LogUtil.printlnInfo(map.getCurrentRoundNo(), "Restore", "Player: " + friend.name + " Restored HP: "
                         + hpRestore + " Morale: " + moraleRestore + " Mana: " + manaRestore + " Recovery? "
                         + isRecoveryFromChaos);
             }
@@ -234,7 +234,7 @@ public class BattleInfo implements Serializable {
             }
             // case 4 - TODO init place by hand
             if (hpRestore > 0 || moraleRestore > 0 || manaRestore > 0 || goIn2Determination) {
-                LogUtil.printInfo(map.getCurrentRoundNo(), "Restore", "Player: " + enemy.name + " Restored HP: "
+                LogUtil.printlnInfo(map.getCurrentRoundNo(), "Restore", "Player: " + enemy.name + " Restored HP: "
                         + hpRestore + " Morale: " + moraleRestore + " Mana: " + manaRestore + " Recovery? "
                         + isRecoveryFromChaos);
             }
@@ -254,9 +254,9 @@ public class BattleInfo implements Serializable {
     public void initRound(boolean isPlayer) {
         if (isPlayer) {
             // TODO friendly army ...
-            LogUtil.printInfo(map.getCurrentRoundNo(), "Restore", "[BattleInfo]initRound: friendly armies...");
+            LogUtil.printlnInfo(map.getCurrentRoundNo(), "Restore", "[BattleInfo]initRound: friendly armies...");
         } else {
-            LogUtil.printInfo(map.getCurrentRoundNo(), "Restore", "[BattleInfo]initRound: enemy armies...");
+            LogUtil.printlnInfo(map.getCurrentRoundNo(), "Restore", "[BattleInfo]initRound: enemy armies...");
             for (BaseUnit enemy : enemyUnits) {
                 int hpRestore = 0;
                 int moraleRestore = 0;
@@ -293,7 +293,7 @@ public class BattleInfo implements Serializable {
                 }
                 // case 4 - TODO init place by hand
                 if (hpRestore > 0 || moraleRestore > 0 || manaRestore > 0 || goIn2Determination) {
-                    LogUtil.printInfo(map.getCurrentRoundNo(), "Restore", "Player: " + enemy.name + " Restored HP: "
+                    LogUtil.printlnInfo(map.getCurrentRoundNo(), "Restore", "Player: " + enemy.name + " Restored HP: "
                             + hpRestore + " Morale: " + moraleRestore + " Mana: " + manaRestore + " Recovery? "
                             + isRecoveryFromChaos);
                 }
@@ -321,6 +321,7 @@ public class BattleInfo implements Serializable {
             army.currentArmyHP = army.calculateMaxArmyHP();
             restoreHP = army.calculateMaxArmyHP() - beforeHP;
         }
+        LogUtil.printlnInfo(this.map.currentRoundNo, army + "-->triggerHPRestore: " + restoreHP);
         return restoreHP;
     }
 
@@ -335,6 +336,7 @@ public class BattleInfo implements Serializable {
             army.currentMorale = 100;
             restoreMorale = 100 - beforeMorale;
         }
+        LogUtil.printlnInfo(this.map.currentRoundNo, army + "-->triggerMoraleRestore: " + restoreMorale);
         return restoreMorale;
     }
 
@@ -486,7 +488,7 @@ public class BattleInfo implements Serializable {
             weatherRand50Rounds.add((int) (Math.random() * 6.0));
         }
         int last = 2;
-        LogUtil.printInfo(-1,"INIT LAST: " + last);
+        LogUtil.printlnInfo(-1,"INIT LAST: " + last);
         int current = last;
         int sun = 0;
         int cloud = 0;
@@ -537,8 +539,8 @@ public class BattleInfo implements Serializable {
             }
             last = current;
         }
-        LogUtil.printInfo(-1,"--------- SUN: " + sun + " --- CLOUD: " + cloud + " --- RAIN: " + rain + " ------ IMP: "
+        LogUtil.printlnInfo(-1,"--------- SUN: " + sun + " --- CLOUD: " + cloud + " --- RAIN: " + rain + " ------ IMP: "
                 + imp + " ----------");
-        LogUtil.printInfo(-1,"c0: " + c0 + " c1: " + c1 + " c2:" + c2 + " c3: " + c3 + " c4: " + c4 + " c5: " + c5);
+        LogUtil.printlnInfo(-1,"c0: " + c0 + " c1: " + c1 + " c2:" + c2 + " c3: " + c3 + " c4: " + c4 + " c5: " + c5);
     }
 }

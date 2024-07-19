@@ -18,7 +18,7 @@ import java.io.Serializable;
  * 08 村庄  09 悬崖  0A 城门  0B 荒地  0C 栅栏  0D 鹿砦  0E  兵营  0F  粮仓
  * 10 宝物库  11 房舍  12 火焰  13 浊流
  */
-public class MapItem implements Serializable, Comparable<MapItem> {
+public abstract class MapItem implements Serializable, Comparable<MapItem> {
     public int id;
     public boolean canStay = true;
     public BaseUnit army = null;
@@ -33,6 +33,8 @@ public class MapItem implements Serializable, Comparable<MapItem> {
         mi.isEscape = isEscape;
         return mi;
     }
+
+    public abstract void drawMapItem();
 
     /**
      * 00 平原
@@ -119,7 +121,7 @@ public class MapItem implements Serializable, Comparable<MapItem> {
             case 19:
                 mi = new Flow(); // none
             default:
-                mi = new MapItem();
+                mi = new Plain();
                 break;
         }
         mi.y = y;
@@ -140,18 +142,17 @@ public class MapItem implements Serializable, Comparable<MapItem> {
     }
 
     public int queryCost(BaseUnit army) {
-        if (id < 4) {
+        if (this instanceof Plain || this instanceof City || this instanceof Grassland || this instanceof Bridge) {
             return 1;
         }
-        if (id > 11) {
+        if (!canStay) {
             return Integer.MAX_VALUE;
         }
         if (this instanceof Forest) {
             if (army instanceof Rider) {
                 return Integer.MAX_VALUE;
             }
-        }
-        if (this instanceof Wasteland) {
+        } else if (this instanceof Wasteland) {
             if (army instanceof MilitaryBand || army instanceof TransportTeam || army instanceof Rider) {
                 return 2;
             }
@@ -188,7 +189,7 @@ public class MapItem implements Serializable, Comparable<MapItem> {
         } else {
             if (this.y > o.y) {
                 return 1;
-            } else if (this.y == o.y){
+            } else if (this.y == o.y) {
                 if (this.x > o.x) {
                     return 1;
                 } else {

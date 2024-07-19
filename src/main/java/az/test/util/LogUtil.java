@@ -3,7 +3,7 @@ package az.test.util;
 import az.test.battle.BattleInfo;
 
 public class LogUtil {
-    public static void printInfo(BattleInfo bi, String info) {
+    public static void printlnInfo(BattleInfo bi, String info) {
         System.out.println("[battle at:" + bi.map.battleName + ",round:" + bi.map.getCurrentRoundNo() + "]" + info);
     }
 
@@ -15,11 +15,15 @@ public class LogUtil {
         System.out.println(info);
     }
 
-    public static void printInfo(int roundNo, String info) {
+    public static void printlnInfo(int roundNo, String info) {
         System.out.println("[Round " + roundNo + "]" + info);
     }
 
-    public static void printInfo(int roundNo, String action, String info) {
+    public static void printInfo(int roundNo, String info) {
+        System.out.print("[Round " + roundNo + "]" + info);
+    }
+
+    public static void printlnInfo(int roundNo, String action, String info) {
         System.out.println("[Round " + roundNo + "][" + action + "]" + info);
     }
 

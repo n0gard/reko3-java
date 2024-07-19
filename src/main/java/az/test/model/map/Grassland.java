@@ -8,4 +8,8 @@ public class Grassland extends MapItem {
 		name = "草地";
 	}
 
+	@Override
+	public void drawMapItem() {
+		System.out.print("g");
+	}
 }

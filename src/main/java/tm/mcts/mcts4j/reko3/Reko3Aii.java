@@ -166,7 +166,7 @@ public class Reko3Aii extends UCT<Reko3Transition, DefaultNode<Reko3Transition>>
     public void unmakeTransition(Reko3Transition transition) {
         if (!IS_SIM)
             System.out.println("[Reko3A]unmakeTransition " + transition);
-        else LogUtil.printInfo(battle.map.getCurrentRoundNo(), "[Simulation][Reko3Aii]unmakeTransition");
+        else LogUtil.printlnInfo(battle.map.getCurrentRoundNo(), "[Simulation][Reko3Aii]unmakeTransition");
         // System.out.println(transition.getBattle().enemyUnits.get(0).currentArmyHP
         // + " <<===");
         // System.out.println(transition.getBattle().map.map[0][0].army.currentArmyHP

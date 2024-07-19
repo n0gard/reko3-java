@@ -9,4 +9,8 @@ public class River extends MapItem {
 		name = "河流";
 	}
 
+	@Override
+	public void drawMapItem() {
+		System.out.print("rr ");
+	}
 }

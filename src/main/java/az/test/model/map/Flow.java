@@ -9,4 +9,8 @@ public class Flow extends MapItem {
 		name = "浊流";
 	}
 
+	@Override
+	public void drawMapItem() {
+		System.out.print("~~ ");
+	}
 }

@@ -8,4 +8,8 @@ public class Bridge extends MapItem {
 		name = "桥梁";
 	}
 
+	@Override
+	public void drawMapItem() {
+		System.out.print("b");
+	}
 }

@@ -8,4 +8,8 @@ public class Wasteland extends MapItem {
 		name = "荒地";
 	}
 
+	@Override
+	public void drawMapItem() {
+		System.out.print("w");
+	}
 }

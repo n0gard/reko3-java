@@ -8,4 +8,8 @@ public class Village extends MapItem {
 		name = "村庄";
 	}
 
+	@Override
+	public void drawMapItem() {
+		System.out.print("V");
+	}
 }

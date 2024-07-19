@@ -8,4 +8,8 @@ public class TreasureStore extends MapItem {
 		name = "宝物库";
 	}
 
+	@Override
+	public void drawMapItem() {
+		System.out.print("T");
+	}
 }

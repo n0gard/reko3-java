@@ -8,4 +8,8 @@ public class Plain extends MapItem {
 		name = "平原";
 	}
 
+	@Override
+	public void drawMapItem() {
+		System.out.print(".");
+	}
 }

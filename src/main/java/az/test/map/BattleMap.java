@@ -47,16 +47,17 @@ public abstract class BattleMap implements Serializable {
     }
 
     public boolean isPlayerSuccess() {
-        LogUtil.printInfo(getCurrentRoundNo(), "[BattleMap]isPlayerSuccess lord:" + lord);
+        LogUtil.printlnInfo(getCurrentRoundNo(), "[BattleMap]isPlayerSuccess lord:" + lord);
         if (null != lord && lord.isEvacuated) {
-            LogUtil.printInfo(getCurrentRoundNo(), "[BattleMap]lord evacuated");
+            LogUtil.printlnInfo(getCurrentRoundNo(), "[BattleMap]lord evacuated");
             return true;
         }
         if (enemies.isEmpty()) {
-            LogUtil.printInfo(getCurrentRoundNo(), "[BattleMap]enemies evacuated");
+            LogUtil.printlnInfo(getCurrentRoundNo(), "[BattleMap]enemies evacuated");
             return true;
         }
         boolean allEscaped = true;
+
         List<String> escapedPlayerNames = new ArrayList<>();
         for(BaseUnit player : players) {
             if (player.canEscape) {
@@ -67,8 +68,8 @@ public abstract class BattleMap implements Serializable {
                 }
             }
         }
-        if (allEscaped) {
-            LogUtil.printInfo(getCurrentRoundNo(), "[BattleMap]" + escapedPlayerNames + " escaped");
+        if (allEscaped && !escapedPlayerNames.isEmpty()) {
+            LogUtil.printlnInfo(getCurrentRoundNo(), "[BattleMap]" + escapedPlayerNames + " escaped");
             isAllSurvivedUnitGainExtraExp = true;
             return true;
         }
